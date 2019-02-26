@@ -1,6 +1,6 @@
 const uuid = require('uuid');
 
-export default class Partner {
+class Partner {
   constructor(
     name,
     address,
@@ -15,6 +15,7 @@ export default class Partner {
   ) {
     this.id = uuid.v4();
     this.name = name;
+    this.address = address;
     this.email = email;
     this.fax = fax;
     this.phone = phone;
@@ -25,3 +26,4 @@ export default class Partner {
     this.feedback = feedback;
   }
 }
+module.exports = Partner;
