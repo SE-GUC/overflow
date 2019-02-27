@@ -1,4 +1,4 @@
-const uuid = require('uuid');
+const uuid = require("uuid");
 
 class Admin {
   constuctor(name, dateOfBirth, gender, joinDate, salary, email, isSuper) {
