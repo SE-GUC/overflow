@@ -1,4 +1,4 @@
-const uuid = require('uuid');
+const uuid = require("uuid");
 
 class LifeCoach {
   constuctor(
@@ -8,7 +8,7 @@ class LifeCoach {
     joinDate,
     hourlyRate,
     email,
-    monthlySlots,
+    monthlySlots
   ) {
     this.id = uuid.v4();
     this.name = name;
