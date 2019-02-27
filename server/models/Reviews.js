@@ -1,10 +1,10 @@
 const uuid = require("uuid");
 
 class Reviews {
-  constructor(partner, review, rating, datePosted) {
+  constructor(partner, reviewText, rating, datePosted) {
     this.id = uuid.v4();
     this.partner = partner;
-    this.review = review;
+    this.reviewText = reviewText;
     this.rating = rating;
     this.datePosted = datePosted;
   }
