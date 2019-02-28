@@ -1,7 +1,5 @@
-const uuid = require("uuid");
-
 class LifeCoach {
-  constuctor(
+  constructor(
     name,
     dateOfBirth,
     gender,
@@ -10,7 +8,6 @@ class LifeCoach {
     email,
     monthlySlots
   ) {
-    this.id = uuid.v4();
     this.name = name;
     this.dateOfBirth = dateOfBirth;
     this.gender = gender;
