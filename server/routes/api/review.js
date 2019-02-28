@@ -59,6 +59,7 @@ router.post("/create", (req, res) => {
   const newReview = new Review(partner, reviewText, rating, datePosted);
   reviews.push(newReview);
   res.json({ data: newReview });
+  
 });
 
 router.get("/read/:id", (req, res) => {
@@ -73,7 +74,7 @@ router.get("/read/:id", (req, res) => {
   });
   found
     ? res.json({ data: currentReview })
-    : res.json({ err: "review Not Found" });
+    : [res.sendStatus(404),res.json({ err: "review Not Found" })];
 });
 
 router.get("/read/", (req, res) => {
@@ -104,7 +105,7 @@ router.post("/update/:id", (req, res) => {
   });
   found
     ? res.json({ data: tempReview })
-    : res.json({ err: "review Not Found" });
+    : [res.sendStatus(404),res.json({ err: "review Not Found" })];
 });
 
 router.post("/delete/:id", (req, res) => {
@@ -118,7 +119,7 @@ router.post("/delete/:id", (req, res) => {
   });
   found
     ? res.json({ data: tempFeed })
-    : res.json({ err: "review Not Found" });
+    : [res.sendStatus(404),res.json({ err: "review Not Found" })];
 });
 
 router.get("/read/", (req, res) => {
