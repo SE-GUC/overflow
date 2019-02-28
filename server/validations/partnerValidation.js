@@ -30,4 +30,5 @@ const updateValidation = (request) => {
   }
   return Joi.validate(request, updateSchema);
 };
+
 module.exports = { createValidation,updateValidation };
