@@ -39,7 +39,7 @@ router.post("/create", (req, res) => {
     joinDate,
     hourlyRate,
     email,
-    
+    []
   );
   const user = new User("lifeCoach", lifeCoach, password);
   users.push(user);
