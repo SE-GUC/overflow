@@ -4,7 +4,7 @@ const Joi = require("joi");
 const createValidation = (request) => {
   const createSchema = {
     name: Joi.string().min(3).max(30).required(),
-    dateOfBirth: Joi.date().required(),
+    dateOfBirth: Joi.date().iso().required(),
     gender: Joi.string().min(4).max(6).required(),
     hourlyRate:Joi.number(),
     email: Joi.string().email({ minDomainAtoms: 2 }).required(),
@@ -15,7 +15,7 @@ const createValidation = (request) => {
 const updateValidation = (request) => {
   const updateSchema = {
     name: Joi.string().min(3).max(30).required(),
-    dateOfBirth: Joi.date().required(),
+    dateOfBirth: Joi.date().iso().required(),
     gender: Joi.string().min(4).max(6).required(),
     hourlyRate:Joi.number(),
     email: Joi.string().email({ minDomainAtoms: 2 }).required(),

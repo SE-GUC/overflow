@@ -28,15 +28,14 @@ router.post("/create", (req, res) => {
     name,
     dateOfBirth,
     gender,
-    joinDate,
     hourlyRate,
     email,
   }=userData;
-  const lifeCoach = new lifeCoach(
+  const lifeCoach = new LifeCoach(
     name,
-    new date(dateOfBirth),
+    new Date(dateOfBirth),
     gender,
-    joinDate,
+    new Date(),
     hourlyRate,
     email,
     []
@@ -60,7 +59,7 @@ router.put("/update/:id", (req, res) => {
   }
  
  const {dateOfBirth}=req.body
- const newAge= new Date().getFullYear()-dateOfBirth.getFullYear();
+ const newAge= new Date().getFullYear()-new Date(dateOfBirth).getFullYear();
  req.body.age=newAge;
  req.body.monthlySlots = users[userIndex].userData.monthlySlots;
  users[userIndex].userData = req.body;
