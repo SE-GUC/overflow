@@ -1,6 +1,7 @@
 const express = require("express");
 const users = require("../../userArray");
 const User = require("../../models/User");
+const Partner = require("../../models/Partner");
 const validator = require("../../validations/partnerValidation");
 
 const router = express.Router();
@@ -22,7 +23,30 @@ router.post("/create", (req, res) => {
       .send({ error: isValidated.error.details[0].message });
   }
   const { password, ...userData } = req.body;
-  const user = new User("partner", userData, password);
+  const {
+    name,
+    address,
+    email,
+    fax,
+    phone,
+    partners,
+    members,
+    fieldOfWork,
+    projects
+  } = userData;
+  const partner = new Partner(
+    name,
+    address,
+    email,
+    fax,
+    phone,
+    partners,
+    members,
+    fieldOfWork,
+    projects,
+    []
+  );
+  const user = new User("partner", partner, password);
   users.push(user);
   return res.json({ data: user });
 });
