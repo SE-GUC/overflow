@@ -28,7 +28,7 @@ const partner = new Partner(
   ["IBM"],
   'Databases',
   ['Oracle DB'],
-  null
+  []
 );
 const partnerUser = new User('partner',partner,"ehw");
 const member = new Member(

@@ -92,7 +92,9 @@ router.put("/update/:memberId/:reviewId", (req, res) => {
   const datePosted = review.datePosted;
   const reviewIndex = member.userData.reviews.indexOf(review);
   const memberIndex = allUsers.indexOf(member);
+  const id = reviewId;
   allUsers[memberIndex].userData.reviews[reviewIndex] = {
+    id,
     partner,
     reviewText,
     rating,

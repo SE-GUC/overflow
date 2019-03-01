@@ -118,7 +118,7 @@ router.put("/update/:id", (req, res) => {
       return res.status(400).send({ error: "member not found" });
   }
   const { partnerId, acceptedMemberId, ...vacancyData } = req.body;
-  vacancies[vacancyIndex] = { partner, vacancyData, acceptedMember };
+  vacancies[vacancyIndex] = { id, partner, ...vacancyData, acceptedMember };
   return res.sendStatus(200);
 });
 
