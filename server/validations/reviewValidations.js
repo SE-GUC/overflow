@@ -8,7 +8,6 @@ module.exports = {
       memberID:Joi.string().required(),
       reviewText:Joi.string().required(),
       rating:Joi.string(),
-      datePosted:Joi.date().iso()
     };
 
     return Joi.validate(request, createSchema);
@@ -19,7 +18,7 @@ module.exports = {
       partnerID:Joi.string().required(),
       reviewText:Joi.string().required(),
       rating:Joi.string(),
-      datePosted:Joi.date().iso()
+      
     };
 
     return Joi.validate(request, updateSchema);

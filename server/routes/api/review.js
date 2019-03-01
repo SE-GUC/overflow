@@ -1,19 +1,24 @@
 const express = require("express");
 const validator = require("../../validations/reviewValidations");
 const router = express.Router();
-const util = require("util");
 const User = require("../../models/User");
-const JSON = require("circular-json");
 const Review = require("../../models/Reviews");
 const allUsers = require("../../userArray");
 //
 router.post("/create", (req, res) => {
-  const { memberID, partnerID, reviewText, rating, datePosted } = req.body;
+  const { memberID, partnerID, reviewText, rating } = req.body;
   let userFound = false;
-  const partner = allUsers.find(user => user.id === partnerID);
+  const isValidated = validator.createValidation(req.body);
+  if (isValidated.error)
+    return res
+      .status(400)
+      .json({ error: isValidated.error.details[0].message });
+  const partner = allUsers.find(
+    user => user.type === "partner" && user.id === partnerID
+  );
 
   if (!partner) return res.status(404).json({ error: "Partner not Found" });
-  const newReview = new Review(partner, reviewText, rating, datePosted);
+  const newReview = new Review(partner, reviewText, rating, new Date());
 
   allUsers.map(user => {
     if (user.type === "member" && user.id === memberID) {
@@ -24,13 +29,8 @@ router.post("/create", (req, res) => {
   if (!userFound) {
     return res.status(404).json({ error: "Member not Found" });
   }
-  const isValidated = validator.createValidation(req.body);
-  if (isValidated.error)
-    return res
-      .status(400)
-      .json({ error: isValidated.error.details[0].message });
 
-  res.json({ data: newReview });
+  return res.json({ data: newReview });
 });
 
 router.get("/readMemberReviews/:memberId", (req, res) => {
@@ -66,7 +66,7 @@ router.get("/readReview/:reviewId", (req, res) => {
 
 router.put("/update/:memberId/:reviewId", (req, res) => {
   const { memberId, reviewId } = req.params;
-  const { partnerID, reviewText, rating, datePosted } = req.body;
+  const { partnerID, reviewText, rating } = req.body;
   const isValidated = validator.updateValidation(req.body);
   if (isValidated.error)
     return res
@@ -86,6 +86,10 @@ router.put("/update/:memberId/:reviewId", (req, res) => {
     return res.status(404).json({ error: "Partner not found" });
   }
   const review = member.userData.reviews.find(review => review.id === reviewId);
+  if (!review) {
+    return res.status(404).json({ err: "review Not Found" });
+  }
+  const datePosted = review.datePosted;
   const reviewIndex = member.userData.reviews.indexOf(review);
   const memberIndex = allUsers.indexOf(member);
   allUsers[memberIndex].userData.reviews[reviewIndex] = {
@@ -94,9 +98,10 @@ router.put("/update/:memberId/:reviewId", (req, res) => {
     rating,
     datePosted
   };
-  review
-    ? res.json({ data: allUsers[memberIndex].userData.reviews[reviewIndex] })
-    : [res.status(404).json({ err: "review Not Found" })];
+
+  return res.json({
+    data: allUsers[memberIndex].userData.reviews[reviewIndex]
+  });
 });
 
 router.post("/delete/:memberId/:reviewId", (req, res) => {
@@ -108,11 +113,13 @@ router.post("/delete/:memberId/:reviewId", (req, res) => {
     return res.status(404).send({ error: "Member not found" });
   }
   const review = member.userData.reviews.find(review => review.id === reviewId);
+  if (!review) {
+    return res.status(404).json({ err: "review Not Found" });
+  }
   const reviewIndex = member.userData.reviews.indexOf(review);
   const removed = member.userData.reviews.splice(reviewIndex, 1);
-  review
-    ? res.json({ data: removed })
-    : [res.status(404).json({ err: "review Not Found" })];
+
+  res.sendStatus(200);
 });
 
 // router.get("/read/", (req, res) => {
