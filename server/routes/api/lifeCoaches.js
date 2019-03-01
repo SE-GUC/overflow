@@ -2,44 +2,6 @@ const express = require("express");
 const users = require("../../userArray");
 const User = require("../../models/User");
 const validator = require("../../validations/lifeCoachesValidation");
-const Feedback = require("../../models/Feedback.js");
-const feedbackArray = [
-    new Feedback(
-      {
-        name: "Ahmed",
-        dateOfBirth: new Date(12 / 10 / 1998),
-        gender: "male",
-        joinDate: new Date(),
-        email: "hi@yahoo.com",
-        skills: ["p", "c"],
-        interests: ["hockey", "baseball"],
-        reviews: null
-      },
-      "Really Good",
-      new Date()
-    ),
-    new Feedback(
-      {
-        name: "Youssef",
-        dateOfBirth: new Date(12 / 11 / 1999),
-        gender: "male",
-        joinDate: new Date(),
-        email: "hiks@yahoo.com",
-        skills: ["dp", "cd"],
-        interests: ["hddockey", "baseball"],
-        reviews: null
-      },
-      "Really Bad",
-      new Date()
-    )
-  ];
-  const findFeedBack = idArray => {
-    const feedbackResult = idArray.map(id => {
-      return feedbackArray.find(feedback => feedback.id === id);
-    });
-    // to remove undefind elements
-    return feedbackResult.filter(feedback => feedback);
-  };
 
 
 const router = express.Router();
@@ -60,14 +22,7 @@ router.post("/create", (req, res) => {
       .status(400)
       .send({ error: isValidated.error.details[0].message });
   }
-  const { password, ...userData } = req.body;
-  const { feedback } = userData;
-  if (feedback) {
-    userData.Feedback = findFeedBack(feedback);
-    // checking that all feedback ids are valid
-    if (userData.feedback.length !== feedback.length)
-      return res.status(400).send({ error: "invalid feedback" });
-  }
+
   const user = new User("lifeCoaches", userData, password);
   users.push(user);
   return res.json({ data: user });
@@ -85,13 +40,7 @@ router.put("/update/:id", (req, res) => {
       .status(400)
       .send({ error: isValidated.error.details[0].message });
   }
-  const { feedback } = req.body;
-  if (feedback) {
-    req.body.feedback = findFeedBack(feedback);
-    // checking that all feedback ids are valid
-    if (req.body.feedback.length !== feedback.length)
-      return res.status(400).send({ error: "invalid feedback" });
-  }
+
   users[userIndex].userData = req.body;
   return res.sendStatus(200);
 });
