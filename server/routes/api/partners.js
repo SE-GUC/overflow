@@ -63,6 +63,7 @@ router.put("/update/:id", (req, res) => {
       .status(400)
       .send({ error: isValidated.error.details[0].message });
   }
+  req.body.feedback = users[userIndex].userData.feedback;
   users[userIndex].userData = req.body;
   return res.sendStatus(200);
 });

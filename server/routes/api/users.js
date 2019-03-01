@@ -9,8 +9,8 @@ const users = require("../../userArray");
 const router = express.Router();
 router.use("/partners", partners);
 router.use('/admins', admins);
-/* SUB ROUTES
 router.use('/lifeCoaches', lifeCoaches);
+/* SUB ROUTES
 router.use('/members', members);
  */
 router.get("/", (req, res) => {
