@@ -21,7 +21,7 @@ const updateSchema = {
   gender: Joi.string().min(3).max(50),
   salary: Joi.string(),
   isSuper: Joi.boolean(),
-  dateOfBirth: Joi.date().iso().required(),
+  dateOfBirth: Joi.date().iso().required()
 }
   return Joi.validate(request, updateSchema);
 };
