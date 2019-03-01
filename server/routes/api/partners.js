@@ -1,9 +1,9 @@
-
 const express = require("express");
 const users = require("../../userArray");
 const User = require("../../models/User");
-const validator = require("../../validations/adminValidation");
+const validator = require("../../validations/partnerValidation");
 const Feedback = require("../../models/Feedback.js");
+// feedback validation tests
 const feedbackArray = [
   new Feedback(
     {
@@ -44,13 +44,13 @@ const findFeedBack = idArray => {
 
 const router = express.Router();
 router.get("/", (req, res) => {
-  const admins = users.filter(user => user.type === "admin");
+  const partners = users.filter(user => user.type === "partner");
   // hiding password
-  const adminDisplay = admins.map(user => {
+  const partnerDisplay = partners.map(user => {
     const { password, ...userData } = user;
     return userData;
   });
-  return res.json({ data: adminDisplay });
+  return res.json({ data: partnerDisplay });
 });
 
 router.post("/create", (req, res) => {
@@ -68,7 +68,7 @@ router.post("/create", (req, res) => {
     if (userData.feedback.length !== feedback.length)
       return res.status(400).send({ error: "invalid feedback" });
   }
-  const user = new User("admin", userData, password);
+  const user = new User("partner", userData, password);
   users.push(user);
   return res.json({ data: user });
 });

@@ -1,7 +1,7 @@
 const uuid = require("uuid");
 
 class Admin {
-  constuctor(name, dateOfBirth, gender, joinDate, salary, email, isSuper) {
+  constructor(name, dateOfBirth, gender, joinDate, salary, email, isSuper) {
     this.id = uuid.v4();
     this.name = name;
     this.dateOfBirth = dateOfBirth;
@@ -12,5 +12,6 @@ class Admin {
     this.isSuper = isSuper;
     this.age = new Date().getFullYear() - dateOfBirth.getFullYear();
   }
+
 }
 module.exports = Admin;
