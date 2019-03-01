@@ -1,102 +1,150 @@
 const express = require("express");
 const validator = require("../../validations/slotValidations");
-const router = express.Router();
-
 const Slot = require("../../models/Slots");
-const Feedback = require("../../models/Feedback");
 
-const slots = [
-  new Slot(
-    true,
-    new Date(),
-    "rehab",
-    {
-      name: "Youssef",
-      dateOfBirth: new Date(12 / 11 / 1999),
-      gender: "male",
-      joinDate: new Date(),
-      email: "hiks@yahoo.com",
-      skills: ["dp", "cd"],
-      interests: ["hddockey", "baseball"],
-      reviews: null
-    },
-    false
-  )
+const lifeCoach = new LifeCoach(
+  "Aly Mazhar",
+  new Date("3/4/1990"),
+  "male",
+  new Date("5/5/2001"),
+  20.5,
+  "test@hotmail.com",
+  [
+    new Slot(false, new Date(), "cairo", null, false),
+    new Slot(true, new Date(), "alex", null, true)
+  ]
+);
+
+const member = new Member(
+  "philip",
+  new Date("3/31/1997"),
+  "female",
+  new Date("5/5/2005"),
+  "ff@yahoo.com",
+  ["web", "java", "asp"],
+  ["frontend", "AI"],
+  [new Review(partnerUser, "tohfaaa", "3", new Date())]
+);
+
+const users = [
+  new User("lifeCoach", lifeCoach, "sff"),
+  new User("member", member, "ssss")
 ];
 
+const router = express.Router();
+
+router.get("/LifeCoachSlots/:lifeCoachId", (req, res) => {
+  const { lifeCoachId } = req.params;
+  const user = users.find(
+    user => lifeCoachId === user.id && user.type === "lifeCoach"
+  );
+  const userIndex = users.indexOf(user);
+  if (userIndex < 0)
+    // Bad request if not found
+    return res.status(400).send({ error: "life coach not found" });
+  res.json({ data: user.userData.monthlySlots });
+});
+
+router.get("/:lifeCoachId/:slotId", (req, res) => {
+  const { lifeCoachId, slotId } = req.params;
+  const user = users.find(
+    user => lifeCoachId === user.id && user.type === "lifeCoach"
+  );
+  const userIndex = users.indexOf(user);
+  if (userIndex < 0)
+    // Bad request if not found
+    return res.status(400).send({ error: "life coach not found" });
+  const slot = user.userData.monthlySlots.find(slot => slotId === slot.id);
+  const slotIndex = user.userData.monthlySlots.indexOf(slot);
+  if (slotIndex < 0)
+    // Bad request if not found
+    return res.status(400).send({ error: "slot not found" });
+  res.json({ data: slot });
+});
+
 router.post("/create", (req, res) => {
-  const { booked, date, location, member, confirmed } = req.body;
+  const { booked, date, location, confirmed, memberId, lifeCoachId } = req.body;
   const isValidated = validator.createValidation(req.body);
   if (isValidated.error)
     return res
       .status(400)
       .json({ error: isValidated.error.details[0].message });
+  const lifeCoach = users.find(
+    user => lifeCoachId === user.id && user.type === "lifeCoach"
+  );
+  const userIndex = users.indexOf(lifeCoach);
+  if (userIndex < 0)
+    // Bad request if not found
+    return res.status(400).send({ error: "life coach not found" });
+  let member;
+  if (memberId) {
+    member = users.find(user => memberId === user.id && user.type === "member");
+    const userIndex = users.indexOf(member);
+    if (userIndex < 0)
+      // Bad request if not found
+      return res.status(400).send({ error: "member not found" });
+  }
   const newSlot = new Slot(booked, date, location, member, confirmed);
-  slots.push(newSlot);
+  lifeCoach.monthlySlots.push(newSlot);
   res.json({ data: newSlot });
 });
 
-router.get("/read/:id", (req, res) => {
-  const id = req.params.id;
-  let found = false;
-  let currentSlot = null;
-  slots.forEach(Slot => {
-    if (Slot.id == id) {
-      found = true;
-      currentSlot = Slot;
-    }
-  });
-  found
-    ? res.json({ data: currentSlot })
-    : [res.sendStatus(404), res.json({ err: "Slot Not Found" })];
-});
-
-router.get("/read/", (req, res) => {
-  res.json({ data: slots });
-});
-
-router.post("/update/:id", (req, res) => {
-  const id = req.params.id;
-  const isValidated = validator.createValidation(req.body);
+router.post("/update/:lifeCoachId/:slotId", (req, res) => {
+  const { booked, date, location, confirmed, memberId } = req.body;
+  const { lifeCoachId, slotId } = req.params;
+  const isValidated = validator.updateValidation(req.body);
   if (isValidated.error)
     return res
       .status(400)
-      .send({ error: isValidated.error.details[0].message });
-  const newSlot = req.body;
-  let tempFeed;
-  let found = false;
-  slots.map((Slot, i) => {
-    if (Slot.id == id) {
-      found = true;
-
-      Slot = {
-        id,
-        ...newSlot
-      };
-      slots.splice(i, 1, Slot);
-      tempSlot = Slot;
-    }
-  });
-  found
-    ? res.json({ data: tempSlot })
-    : [res.sendStatus(404), res.json({ err: "Slot Not Found" })];
+      .json({ error: isValidated.error.details[0].message });
+  const lifeCoach = users.find(
+    user => lifeCoachId === user.id && user.type === "lifeCoach"
+  );
+  const userIndex = users.indexOf(lifeCoach);
+  if (userIndex < 0)
+    // Bad request if not found
+    return res.status(400).send({ error: "life coach not found" });
+  const slot = lifeCoach.userData.monthlySlots.find(slot => slotId === slot.id);
+  const slotIndex = lifeCoach.userData.monthlySlots.indexOf(slot);
+  if (slotIndex < 0)
+    // Bad request if not found
+    return res.status(400).send({ error: "slot not found" });
+  let member;
+  if (memberId) {
+    member = users.find(user => memberId === user.id && user.type === "member");
+    const userIndex = users.indexOf(member);
+    if (userIndex < 0)
+      // Bad request if not found
+      return res.status(400).send({ error: "member not found" });
+  }
+  const id = slotId;
+  lifeCoach.userData.monthlySlots[slotIndex] = {
+    id,
+    booked,
+    date,
+    location,
+    member,
+    confirmed
+  };
 });
 
-router.post("/delete/:id", (req, res) => {
-  const id = req.params.id;
-  let found = false;
-  slots.map((Slot, i) => {
-    if (Slot.id == id) {
-      found = true;
-      tempFeed = slots.splice(i, 1);
-    }
-  });
-  found
-    ? res.json({ data: tempFeed })
-    : [res.sendStatus(404), res.json({ err: "Slot Not Found" })];
+router.post("/delete/:lifeCoachId/:slotId", (req, res) => {
+  const { lifeCoachId, slotId } = req.params;
+  const user = users.find(
+    user => lifeCoachId === user.id && user.type === "lifeCoach"
+  );
+  const userIndex = users.indexOf(user);
+  if (userIndex < 0)
+    // Bad request if not found
+    return res.status(400).send({ error: "life coach not found" });
+  const slot = user.userData.monthlySlots.find(slot => slotId === slot.id);
+  const slotIndex = user.userData.monthlySlots.indexOf(slot);
+  if (slotIndex < 0)
+    // Bad request if not found
+    return res.status(400).send({ error: "slot not found" });
+  user.userData.monthlySlots.splice(slotIndex, 1);
+
+  res.sendStatus(200);
 });
 
-router.get("/read/", (req, res) => {
-  res.json({ data: slots });
-});
 module.exports = router;
