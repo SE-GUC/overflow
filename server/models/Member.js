@@ -7,7 +7,7 @@ class Member {
     email,
     skills,
     interests,
-    reviews,
+    reviews
   ) {
     this.name = name;
     this.dateOfBirth = dateOfBirth;
