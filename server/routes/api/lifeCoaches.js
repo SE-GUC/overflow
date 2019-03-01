@@ -23,7 +23,7 @@ router.post("/create", (req, res) => {
       .send({ error: isValidated.error.details[0].message });
   }
 
-  const user = new User("lifeCoaches", userData, password);
+  const user = new lifeCoach("lifeCoaches", userData, password);
   users.push(user);
   return res.json({ data: user });
 });

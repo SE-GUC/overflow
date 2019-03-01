@@ -4,12 +4,12 @@ const Joi = require("joi");
 const createValidation = (request) => {
   const createSchema = {
     name: Joi.string().min(3).max(30).required(),
-    dateOfBirth: new date(),
+    dateOfBirth: Joi.date(),
     gender: Joi.string().min(4).max(6).required(),
     joinDate:Joi.date(),
     hourlyRate:Joi.number(),
     email: Joi.string().email({ minDomainAtoms: 2 }).required(),
-    monthlySlots:Joi.number(),
+    
   };
   return Joi.validate(request, createSchema);
 };
@@ -20,7 +20,7 @@ const updateValidation = (request) => {
     gender: Joi.string().min(4).max(6).required(),
     hourlyRate:Joi.number(),
     email: Joi.string().email({ minDomainAtoms: 2 }).required(),
-    monthlySlots:Joi.number(),
+    
   }
   return Joi.validate(request, updateSchema);
 };
