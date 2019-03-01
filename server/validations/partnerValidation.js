@@ -11,7 +11,6 @@ const createValidation = (request) => {
     partners: Joi.array().allow(null),
     members: Joi.array().allow(null),
     projects: Joi.array().allow(null),
-    feedback: Joi.array().allow(null),
     password: Joi.string().required(),
   };
   return Joi.validate(request, createSchema);
@@ -26,7 +25,6 @@ const updateValidation = (request) => {
     partners: Joi.array().allow(null),
     members: Joi.array().allow(null),
     projects: Joi.array().allow(null),
-    feedback: Joi.array().allow(null),
   }
   return Joi.validate(request, updateSchema);
 };
