@@ -1,18 +1,18 @@
 const express = require("express");
 const users = require("../../userArray");
 const User = require("../../models/User");
-const Admin = require("../../models/Admin");
-const validator = require("../../validations/adminValidation");
+const validator = require("../../validations/lifeCoachesValidation");
+const LifeCoach=require("../../models/LifeCoach");
 
 const router = express.Router();
 router.get("/", (req, res) => {
-  const admins = users.filter(user => user.type === "admin");
+  const lifeCoach = users.filter(user => user.type === "lifeCoach");
   // hiding password
-  const adminDisplay = admins.map(user => {
+  const lifeCoachesDisplay = lifeCoach.map(user => {
     const { password, ...userData } = user;
     return userData;
   });
-  return res.json({ data: adminDisplay });
+  return res.json({ data: lifeCoachesDisplay });
 });
 
 router.post("/create", (req, res) => {
@@ -22,25 +22,31 @@ router.post("/create", (req, res) => {
       .status(400)
       .send({ error: isValidated.error.details[0].message });
   }
-  const { password, ...userData } = req.body;
-  const { name, dateOfBirth, gender, salary, email, isSuper } = userData;
-  const joinDate = new Date();
-  const admin = new Admin(
+
+  const {password,...userData}=req.body
+  const {
+    name,
+    dateOfBirth,
+    gender,
+    hourlyRate,
+    email,
+  }=userData;
+  const lifeCoach = new LifeCoach(
     name,
     new Date(dateOfBirth),
     gender,
-    joinDate,
-    salary,
+    new Date(),
+    hourlyRate,
     email,
-    isSuper
+    []
   );
-  const user = new User("admin", admin, password);
+  const user = new User("lifeCoach", lifeCoach, password);
   users.push(user);
   return res.json({ data: user });
 });
 router.put("/update/:id", (req, res) => {
   const { id } = req.params;
-  const user = users.find(user => id === user.id && user.type === "admin");
+  const user = users.find(user => id === user.id && user.type==="lifeCoach");
   const userIndex = users.indexOf(user);
   const isValidated = validator.updateValidation(req.body);
   if (userIndex < 0)
@@ -51,10 +57,13 @@ router.put("/update/:id", (req, res) => {
       .status(400)
       .send({ error: isValidated.error.details[0].message });
   }
-  const { dateOfBirth } = req.body;
-  req.body.age = new Date().getFullYear() - new Date(dateOfBirth).getFullYear();
-  users[userIndex].userData = req.body;
-  return res.sendStatus(200);
+ 
+ const {dateOfBirth}=req.body
+ const newAge= new Date().getFullYear()-new Date(dateOfBirth).getFullYear();
+ req.body.age=newAge;
+ req.body.monthlySlots = users[userIndex].userData.monthlySlots;
+ users[userIndex].userData = req.body;
+ return res.sendStatus(200);
 });
 
 module.exports = router;

@@ -1,8 +1,5 @@
-const uuid = require("uuid");
-
 class Admin {
-  constuctor(name, dateOfBirth, gender, joinDate, salary, email, isSuper) {
-    this.id = uuid.v4();
+  constructor(name, dateOfBirth, gender, joinDate, salary, email, isSuper) {
     this.name = name;
     this.dateOfBirth = dateOfBirth;
     this.gender = gender;

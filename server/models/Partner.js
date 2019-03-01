@@ -1,5 +1,3 @@
-const uuid = require('uuid');
-
 class Partner {
   constructor(
     name,
@@ -13,7 +11,6 @@ class Partner {
     projects,
     feedback,
   ) {
-    this.id = uuid.v4();
     this.name = name;
     this.address = address;
     this.email = email;
