@@ -6,7 +6,7 @@ const LifeCoach=require("../../models/LifeCoach");
 
 const router = express.Router();
 router.get("/", (req, res) => {
-  const lifeCoach = users.filter(user => user.type === "lifeCoaches");
+  const lifeCoach = users.filter(user => user.type === "lifeCoach");
   // hiding password
   const lifeCoachesDisplay = lifeCoach.map(user => {
     const { password, ...userData } = user;
@@ -39,7 +39,7 @@ router.post("/create", (req, res) => {
     joinDate,
     hourlyRate,
     email,
-    monthlySlots
+    
   );
   const user = new User("lifeCoach", lifeCoach, password);
   users.push(user);
