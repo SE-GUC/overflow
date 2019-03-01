@@ -6,9 +6,9 @@ const LifeCoach=require("../../models/LifeCoach");
 
 const router = express.Router();
 router.get("/", (req, res) => {
-  const lifeCoaches = users.filter(user => user.type === "lifeCoaches");
+  const lifeCoach = users.filter(user => user.type === "lifeCoaches");
   // hiding password
-  const lifeCoachesDisplay = lifeCoaches.map(user => {
+  const lifeCoachesDisplay = lifeCoach.map(user => {
     const { password, ...userData } = user;
     return userData;
   });
@@ -31,24 +31,23 @@ router.post("/create", (req, res) => {
     joinDate,
     hourlyRate,
     email,
-    monthlySlots
   }=userData;
-  const LifeCoach = new LifeCoach(
+  const lifeCoach = new lifeCoach(
     name,
-    dateOfBirth,
+    new date(dateOfBirth),
     gender,
     joinDate,
     hourlyRate,
     email,
     monthlySlots
   );
-  const user = new User("LifeCoach", lifeCoach, password);
+  const user = new User("lifeCoach", lifeCoach, password);
   users.push(user);
   return res.json({ data: user });
 });
 router.put("/update/:id", (req, res) => {
   const { id } = req.params;
-  const user = users.find(user => id === user.id && user.type==="LifeCoach");
+  const user = users.find(user => id === user.id && user.type==="lifeCoach");
   const userIndex = users.indexOf(user);
   const isValidated = validator.updateValidation(req.body);
   if (userIndex < 0)
@@ -61,8 +60,9 @@ router.put("/update/:id", (req, res) => {
   }
  
  const {dateOfBirth}=req.body
- const newAge= new Date(dateOfBirth).getFullYear()-dateOfBirth.getFullYear();
+ const newAge= new Date().getFullYear()-dateOfBirth.getFullYear();
  req.body.age=newAge;
+ req.body.monthlySlots = users[userIndex].userData.monthlySlots;
  users[userIndex].userData = req.body;
  return res.sendStatus(200);
 });
