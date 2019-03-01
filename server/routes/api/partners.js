@@ -52,7 +52,7 @@ router.post("/create", (req, res) => {
 });
 router.put("/update/:id", (req, res) => {
   const { id } = req.params;
-  const user = users.find(user => id === user.id);
+  const user = users.find(user => id === user.id && user.type === "partner");
   const userIndex = users.indexOf(user);
   const isValidated = validator.updateValidation(req.body);
   if (userIndex < 0)
