@@ -5,7 +5,7 @@ const LifeCoach = require('./models/LifeCoach');
 const Member = require('./models/Member');
 const Partner = require('./models/Partner');
 const Admin = require('./models/Admin');
-
+const Review = require('./models/Reviews');
 // Data for each user type
 
 const admin = new Admin(
@@ -17,6 +17,20 @@ const admin = new Admin(
   'test@gmail.com',
   true
 );
+
+const partner = new Partner(
+  'oracle',
+  'st90',
+  'oracle@gmail.com',
+  '124553',
+  '02396243',
+  [],
+  ["IBM"],
+  'Databases',
+  ['Oracle DB'],
+  null
+);
+const partnerUser = new User('partner',partner,"ehw");
 const member = new Member(
   'philip',
   new Date('3/31/1997'),
@@ -25,19 +39,7 @@ const member = new Member(
   'ff@yahoo.com',
   ['web', 'java', 'asp'],
   ['frontend', 'AI'],
-  []
-);
-const partner = new Partner(
-  'oracle',
-  'st90',
-  'oracle@gmail.com',
-  '124553',
-  '02396243',
-  [],
-  [member],
-  'Databases',
-  ['Oracle DB'],
-  []
+  [new Review(partnerUser,"tohfaaa","3",new Date())]
 );
 const lifeCoach = new LifeCoach(
   'Aly Mazhar',
@@ -49,10 +51,11 @@ const lifeCoach = new LifeCoach(
   []
 );
 // initializing array of users [To be used in all sub routes]
+
 const users = [
   new User('admin', admin, 'sss'),
   new User('member', member, 'ssss'),
-  new User('partner', partner, 'sff'),
+  partnerUser,
   new User('lifeCoach', lifeCoach, 'sff')
 ];
 module.exports = users;
