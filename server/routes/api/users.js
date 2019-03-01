@@ -8,11 +8,11 @@ const users = require("../../userArray");
 
 const router = express.Router();
 router.use("/partners", partners);
+router.use('/admins', admins);
 router.use('/lifeCoaches', lifeCoaches);
 /* SUB ROUTES
-
 router.use('/members', members);
-router.use('/admins', admins); */
+ */
 router.get("/", (req, res) => {
   // hiding password
   const usersDisplay = users.map(user => {
