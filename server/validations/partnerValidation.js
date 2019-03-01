@@ -1,7 +1,7 @@
 const Joi = require("joi");
 
 // 2 schemas for password attribute difference when updating
-const createValidation = (request) => {
+const createValidation = request => {
   const createSchema = {
     name: Joi.string().min(3).max(30).required(),
     address: Joi.string().min(3).max(50),
@@ -15,7 +15,7 @@ const createValidation = (request) => {
   };
   return Joi.validate(request, createSchema);
 };
-const updateValidation = (request) => {
+const updateValidation = request => {
   const updateSchema = {
     name: Joi.string().min(3).max(30).required(),
     address: Joi.string().min(3).max(50),
