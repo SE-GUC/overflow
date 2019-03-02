@@ -1,5 +1,5 @@
 const express = require("express");
-// Sub routes
+// Sub routes imports
 const lifeCoaches = require("./lifeCoaches");
 const members = require("./members");
 const partners = require("./partners");
@@ -7,12 +7,12 @@ const admins = require("./admins");
 const users = require("../../userArray");
 
 const router = express.Router();
+// sub routes redirect
 router.use("/partners", partners);
-router.use('/admins', admins);
-router.use('/lifeCoaches', lifeCoaches);
-/* SUB ROUTES
-router.use('/members', members);
- */
+router.use("/admins", admins);
+router.use("/lifeCoaches", lifeCoaches);
+router.use("/members", members);
+
 router.get("/", (req, res) => {
   // hiding password
   const usersDisplay = users.map(user => {
