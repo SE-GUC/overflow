@@ -37,7 +37,6 @@ const jobApplications = [
 ];
 
 const router = express.Router();
-
 router.get("/", (req, res) => {
   return res.json({ data: jobApplications });
 });

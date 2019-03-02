@@ -8,8 +8,8 @@ const createValidation = request => {
     monthlyWage: Joi.string(),
     location: Joi.string(),
     dailyHours: Joi.string(),
-    startDate: Joi.date().iso(),
-    endDate: Joi.date().iso(),
+    startDate: Joi.date(),
+    endDate: Joi.date(),
     state: Joi.string()
   };
   return Joi.validate(request, createSchema);
@@ -22,8 +22,8 @@ const updateValidation = request => {
     monthlyWage: Joi.string(),
     location: Joi.string(),
     dailyHours: Joi.string(),
-    startDate: Joi.date().iso(),
-    endDate: Joi.date().iso(),
+    startDate: Joi.date(),
+    endDate: Joi.date(),
     state: Joi.string(),
     acceptedMemberId: Joi.string()
   };
