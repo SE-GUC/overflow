@@ -1,19 +1,10 @@
 const Joi = require("joi");
-const Review = require('../models/Reviews')
+const Review = require("../models/Reviews");
 module.exports = {
   createValidation: request => {
     const createSchema = {
-      member: {
-        name: Joi.string().required(),
-        dateOfBirth: Joi.date().iso(),
-        gender: Joi.string(),
-        joinDate: Joi.date(),
-        email: Joi.string().email({ minDomainAtoms: 2 }).required(),
-        skills: Joi.array(),
-        interests: Joi.array(),
-        reviews: Joi.array().allow(null)
-      },
-      datePosted: Joi.date(),
+      memberID: Joi.string().required(),
+      partnerID: Joi.string().required(),
       feedbackText: Joi.string().required()
     };
 
@@ -39,17 +30,7 @@ module.exports = {
 
   updateValidation: request => {
     const updateSchema = {
-      member: {
-        name: Joi.string().required(),
-        dateOfBirth: Joi.date().iso(),
-        gender: Joi.string(),
-        joinDate: Joi.date(),
-        email: Joi.string().email({ minDomainAtoms: 2 }).required(),
-        skills: Joi.array(),
-        interests: Joi.array(),
-        reviews: Joi.array().allow(null)
-      },
-      datePosted: Joi.date(),
+      memberID: Joi.string().required(),
       feedbackText: Joi.string().required()
     };
 
