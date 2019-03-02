@@ -7,7 +7,7 @@ const createValidation = (request) => {
     password:Joi.string().required(),
     dateOfBirth: Joi.date().iso().required(),
     gender: Joi.string().min(4).max(6).required(),
-    hourlyRate:Joi.number(),
+    hourlyRate:Joi.string(),
     email: Joi.string().email({ minDomainAtoms: 2 }).required()
 
   };
@@ -18,7 +18,7 @@ const updateValidation = (request) => {
     name: Joi.string().min(3).max(30).required(),
     dateOfBirth: Joi.date().iso().required(),
     gender: Joi.string().min(4).max(6).required(),
-    hourlyRate:Joi.number(),
+    hourlyRate:Joi.string(),
     email: Joi.string().email({ minDomainAtoms: 2 }).required()
 
   }

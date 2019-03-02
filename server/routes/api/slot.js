@@ -1,6 +1,10 @@
 const express = require("express");
 const validator = require("../../validations/slotValidations");
+const LifeCoach = require("../../models/LifeCoach");
 const Slot = require("../../models/Slots");
+const Member = require("../../models/Member");
+const Review = require("../../models/Reviews");
+const User = require("../../models/User");
 
 const lifeCoach = new LifeCoach(
   "Aly Mazhar",
@@ -23,7 +27,7 @@ const member = new Member(
   "ff@yahoo.com",
   ["web", "java", "asp"],
   ["frontend", "AI"],
-  [new Review(partnerUser, "tohfaaa", "3", new Date())]
+  []
 );
 
 const users = [
@@ -32,7 +36,9 @@ const users = [
 ];
 
 const router = express.Router();
-
+router.get("/Testing", (req, res) => {
+  return res.json({ data: users });
+});
 router.get("/LifeCoachSlots/:lifeCoachId", (req, res) => {
   const { lifeCoachId } = req.params;
   const user = users.find(
@@ -85,11 +91,11 @@ router.post("/create", (req, res) => {
       return res.status(400).send({ error: "member not found" });
   }
   const newSlot = new Slot(booked, date, location, member, confirmed);
-  lifeCoach.monthlySlots.push(newSlot);
+  lifeCoach.userData.monthlySlots.push(newSlot);
   res.json({ data: newSlot });
 });
 
-router.post("/update/:lifeCoachId/:slotId", (req, res) => {
+router.put("/update/:lifeCoachId/:slotId", (req, res) => {
   const { booked, date, location, confirmed, memberId } = req.body;
   const { lifeCoachId, slotId } = req.params;
   const isValidated = validator.updateValidation(req.body);
@@ -126,9 +132,10 @@ router.post("/update/:lifeCoachId/:slotId", (req, res) => {
     member,
     confirmed
   };
+  return res.sendStatus(200);
 });
 
-router.post("/delete/:lifeCoachId/:slotId", (req, res) => {
+router.delete("/delete/:lifeCoachId/:slotId", (req, res) => {
   const { lifeCoachId, slotId } = req.params;
   const user = users.find(
     user => lifeCoachId === user.id && user.type === "lifeCoach"

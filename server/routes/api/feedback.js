@@ -107,7 +107,7 @@ router.put("/update/:partnerId/:feedbackId", (req, res) => {
   });
 });
 
-router.post("/delete/:partnerId/:feedbackId", (req, res) => {
+router.delete("/delete/:partnerId/:feedbackId", (req, res) => {
   const { partnerId, feedbackId } = req.params;
   const partner = allUsers.find(
     user => user.id === partnerId && user.type === "partner"
