@@ -106,7 +106,7 @@ router.put("/update/:memberId/:reviewId", (req, res) => {
   });
 });
 
-router.post("/delete/:memberId/:reviewId", (req, res) => {
+router.delete("/delete/:memberId/:reviewId", (req, res) => {
   const { memberId, reviewId } = req.params;
   const member = allUsers.find(
     user => user.id === memberId && user.type === "member"

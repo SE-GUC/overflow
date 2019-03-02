@@ -6,10 +6,10 @@ const createValidation = request => {
     email: Joi.string().email({ minDomainAtoms: 2 }).required(),
     phone: Joi.number(),
     password: Joi.string().required(),
-    gender: Joi.string().min(3).max(50),
+    gender: Joi.string().min(4).max(6),
     salary: Joi.string(),
     isSuper: Joi.boolean(),
-    dateOfBirth: Joi.date().iso().required()
+    dateOfBirth: Joi.date().required()
   };
   return Joi.validate(request, createSchema);
 };
@@ -18,10 +18,10 @@ const updateSchema = {
   name: Joi.string().min(3).max(30).required(),
   email: Joi.string().email({ minDomainAtoms: 2 }).required(),
   phone: Joi.number(),
-  gender: Joi.string().min(3).max(50),
+  gender: Joi.string().min(4).max(6),
   salary: Joi.string(),
   isSuper: Joi.boolean(),
-  dateOfBirth: Joi.date().iso().required()
+  dateOfBirth: Joi.date().required()
 }
   return Joi.validate(request, updateSchema);
 };
