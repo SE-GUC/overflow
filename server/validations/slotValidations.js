@@ -7,7 +7,8 @@ module.exports = {
       date: Joi.date().required(),
       location: Joi.string(),
       memberId: Joi.string(),
-      confirmed: Joi.bool().required()
+      confirmed: Joi.bool().required(),
+      lifeCoachId: Joi.string().required()
     };
 
     return Joi.validate(request, createSchema);
