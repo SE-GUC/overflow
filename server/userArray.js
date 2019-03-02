@@ -39,7 +39,7 @@ const member = new Member(
   'ff@yahoo.com',
   ['web', 'java', 'asp'],
   ['frontend', 'AI'],
-  [new Review(partnerUser,"tohfaaa","3",new Date())]
+  []
 );
 const lifeCoach = new LifeCoach(
   'Aly Mazhar',
