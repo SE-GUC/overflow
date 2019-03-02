@@ -1,7 +1,5 @@
-const uuid = require("uuid");
-
 class Member {
-  constuctor(
+  constructor(
     name,
     dateOfBirth,
     gender,
@@ -11,7 +9,6 @@ class Member {
     interests,
     reviews
   ) {
-    this.id = uuid.v4();
     this.name = name;
     this.dateOfBirth = dateOfBirth;
     this.gender = gender;
