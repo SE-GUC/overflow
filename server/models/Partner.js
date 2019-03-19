@@ -1,19 +1,15 @@
 class Partner {
   constructor(
-    name,
     address,
-    email,
     fax,
     phone,
     partners,
     members,
     fieldOfWork,
     projects,
-    feedback,
+    feedback
   ) {
-    this.name = name;
     this.address = address;
-    this.email = email;
     this.fax = fax;
     this.phone = phone;
     this.partners = partners;
