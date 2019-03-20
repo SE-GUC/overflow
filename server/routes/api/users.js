@@ -4,7 +4,6 @@ const express = require("express");
 //const members = require("./members");
 const partners = require("./partners");
 //const admins = require("./admins");
-//const users = require("../../userArray");
 const User = require("../../models/User");
 
 const router = express.Router();
@@ -15,34 +14,33 @@ router.use("/admins", admins);
 router.use("/lifeCoaches", lifeCoaches);
 router.use("/members", members);
 */
-
 router.get("/", async (req, res) => {
-  // hiding password
-  const usersDisplay = await User.find().map(user => {
-    const { password, ...userData } = user;
-    return userData;
-  });
+  const usersDisplay = await User.find();
   return res.json({ data: usersDisplay });
 });
-/*router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   const { id } = req.params;
-  const user = users.find(user => id === user.id);
-  const userIndex = users.indexOf(user);
-  if (userIndex < 0)
-    // Bad request if not found
-    return res.status(400).send({ error: "id not found" });
-  // To hide password
-  const { password, ...userData } = users[userIndex];
-  return res.json({ data: userData });
-});*/
+  try {
+    const user = await User.findById(id);
+    if (!user) return res.status(400).send({ error: "id not found" });
+    return res.json({ data: user });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
+});
 router.delete("/delete/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const deletedBook = await User.findByIdAndRemove(id);
+    const deletedUser = await User.findByIdAndRemove(id);
+    if (!deletedUser) {
+      return res.status(400).send({ error: "id not found" });
+    }
+    return res.sendStatus(200);
   } catch (error) {
-    return res.status(400).send({ error: "id not found" });
+    console.log(error);
+    res.sendStatus(400);
   }
-  return res.sendStatus(200);
 });
 
 module.exports = router;
