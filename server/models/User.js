@@ -1,11 +1,26 @@
-const uuid = require("uuid");
-
-class User {
-  constructor(type, userData, password) {
-    this.id = uuid.v4();
-    this.type = type;
-    this.userData = userData;
-    this.password = password;
-  }
-}
-module.exports = User;
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const UserSchema = new Schema(
+  {
+    type: {
+      type: String,
+      required: true
+    },
+    name: {
+      type: String,
+      required: true
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    password: {
+      type: String,
+      required: true
+    },
+    userData: {}
+  },
+  { strict: false }
+);
+module.exports = User = mongoose.model("users", UserSchema);
