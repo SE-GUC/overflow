@@ -53,27 +53,9 @@ router.post("/create", async (req, res) => {
     if (!partner)
       // Bad request if not found
       return res.status(400).send({ error: "partner not found" });
-    const {
-      description,
-      duration,
-      monthlyWage,
-      location,
-      dailyHours,
-      startDate,
-      endDate,
-      state
-    } = req.body;
-    const vacancy = await Vacancy.create({
-      partner,
-      description,
-      duration,
-      monthlyWage,
-      location,
-      dailyHours,
-      startDate,
-      endDate,
-      state
-    });
+    req.body.partner = partner;
+    delete req.body.partnerId;
+    const vacancy = await Vacancy.create(req.body);
     return res.json({ data: vacancy });
   } catch (error) {
     console.log(error);
