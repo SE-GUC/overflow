@@ -12,6 +12,9 @@ const partnerSchema = new Schema(
     phone: {
       type: Number
     },
+    fieldOfWork: {
+      type: String
+    },
     partners: {
       type: [String]
     },
@@ -27,4 +30,4 @@ const partnerSchema = new Schema(
   },
   { _id: false }
 );
-module.exports = User = mongoose.model("partners", partnerSchema);
+module.exports = Partner = mongoose.model("partners", partnerSchema);

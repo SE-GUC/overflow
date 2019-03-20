@@ -62,6 +62,9 @@ router.put("/update/:id", async (req, res) => {
         .send({ error: isValidated.error.details[0].message });
     }
     const { name, email, ...userData } = req.body;
+    const emailCheck = await User.findOne({ _id: { $ne: id }, email });
+    if (emailCheck)
+      return res.status(400).json({ error: "Email already exists" });
     //saving feedback (can only be updated from feedback routes)
     userData.feedback = user.userData.feedback;
     await User.updateOne(query, { name, email, userData });
