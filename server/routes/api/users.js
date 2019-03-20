@@ -2,7 +2,7 @@ const express = require("express");
 const Joi = require("joi");
 // Sub routes imports
 //const lifeCoaches = require("./lifeCoaches");
-//const members = require("./members");
+const members = require("./members");
 const partners = require("./partners");
 //const admins = require("./admins");
 const User = require("../../models/User");
@@ -13,8 +13,9 @@ router.use("/partners", partners);
 /*
 router.use("/admins", admins);
 router.use("/lifeCoaches", lifeCoaches);
-router.use("/members", members);
 */
+router.use("/members", members);
+
 router.get("/", async (req, res) => {
   const usersDisplay = await User.find();
   return res.json({ data: usersDisplay });
