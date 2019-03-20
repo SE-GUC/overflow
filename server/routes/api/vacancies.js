@@ -1,135 +1,144 @@
 const express = require("express");
-const users = require("../../userArray");
+const mongoose = require("mongoose");
 const Vacancy = require("../../models/Vacancy");
-const Partner = require("../../models/Partner");
-const Member = require("../../models/Member");
+const User = require("../../models/User");
 const validator = require("../../validations/vacancyValidation");
 
-const vacancies = [
-  new Vacancy(
-    users[2],
-    "description",
-    "3 weeks",
-    "2000 dollars",
-    "cairo",
-    "8 hours",
-    new Date("3/31/1997"),
-    new Date("5/5/2005"),
-    "approved"
-  ),
-  new Vacancy(
-    users[2],
-    "description2",
-    "5 weeks",
-    "3000 dollars",
-    "alex",
-    "8 hours",
-    new Date("3/31/1997"),
-    new Date("5/5/2005"),
-    "hired",
-    users[1]
-  )
-];
-
 const router = express.Router();
-router.get("/", (req, res) => {
+
+router.get("/", async (req, res) => {
+  const vacancies = await Vacancy.find();
   return res.json({ data: vacancies });
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   const { id } = req.params;
-  const vacancy = vacancies.find(vacancy => id === vacancy.id);
-  const vacancyIndex = vacancies.indexOf(vacancy);
-  if (vacancyIndex < 0)
-    // Bad request if not found
-    return res.status(400).send({ error: "vacancy not found" });
-  return res.json({ data: vacancy });
-});
-
-router.post("/create", (req, res) => {
-  const isValidated = validator.createValidation(req.body);
-  if (isValidated.error) {
-    return res
-      .status(400)
-      .send({ error: isValidated.error.details[0].message });
-  }
-  const partnerId = req.body.partnerId;
-  const partner = users.find(
-    user => partnerId === user.id && user.type === "partner"
-  );
-  const partnerIndex = users.indexOf(partner);
-  if (partnerIndex < 0)
-    // Bad request if not found
-    return res.status(400).send({ error: "partner not found" });
-  const {
-    description,
-    duration,
-    monthlyWage,
-    location,
-    dailyHours,
-    startDate,
-    endDate,
-    state
-  } = req.body;
-  const vacancy = new Vacancy(
-    partner,
-    description,
-    duration,
-    monthlyWage,
-    location,
-    dailyHours,
-    startDate,
-    endDate,
-    state
-  );
-  vacancies.push(vacancy);
-  return res.json({ data: vacancy });
-});
-
-router.put("/update/:id", (req, res) => {
-  const { id } = req.params;
-  const vacancy = vacancies.find(vacancy => id === vacancy.id);
-  const vacancyIndex = vacancies.indexOf(vacancy);
-  const isValidated = validator.updateValidation(req.body);
-  if (vacancyIndex < 0)
-    // Bad request if not found
-    return res.status(400).send({ error: "vacancy not found" });
-  if (isValidated.error) {
-    return res
-      .status(400)
-      .send({ error: isValidated.error.details[0].message });
-  }
-  const partner = users.find(
-    user => req.body.partnerId === user.id && user.type === "partner"
-  );
-  const partnerIndex = users.indexOf(partner);
-  if (partnerIndex < 0)
-    // Bad request if not found
-    return res.status(400).send({ error: "partner not found" });
-  let acceptedMember;
-  if (req.body.acceptedMemberId) {
-    acceptedMember = users.find(
-      user => req.body.acceptedMemberId === user.id && user.type === "member"
-    );
-    const memberIndex = users.indexOf(acceptedMember);
-    if (memberIndex < 0)
+  try {
+    const vacancy = await Vacancy.findById(id);
+    if (!vacancy)
       // Bad request if not found
-      return res.status(400).send({ error: "member not found" });
+      return res.status(400).send({ error: "vacancy not found" });
+    return res.json({ data: vacancy });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
   }
-  const { partnerId, acceptedMemberId, ...vacancyData } = req.body;
-  vacancies[vacancyIndex] = { id, partner, ...vacancyData, acceptedMember };
-  return res.sendStatus(200);
 });
 
-router.delete("/delete/:id", (req, res) => {
+router.get("/partnerVacancies/:partnerId", async (req, res) => {
+  try {
+    const { partnerId } = req.params;
+    const partner = await User.findOne({ _id: partnerId, type: "partner" });
+    if (!partner)
+      // Bad request if not found
+      return res.status(400).send({ error: "partner not found" });
+    const vacancies = await Vacancy.find({ "partner._id": partnerId });
+    return res.json({ data: vacancies });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
+});
+
+router.post("/create", async (req, res) => {
+  try {
+    const isValidated = validator.createValidation(req.body);
+    if (isValidated.error) {
+      return res
+        .status(400)
+        .send({ error: isValidated.error.details[0].message });
+    }
+    const partnerId = req.body.partnerId;
+    const partner = await User.findOne({ _id: partnerId, type: "partner" });
+    if (!partner)
+      // Bad request if not found
+      return res.status(400).send({ error: "partner not found" });
+    const {
+      description,
+      duration,
+      monthlyWage,
+      location,
+      dailyHours,
+      startDate,
+      endDate,
+      state
+    } = req.body;
+    const vacancy = await Vacancy.create({
+      partner,
+      description,
+      duration,
+      monthlyWage,
+      location,
+      dailyHours,
+      startDate,
+      endDate,
+      state
+    });
+    return res.json({ data: vacancy });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
+});
+
+router.put("/update/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const vacancy = await Vacancy.findById(id);
+    const isValidated = validator.updateValidation(req.body);
+    if (!vacancy)
+      // Bad request if not found
+      return res.status(400).send({ error: "vacancy not found" });
+    if (isValidated.error) {
+      return res
+        .status(400)
+        .send({ error: isValidated.error.details[0].message });
+    }
+    if (vacancy.partner._id != req.body.partnerId)
+      return res.status(400).send({ error: "partner cannot be changed" });
+    let acceptedMember;
+    if (req.body.acceptedMemberId) {
+      acceptedMember = await User.findOne({
+        _id: req.body.acceptedMemberId,
+        type: "member"
+      });
+      if (!acceptedMember)
+        // Bad request if not found
+        return res.status(400).send({ error: "member not found" });
+    }
+    const { partnerId, acceptedMemberId, ...vacancyData } = req.body;
+    const { partner } = vacancy;
+    if (acceptedMember) {
+      await Vacancy.findByIdAndUpdate(id, {
+        partner,
+        ...vacancyData,
+        acceptedMember
+      });
+    } else {
+      await Vacancy.findByIdAndUpdate(id, {
+        partner,
+        ...vacancyData
+      });
+    }
+    return res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
+});
+
+router.delete("/delete/:id", async (req, res) => {
   const { id } = req.params;
-  const vacancy = vacancies.find(vacancy => id === vacancy.id);
-  const vacancyIndex = vacancies.indexOf(vacancy);
-  if (vacancyIndex < 0)
-    // Bad request if not found
-    return res.status(400).send({ error: "vacancy not found" });
-  vacancies.splice(vacancyIndex, 1);
-  return res.sendStatus(200);
+  try {
+    const deletedVacancy = await Vacancy.findByIdAndRemove(id);
+    if (!deletedVacancy)
+      // Bad request if not found
+      return res.status(400).send({ error: "vacancy not found" });
+    return res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
 });
 
 module.exports = router;
