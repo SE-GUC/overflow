@@ -28,15 +28,6 @@ router.post("/create", async (req, res) => {
   //hashing password
   const salt = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync(password, salt);
-  const {
-    address,
-    fax,
-    phone,
-    partners,
-    members,
-    fieldOfWork,
-    projects
-  } = userData;
   const partner = new Partner(userData);
   const user = await User.create({
     type: "partner",
