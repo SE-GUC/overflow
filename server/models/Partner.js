@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const feedback = require("./Feedback.js");
 const partnerSchema = new Schema(
   {
     address: {
@@ -19,6 +20,9 @@ const partnerSchema = new Schema(
     },
     projects: {
       type: [String]
+    },
+    feedback: {
+      type: [String] //Should be of type feedback,[pending schema]
     }
   },
   { _id: false }
