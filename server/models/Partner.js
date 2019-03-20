@@ -1,26 +1,33 @@
-class Partner {
-  constructor(
-    name,
-    address,
-    email,
-    fax,
-    phone,
-    partners,
-    members,
-    fieldOfWork,
-    projects,
-    feedback,
-  ) {
-    this.name = name;
-    this.address = address;
-    this.email = email;
-    this.fax = fax;
-    this.phone = phone;
-    this.partners = partners;
-    this.members = members;
-    this.fieldOfWork = fieldOfWork;
-    this.projects = projects;
-    this.feedback = feedback;
-  }
-}
-module.exports = Partner;
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const feedback = require("./Feedback.js");
+const partnerSchema = new Schema(
+  {
+    address: {
+      type: String
+    },
+    fax: {
+      type: String
+    },
+    phone: {
+      type: Number
+    },
+    fieldOfWork: {
+      type: String
+    },
+    partners: {
+      type: [String]
+    },
+    members: {
+      type: [String]
+    },
+    projects: {
+      type: [String]
+    },
+    feedback: {
+      type: [String] //Should be of type feedback,[pending schema]
+    }
+  },
+  { _id: false }
+);
+module.exports = Partner = mongoose.model("partners", partnerSchema);
