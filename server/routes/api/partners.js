@@ -37,16 +37,7 @@ router.post("/create", async (req, res) => {
     fieldOfWork,
     projects
   } = userData;
-  const partner = new Partner(
-    address,
-    fax,
-    phone,
-    partners,
-    members,
-    fieldOfWork,
-    projects,
-    []
-  );
+  const partner = new Partner(userData);
   const user = await User.create({
     type: "partner",
     name,
