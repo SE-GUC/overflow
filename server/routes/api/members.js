@@ -42,7 +42,7 @@ router.post("/create", async (req, res) => {
 router.put("/update/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const query = { _id: id, type: "member" };
+    const query = { _id: id, type: "admin" };
     const user = await User.findOne(query);
     const isValidated = validator.updateValidation(req.body);
     if (!user)

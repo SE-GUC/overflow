@@ -23,20 +23,26 @@ router.post("/create", (req, res) => {
       .send({ error: isValidated.error.details[0].message });
   }
   const { password, ...userData } = req.body;
-  const { name, dateOfBirth, gender, salary, email, isSuper } = userData;
-  const joinDate = new Date();
-  const admin = new Admin(
-    name,
-    new Date(dateOfBirth),
-    gender,
-    joinDate,
-    salary,
-    email,
-    isSuper
-  );
-  const user = new User("admin", admin, password);
-  users.push(user);
-  return res.json({ data: user });
+  
+ //checking email
+ const emailCheck = await User.findOne({ email });
+ if (emailCheck)
+   return res.status(400).json({ error: "Email already exists" });
+ //hashing password
+ const salt = bcrypt.genSaltSync(10);
+ const hashedPassword = bcrypt.hashSync(password, salt);
+ const { dateOfBirth } = userData;
+ const age = new Date().getFullYear() - new Date(dateOfBirth).getFullYear();
+ userData.age = age;
+ const Admin = new Admin(userData);
+ const user = await User.create({
+   type: "admin",
+   name,
+   email,
+   userData: admin,
+   password: hashedPassword
+ });
+ return res.json({ data: user });
 });
 router.put("/update/:id", (req, res) => {
   const { id } = req.params;
