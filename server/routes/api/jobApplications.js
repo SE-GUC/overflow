@@ -99,10 +99,7 @@ router.put("/update/:id", async (req, res) => {
         .send({ error: isValidated.error.details[0].message });
     }
     const { applicationText } = req.body;
-    const test = await JobApplication.updateOne(
-      { _id: id },
-      { applicationText }
-    );
+    await JobApplication.updateOne({ _id: id }, { applicationText });
     return res.sendStatus(200);
   } catch (error) {
     console.log(error);
