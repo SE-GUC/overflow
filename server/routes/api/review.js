@@ -20,12 +20,12 @@ router.post("/create", async (req, res) => {
     if (!partner) return res.status(404).json({ error: "Partner not Found" });
     if (!member) return res.status(404).json({ error: "Partner not Found" });
     const datePosted = new Date();
-    const newReview = {
-      partner,
-      reviewText,
-      rating,
-      datePosted
-    };
+    const newReview = new Review({
+      partner: partner,
+      reviewText: reviewText,
+      rating: rating,
+      datePosted: datePosted
+    });
     member.userData.reviews.push(newReview);
     await User.updateOne(query1, member);
 
@@ -37,30 +37,41 @@ router.post("/create", async (req, res) => {
 });
 
 router.get("/readMemberReviews/:memberId", async (req, res) => {
-  const memberId = req.params.memberId;
-  const query = { _id: memberId, type: "member" };
-  const member = await User.findOne(query);
-  member
-    ? res.json({ data: member.userData.reviews })
-    : [res.status(404).json({ err: "Member Not Found" })];
+  try {
+    const memberId = req.params.memberId;
+    const query = { _id: memberId, type: "member" };
+    const member = await User.findOne(query);
+    member
+      ? res.json({ data: member.userData.reviews })
+      : [res.status(404).json({ err: "Member Not Found" })];
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
 });
 
 router.get("/readReview/:reviewId", async (req, res) => {
-  const reviewId = req.params.reviewId;
-  const allUsers = await User.find();
-  let fetchedReview = null;
-  allUsers.map(user => {
-    if (user.type === "member") {
-      fetchedReview = user.userData.reviews.find(
-        review => review.id === reviewId
-      );
-      if (fetchedReview) {
-        return res.json({ data: fetchedReview });
+  try {
+    const reviewId = req.params.reviewId;
+    const allUsers = await User.find();
+    let fetchedReview = null;
+    let found = false;
+    allUsers.map(user => {
+      if (user.type === "member") {
+        fetchedReview = user.userData.reviews.find(
+          review => review.id == reviewId
+        );
+        if (fetchedReview) {
+          found = true;
+          return res.json({ data: fetchedReview });
+        }
       }
-    }
-  });
-
-  return res.status(404).json({ err: "Review Not Found" });
+    });
+    if (!found) return res.status(404).json({ err: "Review Not Found" });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
 });
 
 // router.get("/read/", (req, res) => {
@@ -78,20 +89,22 @@ router.put("/update/:memberId/:reviewId", async (req, res) => {
         .send({ error: isValidated.error.details[0].message });
     const query1 = { _id: memberId, type: "member" };
     const member = await User.findOne(query1);
-    const query2 = { _id: partnerID, type: "partner" };
-    const partner = await User.findOne(query2);
+
     if (!member) {
       return res.status(404).json({ error: "Member not found" });
     }
-    if (!partner) {
-      return res.status(404).json({ error: "Partner not found" });
-    }
+
     const review = member.userData.reviews.find(
-      review => review.id === reviewId
+      review => review._id == reviewId
     );
     if (!review) {
       return res.status(404).json({ err: "review Not Found" });
     }
+    if (partnerID != review.partner._id) {
+      return res.status(404).json({ error: "Partner Cannot be changed" });
+    }
+    const query2 = { _id: partnerID, type: "partner" };
+    const partner = await User.findOne(query2);
     const datePosted = review.datePosted;
     const reviewIndex = member.userData.reviews.indexOf(review);
     const id = reviewId;
@@ -120,7 +133,7 @@ router.delete("/delete/:memberId/:reviewId", async (req, res) => {
       return res.status(404).send({ error: "Member not found" });
     }
     const review = member.userData.reviews.find(
-      review => review.id === reviewId
+      review => review._id == reviewId
     );
     if (!review) {
       return res.status(404).json({ err: "review Not Found" });

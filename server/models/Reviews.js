@@ -1,11 +1,11 @@
 const uuid = require("uuid");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const partnerSchema = require("./Partner.js").schema;
+const partnerSchema = require("./User.js").schema;
 const reviewSchema = new Schema({
   partner: {
     type: partnerSchema,
-    required: true
+    required: true,
   },
   reviewText: {
     type: String,
@@ -18,4 +18,4 @@ const reviewSchema = new Schema({
     type: Date
   }
 });
-module.exports = Reviews = mongoose.model("reviews", reviewSchema);
+module.exports = Reviews = mongoose.model("Reviews", reviewSchema);
