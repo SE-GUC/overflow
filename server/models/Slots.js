@@ -1,13 +1,26 @@
-const uuid = require("uuid");
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const userSchema = require("./User").schema;
 
-class Slots {
-  constructor(booked, date, location, member, confirmed) {
-    this.id = uuid.v4();
-    this.booked = booked;
-    this.date = date;
-    this.location = location;
-    this.member = member;
-    this.confirmed = confirmed;
+const SlotSchema = new Schema({
+  booked: {
+    type: Boolean,
+    required: true
+  },
+  date: {
+    type: Date,
+    required: true
+  },
+  location: {
+    type: String
+  },
+  member: {
+    type: userSchema
+  },
+  confirmed: {
+    type: Boolean,
+    required: true
   }
-}
-module.exports = Slots;
+});
+
+module.exports = Slot = mongoose.model("slots", SlotSchema);
