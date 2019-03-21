@@ -9,7 +9,8 @@ const memberSchema = new Schema(
       type: String
     },
     joinDate: {
-      type: Date
+      type: Date,
+      default: Date.now
     },
     skills: {
       type: [String]
