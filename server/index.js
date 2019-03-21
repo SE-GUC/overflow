@@ -2,9 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 // API Imports go here
 const users = require("./routes/api/users");
-/*
+
 const review = require("./routes/api/review");
-const vacancies = require("./routes/api/vacancies");
+/*const vacancies = require("./routes/api/vacancies");
 const jobApplications = require("./routes/api/jobApplications");
 const feedbacks = require("./routes/api/feedback");
 const slots = require("./routes/api/slot");*/
@@ -14,10 +14,7 @@ const app = express();
 const db = require("./config/keys").mongoURI;
 const dbConfig = { useNewUrlParser: true };
 mongoose
-  .connect(
-    db,
-    dbConfig
-  )
+  .connect(db, dbConfig)
   .then(() => console.log("Connected to MongoDB"))
   .catch(err => console.log(err));
 app.use(express.json());
@@ -27,8 +24,8 @@ app.get("/", (req, res) => {
 });
 // API Routes go here
 app.use("/api/users", users);
-/*app.use("/api/reviews", review);
-app.use("/api/vacancies", vacancies);
+app.use("/api/reviews", review);
+/*app.use("/api/vacancies", vacancies);
 app.use("/api/jobApplications", jobApplications);
 app.use("/api/feedback", feedbacks);
 app.use("/api/slots", slots);*/

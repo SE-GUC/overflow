@@ -1,12 +1,21 @@
 const uuid = require("uuid");
-
-class Reviews {
-  constructor(partner, reviewText, rating, datePosted) {
-    this.id = uuid.v4();
-    this.partner = partner;
-    this.reviewText = reviewText;
-    this.rating = rating;
-    this.datePosted = datePosted;
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const partnerSchema = require("./Partner.js").schema;
+const reviewSchema = new Schema({
+  partner: {
+    type: partnerSchema,
+    required: true
+  },
+  reviewText: {
+    type: String,
+    required: true
+  },
+  rating: {
+    type: Number
+  },
+  datePosted: {
+    type: Date
   }
-}
-module.exports = Reviews;
+});
+module.exports = Reviews = mongoose.model("reviews", reviewSchema);
