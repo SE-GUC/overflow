@@ -1,22 +1,26 @@
-class LifeCoach {
-  constructor(
-    name,
-    dateOfBirth,
-    gender,
-    joinDate,
-    hourlyRate,
-    email,
-    monthlySlots
-  ) {
-    this.name = name;
-    this.dateOfBirth = dateOfBirth;
-    this.gender = gender;
-    this.hourlyRate = hourlyRate;
-    this.joinDate = joinDate;
-    this.email = email;
-    this.monthlySlots = monthlySlots;
-    this.age = new Date().getFullYear() - dateOfBirth.getFullYear();
-  }
-}
-
-module.exports = LifeCoach;
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const LifeCoachSchema = new Schema({
+    name: {
+      type: String
+    },
+    dateOfBirth: {
+      type: Date
+    },
+    gender: {
+      type: String
+    },
+    joinDate: {
+      type: Date
+    },
+    hourlyRate: {
+      type: Number
+    },
+    email: {
+      type: String
+    },
+    monthlySlots: {
+      type: Number
+    }
+  }); 
+module.exports = LifeCoach = mongoose.model("lifeCoaches",LifeCoachSchema);
