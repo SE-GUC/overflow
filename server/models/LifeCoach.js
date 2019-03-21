@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const slotSchema = require("./Slots").schema;
 const LifeCoachSchema = new Schema(
   {
     dateOfBirth: {
@@ -20,7 +21,7 @@ const LifeCoachSchema = new Schema(
       type: Number
     },
     monthlySlots: {
-      type: [String] //pending Slot Schema
+      type: [slotSchema]
     }
   },
   { _id: false }
