@@ -1,10 +1,20 @@
-const uuid = require("uuid");
-class Feedback {
-  constructor(member, feedbackText, datePosted) {
-    this.id = uuid.v4();
-    this.member = member;
-    this.datePosted = datePosted;
-    this.feedbackText = feedbackText;
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const userSchema = require("./User").schema;
+
+const feedbackSchema = new Schema({
+  member: {
+    type: userSchema,
+    required: true
+  },
+  datePosted: {
+    type: Date,
+    default: Date.now()
+  },
+  feedbackText: {
+    type: String,
+    required: true
   }
-}
-module.exports = Feedback;
+});
+
+module.exports = Feedback = mongoose.model("feedbacks", feedbackSchema);
