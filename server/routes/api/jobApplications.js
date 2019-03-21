@@ -43,7 +43,7 @@ router.get("/VacancyApplications/:vacancyId", async (req, res) => {
 router.get("/MemberApplications/:memberId", async (req, res) => {
   try {
     const { memberId } = req.params;
-    const member = await User.findById(memberId);
+    const member = await User.findOne({ _id: memberId, type: "member" });
     if (!member)
       // Bad request if not found
       return res.status(400).send({ error: "member not found" });
