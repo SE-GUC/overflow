@@ -3,8 +3,8 @@ const Review = require("../models/Reviews");
 module.exports = {
   createValidation: request => {
     const createSchema = {
-      memberID: Joi.string().required(),
-      partnerID: Joi.string().required(),
+      memberId: Joi.string().required(),
+      partnerId: Joi.string().required(),
       feedbackText: Joi.string().required()
     };
 
