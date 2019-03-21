@@ -1,13 +1,28 @@
-class Admin {
-  constructor(name, dateOfBirth, gender, joinDate, salary, email, isSuper) {
-    this.name = name;
-    this.dateOfBirth = dateOfBirth;
-    this.gender = gender;
-    this.joinDate = joinDate;
-    this.salary = salary;
-    this.email = email;
-    this.isSuper = isSuper;
-    this.age = new Date().getFullYear() - dateOfBirth.getFullYear();
-  }
-}
-module.exports = Admin;
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const adminSchema = new Schema(
+  {
+    dateOfBirth: {
+      type: Date,
+      required: true
+    },
+    gender: {
+      type: String
+    },
+    joinDate: {
+      type: Date,
+      default: Date.now
+    },
+    salary: {
+      type: String
+    },
+    isSuper: {
+      type: Boolean
+    },
+    age: {
+      type: Number
+    }
+  },
+  { _id: false }
+);
+module.exports = Admin = mongoose.model("admins", adminSchema);

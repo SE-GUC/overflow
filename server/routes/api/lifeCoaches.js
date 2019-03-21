@@ -6,11 +6,8 @@ const bcrypt = require("bcryptjs");
 
 const router = express.Router();
 router.get("/", async (req, res) => {
-  const lifeCoaches = await User.find();
-  const filteredlifeCoach = lifeCoaches.filter(
-    lifeCoach => lifeCoach.type === "lifeCoach"
-  );
-  return res.json({ data: filteredlifeCoach });
+  const lifeCoaches = await User.find({ type: "lifeCoach" });
+  return res.json({ data: lifeCoaches });
 });
 
 router.post("/create", async (req, res) => {

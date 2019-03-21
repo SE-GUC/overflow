@@ -6,9 +6,8 @@ const bcrypt = require("bcryptjs");
 
 const router = express.Router();
 router.get("/", async (req, res) => {
-  const members = await User.find();
-  const filteredMembers = members.filter(member => member.type === "member");
-  return res.json({ data: filteredMembers });
+  const members = await User.find({ type: "member" });
+  return res.json({ data: members });
 });
 
 router.post("/create", async (req, res) => {
