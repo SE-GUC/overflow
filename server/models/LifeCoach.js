@@ -1,26 +1,21 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const LifeCoachSchema = new Schema({
-    name: {
-      type: String
-    },
-    dateOfBirth: {
+    SdateOfBirth: {
       type: Date
     },
     gender: {
       type: String
     },
     joinDate: {
-      type: Date
+      type: Date.now
     },
     hourlyRate: {
-      type: Number
-    },
-    email: {
       type: String
     },
+   
     monthlySlots: {
-      type: Number
+      type: [String]
     }
   }); 
 module.exports = LifeCoach = mongoose.model("lifeCoaches",LifeCoachSchema);

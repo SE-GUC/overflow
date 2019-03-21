@@ -6,7 +6,7 @@ const LifeCoach = require("../../models/LifeCoach");
 const bcrypt = require("bcryptjs");
 
 const router = express.Router();
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   const lifeCoaches = await User.find();
   const filteredlifeCoach = lifeCoaches.filter(lifeCoach => lifeCoach.type === "lifeCoach");
   // hiding password
@@ -17,7 +17,7 @@ router.get("/", (req, res) => {
   return res.json({ data: lifeCoachesDisplay });
 });
 
-router.post("/create", (req, res) => {
+router.post("/create", async (req, res) => {
   const isValidated = validator.createValidation(req.body);
   if (isValidated.error) {
     return res
@@ -46,7 +46,7 @@ router.post("/create", (req, res) => {
   });
   return res.json({ data: user });
 });
-router.put("/update/:id", (req, res) => {
+router.put("/update/:id", async (req, res) => {
  try{
    const { id } = req.params;
    const query = { _id: id, type: "lifeCoach" };
@@ -64,9 +64,9 @@ router.put("/update/:id", (req, res) => {
     const emailCheck = await User.findOne({ _id: { $ne: id }, email });
     if (emailCheck)
       return res.status(400).json({ error: "Email already exists" });
-    const { dateOfBirth } = req.body;
+    const { dateOfBirth } = userData;
     const newAge = new Date().getFullYear() - new Date(dateOfBirth).getFullYear();
-    req.body.age = newAge;
+    userData.age = newAge;
     await User.updateOne(query, { name, email, userData });
     return res.sendStatus(200);
   } catch (error) {
