@@ -4,9 +4,9 @@ const mongoose = require("mongoose");
 const users = require("./routes/api/users");
 const vacancies = require("./routes/api/vacancies");
 const jobApplications = require("./routes/api/jobApplications");
+const feedbacks = require("./routes/api/feedback");
 /*
 const review = require("./routes/api/review");
-const feedbacks = require("./routes/api/feedback");
 const slots = require("./routes/api/slot");*/
 
 const app = express();
@@ -29,8 +29,8 @@ app.get("/", (req, res) => {
 app.use("/api/users", users);
 app.use("/api/vacancies", vacancies);
 app.use("/api/jobApplications", jobApplications);
-/*app.use("/api/reviews", review);
 app.use("/api/feedback", feedbacks);
+/*app.use("/api/reviews", review);
 app.use("/api/slots", slots);*/
 
 const port = process.env.PORT || 3000;
