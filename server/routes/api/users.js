@@ -3,19 +3,16 @@ const Joi = require("joi");
 const bcrypt = require("bcryptjs");
 const router = express.Router();
 // Sub routes imports
-//const lifeCoaches = require("./lifeCoaches");
+const lifeCoaches = require("./lifeCoaches");
 const members = require("./members");
 const partners = require("./partners");
 //const admins = require("./admins");
 const User = require("../../models/User");
 // sub routes redirect
 router.use("/partners", partners);
-/*
-router.use("/admins", admins);
 router.use("/lifeCoaches", lifeCoaches);
-*/
 router.use("/members", members);
-
+//router.use("/admins", admins);
 router.get("/", async (req, res) => {
   const usersDisplay = await User.find();
   return res.json({ data: usersDisplay });

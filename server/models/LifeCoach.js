@@ -1,21 +1,25 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const LifeCoachSchema = new Schema({
-    SdateOfBirth: {
-      type: Date
-    },
-    gender: {
-      type: String
-    },
-    joinDate: {
-      type: Date.now
-    },
-    hourlyRate: {
-      type: String
-    },
-   
-    monthlySlots: {
-      type: [String]
-    }
-  }); 
-module.exports = LifeCoach = mongoose.model("lifeCoaches",LifeCoachSchema);
+  dateOfBirth: {
+    type: Date,
+    required: true
+  },
+  gender: {
+    type: String
+  },
+  joinDate: {
+    type: Date,
+    default: Date.now
+  },
+  hourlyRate: {
+    type: String
+  },
+  age: {
+    type: Number
+  },
+  monthlySlots: {
+    type: [String] //pending Slot Schema
+  }
+});
+module.exports = LifeCoach = mongoose.model("lifeCoaches", LifeCoachSchema);
