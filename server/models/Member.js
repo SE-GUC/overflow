@@ -1,23 +1,30 @@
-class Member {
-  constructor(
-    name,
-    dateOfBirth,
-    gender,
-    joinDate,
-    email,
-    skills,
-    interests,
-    reviews
-  ) {
-    this.name = name;
-    this.dateOfBirth = dateOfBirth;
-    this.gender = gender;
-    this.joinDate = joinDate;
-    this.email = email;
-    this.skills = skills;
-    this.interests = interests;
-    this.reviews = reviews;
-    this.age = new Date().getFullYear() - dateOfBirth.getFullYear();
-  }
-}
-module.exports = Member;
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const memberSchema = new Schema(
+  {
+    dateOfBirth: {
+      type: Date
+    },
+    gender: {
+      type: String
+    },
+    joinDate: {
+      type: Date,
+      default: Date.now
+    },
+    skills: {
+      type: [String]
+    },
+    interests: {
+      type: [String]
+    },
+    reviews: {
+      type: [String]
+    },
+    age: {
+      type: Number
+    }
+  },
+  { _id: false }
+);
+module.exports = Member = mongoose.model("members", memberSchema);

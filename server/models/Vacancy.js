@@ -1,29 +1,40 @@
-const uuid = require("uuid");
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const userSchema = require("./User").schema;
 
-class Vacancy {
-  constructor(
-    partner,
-    description,
-    duration,
-    monthlyWage,
-    location,
-    dailyHours,
-    startDate,
-    endDate,
-    state,
-    acceptedMember
-  ) {
-    this.id = uuid.v4();
-    this.partner = partner;
-    this.description = description;
-    this.duration = duration;
-    this.monthlyWage = monthlyWage;
-    this.location = location;
-    this.dailyHours = dailyHours;
-    this.startDate = startDate;
-    this.endDate = endDate;
-    this.state = state;
-    this.acceptedMember = acceptedMember;
+const vacancySchema = new Schema({
+  partner: {
+    type: userSchema,
+    required: true
+  },
+  description: {
+    type: String,
+    required: true
+  },
+  duration: {
+    type: String
+  },
+  monthlyWage: {
+    type: String
+  },
+  location: {
+    type: String
+  },
+  dailyHours: {
+    type: String
+  },
+  startDate: {
+    type: Date
+  },
+  endDate: {
+    type: Date
+  },
+  state: {
+    type: String
+  },
+  acceptedMember: {
+    type: userSchema
   }
-}
-module.exports = Vacancy;
+});
+
+module.exports = Vacancy = mongoose.model("vacancies", vacancySchema);

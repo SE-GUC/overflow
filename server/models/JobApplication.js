@@ -1,12 +1,25 @@
-const uuid = require("uuid");
-
-class JobApplication {
-  constructor(vacancy, member, datePosted, applicationText) {
-    this.id = uuid.v4();
-    this.vacancy = vacancy;
-    this.member = member;
-    this.datePosted = datePosted;
-    this.applicationText = applicationText;
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const vacancySchema = require("./Vacancy").schema;
+const userSchema = require("./User").schema;
+const jobApplicationSchema = new Schema({
+  vacancy: {
+    type: vacancySchema,
+    required: true
+  },
+  member: {
+    type: userSchema,
+    required: true
+  },
+  datePosted: {
+    type: Date,
+    default: Date.now
+  },
+  applicationText: {
+    type: String
   }
-}
-module.exports = JobApplication;
+});
+module.exports = JobApplication = mongoose.model(
+  "jobApplications",
+  jobApplicationSchema
+);
