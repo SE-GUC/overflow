@@ -81,7 +81,7 @@ router.get("/readReview/:reviewId", async (req, res) => {
 router.put("/update/:memberId/:reviewId", async (req, res) => {
   try {
     const { memberId, reviewId } = req.params;
-    const { partnerID, reviewText, rating } = req.body;
+    const { reviewText, rating } = req.body;
     const isValidated = validator.updateValidation(req.body);
     if (isValidated.error)
       return res
@@ -95,25 +95,26 @@ router.put("/update/:memberId/:reviewId", async (req, res) => {
     }
 
     const review = member.userData.reviews.find(
-      review => review._id == reviewId
+      (review) => review._id == reviewId
     );
     if (!review) {
       return res.status(404).json({ err: "review Not Found" });
     }
-    if (partnerID != review.partner._id) {
-      return res.status(404).json({ error: "Partner Cannot be changed" });
-    }
-    const query2 = { _id: partnerID, type: "partner" };
-    const partner = await User.findOne(query2);
     const datePosted = review.datePosted;
     const reviewIndex = member.userData.reviews.indexOf(review);
     const id = reviewId;
+    // member.userData.reviews[reviewIndex] = {
+    //   id,
+    //   partner:member.userData.reviews[reviewIndex].partner,
+    //   reviewText,
+    //   rating,
+    //   datePosted
+    // };
     member.userData.reviews[reviewIndex] = {
-      id,
-      partner,
+      ...member.userData.reviews[reviewIndex],
       reviewText,
       rating,
-      datePosted
+     
     };
     await User.updateOne(query1, member);
     return res.sendStatus(200);
