@@ -17,11 +17,15 @@ router.post("/create", async (req, res) => {
       return res
         .status(400)
         .json({ error: isValidated.error.details[0].message });
-    if (!partner) return res.status(404).json({ error: "Partner not Found" });
-    if (!member) return res.status(404).json({ error: "Partner not Found" });
+    if (!partner) return res.status(400).json({ error: "Partner not Found" });
+    if (!member) return res.status(400).json({ error: "Member not Found" });
+    let newPartner = {
+      ...partner.userData,
+      feedback:null
+    }
     const datePosted = new Date();
     const newReview = new Review({
-      partner: partner,
+      partner: newPartner,
       reviewText: reviewText,
       rating: rating,
       datePosted: datePosted
@@ -43,7 +47,7 @@ router.get("/readMemberReviews/:memberId", async (req, res) => {
     const member = await User.findOne(query);
     member
       ? res.json({ data: member.userData.reviews })
-      : [res.status(404).json({ err: "Member Not Found" })];
+      : [res.status(400).json({ err: "Member Not Found" })];
   } catch (error) {
     console.log(error);
     res.sendStatus(400);
@@ -67,7 +71,7 @@ router.get("/readReview/:reviewId", async (req, res) => {
         }
       }
     });
-    if (!found) return res.status(404).json({ err: "Review Not Found" });
+    if (!found) return res.status(400).json({ err: "Review Not Found" });
   } catch (error) {
     console.log(error);
     res.sendStatus(400);
@@ -91,14 +95,14 @@ router.put("/update/:memberId/:reviewId", async (req, res) => {
     const member = await User.findOne(query1);
 
     if (!member) {
-      return res.status(404).json({ error: "Member not found" });
+      return res.status(400).json({ error: "Member not found" });
     }
 
     const review = member.userData.reviews.find(
       (review) => review._id == reviewId
     );
     if (!review) {
-      return res.status(404).json({ err: "review Not Found" });
+      return res.status(400).json({ err: "review Not Found" });
     }
     const datePosted = review.datePosted;
     const reviewIndex = member.userData.reviews.indexOf(review);
@@ -131,13 +135,13 @@ router.delete("/delete/:memberId/:reviewId", async (req, res) => {
     const member = await User.findOne(query1);
 
     if (!member) {
-      return res.status(404).send({ error: "Member not found" });
+      return res.status(400).send({ error: "Member not found" });
     }
     const review = member.userData.reviews.find(
       review => review._id == reviewId
     );
     if (!review) {
-      return res.status(404).json({ err: "review Not Found" });
+      return res.status(400).json({ err: "review Not Found" });
     }
     const reviewIndex = member.userData.reviews.indexOf(review);
     member.userData.reviews.splice(reviewIndex, 1);
