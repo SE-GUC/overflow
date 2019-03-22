@@ -108,14 +108,18 @@ router.put("/update/:lifeCoachId/:slotId", async (req, res) => {
         // Bad request if not found
         return res.status(400).send({ error: "member not found" });
     }
-    let newSlot;
-    if (member) {
-      newSlot = new Slot({ member, ...slotData });
-    } else {
-      newSlot = new Slot(slotData);
-    }
     const slotIndex = lifeCoach.userData.monthlySlots.indexOf(slot);
-    lifeCoach.userData.monthlySlots[slotIndex] = newSlot;
+    if (member)
+      lifeCoach.userData.monthlySlots[slotIndex] = {
+        ...lifeCoach.userData.monthlySlots[slotIndex],
+        ...slotData,
+        member
+      };
+    else
+      lifeCoach.userData.monthlySlots[slotIndex] = {
+        ...lifeCoach.userData.monthlySlots[slotIndex],
+        ...slotData
+      };
     await User.updateOne({ _id: lifeCoachId, type: "lifeCoach" }, lifeCoach);
     return res.sendStatus(200);
   } catch (error) {
