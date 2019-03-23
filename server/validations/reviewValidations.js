@@ -15,7 +15,6 @@ module.exports = {
 
   updateValidation: request => {
     const updateSchema = {
-      partnerID:Joi.string().required(),
       reviewText:Joi.string().required(),
       rating:Joi.string(),
       
