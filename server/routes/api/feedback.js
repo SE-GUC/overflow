@@ -3,7 +3,8 @@ const validator = require("../../validations/feedbackValidations");
 const router = express.Router();
 const User = require("../../models/User");
 const Feedback = require("../../models/Feedback");
-
+const partnerServices = require("../../services/updatePartner");
+const { updateGlobal, updateOptions } = partnerServices;
 router.post("/create", async (req, res) => {
   try {
     const { memberId, partnerId, feedbackText } = req.body;
@@ -19,7 +20,13 @@ router.post("/create", async (req, res) => {
     const feedback = new Feedback({ member, feedbackText });
     delete feedback.member.userData.reviews;
     partner.userData.feedback.push(feedback);
-    await User.updateOne({ _id: partnerId, type: "partner" }, partner);
+    const newPartner = await User.findOneAndUpdate(
+      { _id: partnerId, type: "partner" },
+      partner,
+      { new: true }
+    );
+    updateOptions.update_user = false;
+    await updateGlobal(newPartner, updateOptions);
     return res.json({ data: feedback });
   } catch (error) {
     console.log(error);
@@ -78,7 +85,14 @@ router.put("/update/:partnerId/:feedbackId", async (req, res) => {
     if (!feedback) return res.status(400).json({ error: "feedback not found" });
     const feedbackIndex = partner.userData.feedback.indexOf(feedback);
     partner.userData.feedback[feedbackIndex].feedbackText = feedbackText;
-    await User.updateOne({ _id: partnerId, type: "partner" }, partner);
+    partner.userData.feedback.push(feedback);
+    const newPartner = await User.findOneAndUpdate(
+      { _id: partnerId, type: "partner" },
+      partner,
+      { new: true }
+    );
+    updateOptions.update_user = false;
+    await updateGlobal(newPartner, updateOptions);
     return res.sendStatus(200);
   } catch (error) {
     console.log(error);
@@ -100,7 +114,13 @@ router.delete("/delete/:partnerId/:feedbackId", async (req, res) => {
       removedFeedback
     );
     partner.userData.feedback.splice(removedFeedbackIndex, 1);
-    await User.updateOne({ _id: partnerId, type: "partner" }, partner);
+    const newPartner = await User.findOneAndUpdate(
+      { _id: partnerId, type: "partner" },
+      partner,
+      { new: true }
+    );
+    updateOptions.update_user = false;
+    await updateGlobal(newPartner, updateOptions);
     res.sendStatus(200);
   } catch (error) {
     console.log(error);

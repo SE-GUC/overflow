@@ -2,6 +2,9 @@
 const User = require("../models/User");
 const JobApplication = require("../models/JobApplication");
 const Vacancy = require("../models/Vacancy");
+const partnerServices = require("./updatePartner");
+const partnerUpdateOptions = partnerServices.updateOptions;
+const partnerUpdateGlobal = partnerServices.updateGlobal;
 
 //defining options for the update to avoid updating the same collection several
 //times
@@ -37,11 +40,27 @@ const update_user = async (_id, member) => {
 const update_feedback_partner = async (_id, member) => {
   const query = { type: "partner", "userData.feedback.member._id": _id };
   delete member.userData.reviews;
-  await User.updateMany(query, {
-    $set: { "userData.feedback.$.member": member }
+  const partnersUpdated = await User.find(query);
+  partnerUpdateOptions.update_user = false;
+  partnerUpdateOptions.update_review_member = false;
+  const promises = [];
+  partnersUpdated.forEach(async partner => {
+    promises.push(promiseHelper(partner, _id, member));
   });
-  //partner global update goes here
+  await Promise.all(promises);
 };
+//Promise Helper
+const promiseHelper = async (partner, _id, member) => {
+  const newPartner = await User.findOneAndUpdate(
+    { _id: partner._id, "userData.feedback.member._id": _id },
+    {
+      $set: { "userData.feedback.$.member": member }
+    },
+    { new: true }
+  );
+  await partnerUpdateGlobal(newPartner, partnerUpdateOptions);
+};
+
 //updates member in jobApplication
 const update_jobApplication = async (_id, member) => {
   const query = { "member._id": _id };

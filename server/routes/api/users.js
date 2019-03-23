@@ -3,6 +3,7 @@ const Joi = require("joi");
 const bcrypt = require("bcryptjs");
 const router = express.Router();
 const deleteMember = require("../../services/deleteMember");
+const deletePartner = require("../../services/deletePartner");
 // Sub routes imports
 const lifeCoaches = require("./lifeCoaches");
 const members = require("./members");
@@ -32,12 +33,12 @@ router.get("/:id", async (req, res) => {
 router.delete("/delete/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    /*const deletedUser = await User.findByIdAndRemove(id);
+    const deletedUser = await User.findByIdAndRemove(id);
     if (!deletedUser) {
       return res.status(400).send({ error: "id not found" });
     }
-    if (deletedUser.type === "member")*/
-    await deleteMember(id);
+    if (deletedUser.type === "member") await deleteMember(id);
+    if (deletedUser.type === "partner") await deletePartner(id);
     return res.sendStatus(200);
   } catch (error) {
     console.log(error);

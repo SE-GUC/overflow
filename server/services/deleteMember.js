@@ -3,6 +3,11 @@ const User = require("../models/User");
 const mongoose = require("mongoose");
 const JobApplication = require("../models/JobApplication");
 const Vacancy = require("../models/Vacancy");
+const partnerServices = require("./updatePartner");
+const partnerUpdateOptions = partnerServices.updateOptions;
+const partnerUpdateGlobal = partnerServices.updateGlobal;
+
+//deleteMember Global expecting a member ID
 const deleteMemberGlobal = async _id => {
   const mongoId = mongoose.Types.ObjectId(_id);
   const promises = [];
@@ -19,11 +24,29 @@ const delete_feedback_partner = async _id => {
     type: "partner",
     "userData.feedback.member._id": _id
   };
-  await User.updateMany(query, {
+  const partnersUpdated = await User.find(query);
+  /*await User.updateMany(query, {
     $pull: { "userData.feedback": { "member._id": _id } }
+  });*/
+  partnerUpdateOptions.update_user = false;
+  partnerUpdateOptions.update_review_member = false;
+  const promises = [];
+  partnersUpdated.forEach(async partner => {
+    promises.push(promiseHelper(partner, _id));
   });
-  //partner global update goes here
+  await Promise.all(promises);
 };
+promiseHelper = async (partner, _id) => {
+  const newPartner = await User.findOneAndUpdate(
+    { _id: partner._id, "userData.feedback.member._id": _id },
+    {
+      $pull: { "userData.feedback": { "member._id": _id } }
+    },
+    { new: true }
+  );
+  partnerUpdateGlobal(newPartner, partnerUpdateOptions);
+};
+
 //deleting jobApplication if it has this member
 const delete_jobApplication = async _id => {
   const query = {
@@ -69,6 +92,5 @@ const deletions = [
   delete_vacancy_jobApplication,
   delete_slots_lifeCoach
 ];
-//deleteMember Global expecting a member ID
 
 module.exports = deleteMemberGlobal;
