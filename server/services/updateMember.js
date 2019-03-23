@@ -7,11 +7,11 @@ const Vacancy = require("../models/Vacancy");
 //times
 const updateOptions = {
   update_user: true,
-  update_feedback: true,
   update_jobApplication: true,
   update_slots: true,
   update_vacancy: true,
-  update_vacancy_jobApplication: true
+  update_vacancy_jobApplication: true,
+  update_feedback: true
 };
 
 //updateGlobal expecting a member Object and options
@@ -76,10 +76,11 @@ const update_vacancy_jobApplication = async (_id, member) => {
 //grouping update functions
 const updates = [
   update_user,
-  update_feedback_partner,
   update_jobApplication,
   update_slots_lifeCoach,
   update_vacancy,
-  update_vacancy_jobApplication
+  update_vacancy_jobApplication,
+  update_feedback_partner
 ];
+
 module.exports = { updateGlobal, updateOptions };

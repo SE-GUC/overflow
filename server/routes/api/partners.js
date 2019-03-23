@@ -3,6 +3,8 @@ const User = require("../../models/User");
 const Partner = require("../../models/Partner");
 const validator = require("../../validations/partnerValidation");
 const bcrypt = require("bcryptjs");
+const partnerServices = require("../../services/updatePartner");
+const { updateGlobal, updateOptions } = partnerServices;
 
 const router = express.Router();
 router.get("/", async (req, res) => {
@@ -55,7 +57,18 @@ router.put("/update/:id", async (req, res) => {
       return res.status(400).json({ error: "Email already exists" });
     //saving feedback (can only be updated from feedback routes)
     userData.feedback = user.userData.feedback;
-    await User.updateOne(query, { name, email, userData });
+    const updatePartner = await User.findOneAndUpdate(
+      query,
+      {
+        name,
+        email,
+        userData
+      },
+      { new: true }
+    );
+    //global update
+    updateOptions.update_user = false;
+    await updateGlobal(updatePartner, updateOptions);
     return res.sendStatus(200);
   } catch (error) {
     console.log(error);
