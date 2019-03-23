@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const Vacancy = require("../../models/Vacancy");
 const User = require("../../models/User");
+const JobApplication = require("../../models/JobApplication");
 const validator = require("../../validations/vacancyValidation");
 
 const router = express.Router();
@@ -90,18 +91,31 @@ router.put("/update/:id", async (req, res) => {
     }
     const { partnerId, acceptedMemberId, ...vacancyData } = req.body;
     const { partner } = vacancy;
+    let newVacancy;
     if (acceptedMember) {
-      await Vacancy.findByIdAndUpdate(id, {
-        partner,
-        ...vacancyData,
-        acceptedMember
-      });
+      newVacancy = await Vacancy.findByIdAndUpdate(
+        id,
+        {
+          partner,
+          ...vacancyData,
+          acceptedMember
+        },
+        { new: true }
+      );
     } else {
-      await Vacancy.findByIdAndUpdate(id, {
-        partner,
-        ...vacancyData
-      });
+      newVacancy = await Vacancy.findByIdAndUpdate(
+        id,
+        {
+          partner,
+          ...vacancyData
+        },
+        { new: true }
+      );
     }
+    await JobApplication.updateMany(
+      { "vacancy._id": newVacancy._id },
+      { vacancy: newVacancy }
+    );
     return res.sendStatus(200);
   } catch (error) {
     console.log(error);
@@ -116,6 +130,7 @@ router.delete("/delete/:id", async (req, res) => {
     if (!deletedVacancy)
       // Bad request if not found
       return res.status(400).send({ error: "vacancy not found" });
+    await JobApplication.deleteMany({ "vacancy._id": deletedVacancy._id });
     return res.sendStatus(200);
   } catch (error) {
     console.log(error);

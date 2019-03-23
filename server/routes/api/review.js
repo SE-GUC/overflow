@@ -3,7 +3,8 @@ const validator = require("../../validations/reviewValidations");
 const router = express.Router();
 const User = require("../../models/User");
 const Review = require("../../models/Reviews");
-
+const memberServices = require("../../services/updateMember");
+const { updateGlobal, updateOptions } = memberServices;
 //
 router.post("/create", async (req, res) => {
   try {
@@ -19,20 +20,21 @@ router.post("/create", async (req, res) => {
         .json({ error: isValidated.error.details[0].message });
     if (!partner) return res.status(400).json({ error: "Partner not Found" });
     if (!member) return res.status(400).json({ error: "Member not Found" });
-    let newPartner = {
-      ...partner.userData,
-      feedback:null
-    }
+    delete partner.userData.feedback;
     const datePosted = new Date();
     const newReview = new Review({
-      partner: newPartner,
-      reviewText: reviewText,
-      rating: rating,
-      datePosted: datePosted
+      partner,
+      reviewText,
+      rating,
+      datePosted
     });
     member.userData.reviews.push(newReview);
-    await User.updateOne(query1, member);
-
+    //await User.updateOne(query1, member);
+    const newMember = await User.findOneAndUpdate(query1, member, {
+      new: true
+    });
+    updateOptions.update_user = false;
+    await updateGlobal(newMember, updateOptions);
     return res.json({ data: newReview });
   } catch (error) {
     console.log(error);
@@ -99,7 +101,7 @@ router.put("/update/:memberId/:reviewId", async (req, res) => {
     }
 
     const review = member.userData.reviews.find(
-      (review) => review._id == reviewId
+      review => review._id == reviewId
     );
     if (!review) {
       return res.status(400).json({ err: "review Not Found" });
@@ -117,10 +119,13 @@ router.put("/update/:memberId/:reviewId", async (req, res) => {
     member.userData.reviews[reviewIndex] = {
       ...member.userData.reviews[reviewIndex],
       reviewText,
-      rating,
-     
+      rating
     };
-    await User.updateOne(query1, member);
+    const newMember = await User.findOneAndUpdate(query1, member, {
+      new: true
+    });
+    updateOptions.update_user = false;
+    await updateGlobal(newMember, updateOptions);
     return res.sendStatus(200);
   } catch (error) {
     console.log(error);
@@ -145,7 +150,11 @@ router.delete("/delete/:memberId/:reviewId", async (req, res) => {
     }
     const reviewIndex = member.userData.reviews.indexOf(review);
     member.userData.reviews.splice(reviewIndex, 1);
-    await User.updateOne(query1, member);
+    const newMember = await User.findOneAndUpdate(query1, member, {
+      new: true
+    });
+    updateOptions.update_user = false;
+    await updateGlobal(newMember, updateOptions);
     res.sendStatus(200);
   } catch (error) {
     console.log(error);

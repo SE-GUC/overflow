@@ -3,6 +3,8 @@ const User = require("../../models/User");
 const Member = require("../../models/Member");
 const validator = require("../../validations/memberValidation");
 const bcrypt = require("bcryptjs");
+const memberServices = require("../../services/updateMember");
+const { updateGlobal, updateOptions } = memberServices;
 
 const router = express.Router();
 router.get("/", async (req, res) => {
@@ -60,7 +62,18 @@ router.put("/update/:id", async (req, res) => {
     const { dateOfBirth } = userData;
     const age = new Date().getFullYear() - new Date(dateOfBirth).getFullYear();
     userData.age = age;
-    await User.updateOne(query, { name, email, userData });
+    const updateMember = await User.findOneAndUpdate(
+      query,
+      {
+        name,
+        email,
+        userData
+      },
+      { new: true }
+    );
+    //global update
+    updateOptions.update_user = false;
+    await updateGlobal(updateMember, updateOptions);
     return res.sendStatus(200);
   } catch (error) {
     console.log(error);

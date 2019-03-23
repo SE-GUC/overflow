@@ -14,7 +14,10 @@ const app = express();
 const db = require("./config/keys").mongoURI;
 const dbConfig = { useNewUrlParser: true };
 mongoose
-  .connect(db, dbConfig)
+  .connect(
+    db,
+    dbConfig
+  )
   .then(() => console.log("Connected to MongoDB"))
   .catch(err => console.log(err));
 app.use(express.json());
@@ -24,12 +27,15 @@ app.get("/", (req, res) => {
 });
 // API Routes go here
 app.use("/api/users", users);
-
 app.use("/api/vacancies", vacancies);
 app.use("/api/jobApplications", jobApplications);
 app.use("/api/feedback", feedbacks);
 app.use("/api/slots", slots);
 app.use("/api/reviews", review);
+// 404s
+app.use("/", (req, res) => {
+  return res.sendStatus(404);
+});
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Server up and running on port ${port}`));

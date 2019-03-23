@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const reviewSchema = require("./Reviews.js").schema;
 const memberSchema = new Schema(
   {
     dateOfBirth: {
@@ -19,7 +20,7 @@ const memberSchema = new Schema(
       type: [String]
     },
     reviews: {
-      type: [String]
+      type: [reviewSchema]
     },
     age: {
       type: Number
