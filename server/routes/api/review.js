@@ -3,125 +3,154 @@ const validator = require("../../validations/reviewValidations");
 const router = express.Router();
 const User = require("../../models/User");
 const Review = require("../../models/Reviews");
-const allUsers = require("../../userArray");
+
 //
-router.post("/create", (req, res) => {
-  const { memberID, partnerID, reviewText, rating } = req.body;
-  let userFound = false;
-  const isValidated = validator.createValidation(req.body);
-  if (isValidated.error)
-    return res
-      .status(400)
-      .json({ error: isValidated.error.details[0].message });
-  const partner = allUsers.find(
-    user => user.type === "partner" && user.id === partnerID
-  );
-
-  if (!partner) return res.status(404).json({ error: "Partner not Found" });
-  const newReview = new Review(partner, reviewText, rating, new Date());
-
-  allUsers.map(user => {
-    if (user.type === "member" && user.id === memberID) {
-      user.userData.reviews.push(newReview);
-      userFound = true;
+router.post("/create", async (req, res) => {
+  try {
+    const { memberID, partnerID, reviewText, rating } = req.body;
+    const query1 = { _id: memberID, type: "member" };
+    const member = await User.findOne(query1);
+    const query2 = { _id: partnerID, type: "partner" };
+    const partner = await User.findOne(query2);
+    const isValidated = validator.createValidation(req.body);
+    if (isValidated.error)
+      return res
+        .status(400)
+        .json({ error: isValidated.error.details[0].message });
+    if (!partner) return res.status(400).json({ error: "Partner not Found" });
+    if (!member) return res.status(400).json({ error: "Member not Found" });
+    let newPartner = {
+      ...partner.userData,
+      feedback:null
     }
-  });
-  if (!userFound) {
-    return res.status(404).json({ error: "Member not Found" });
+    const datePosted = new Date();
+    const newReview = new Review({
+      partner: newPartner,
+      reviewText: reviewText,
+      rating: rating,
+      datePosted: datePosted
+    });
+    member.userData.reviews.push(newReview);
+    await User.updateOne(query1, member);
+
+    return res.json({ data: newReview });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
   }
-
-  return res.json({ data: newReview });
 });
 
-router.get("/readMemberReviews/:memberId", (req, res) => {
-  const memberId = req.params.memberId;
-  const member = allUsers.find(
-    user => user.id === memberId && user.type === "member"
-  );
-  member
-    ? res.json({ data: member.userData.reviews })
-    : [res.status(404).json({ err: "Member Not Found" })];
+router.get("/readMemberReviews/:memberId", async (req, res) => {
+  try {
+    const memberId = req.params.memberId;
+    const query = { _id: memberId, type: "member" };
+    const member = await User.findOne(query);
+    member
+      ? res.json({ data: member.userData.reviews })
+      : [res.status(400).json({ err: "Member Not Found" })];
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
 });
 
-router.get("/readReview/:reviewId", (req, res) => {
-  const reviewId = req.params.reviewId;
-  let fetchedReview = null;
-  allUsers.map(user => {
-    if (user.type === "member") {
-      fetchedReview = user.userData.reviews.find(
-        review => review.id === reviewId
-      );
-      if (fetchedReview) {
-        return res.json({ data: fetchedReview });
+router.get("/readReview/:reviewId", async (req, res) => {
+  try {
+    const reviewId = req.params.reviewId;
+    const allUsers = await User.find();
+    let fetchedReview = null;
+    let found = false;
+    allUsers.map(user => {
+      if (user.type === "member") {
+        fetchedReview = user.userData.reviews.find(
+          review => review.id == reviewId
+        );
+        if (fetchedReview) {
+          found = true;
+          return res.json({ data: fetchedReview });
+        }
       }
-    }
-  });
-
-  return res.status(404).json({ err: "Review Not Found" });
+    });
+    if (!found) return res.status(400).json({ err: "Review Not Found" });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
 });
 
 // router.get("/read/", (req, res) => {
 //   res.json({ data: reviews });
 // });
 
-router.put("/update/:memberId/:reviewId", (req, res) => {
-  const { memberId, reviewId } = req.params;
-  const { partnerID, reviewText, rating } = req.body;
-  const isValidated = validator.updateValidation(req.body);
-  if (isValidated.error)
-    return res
-      .status(400)
-      .send({ error: isValidated.error.details[0].message });
+router.put("/update/:memberId/:reviewId", async (req, res) => {
+  try {
+    const { memberId, reviewId } = req.params;
+    const { reviewText, rating } = req.body;
+    const isValidated = validator.updateValidation(req.body);
+    if (isValidated.error)
+      return res
+        .status(400)
+        .send({ error: isValidated.error.details[0].message });
+    const query1 = { _id: memberId, type: "member" };
+    const member = await User.findOne(query1);
 
-  const member = allUsers.find(
-    user => user.id === memberId && user.type === "member"
-  );
-  const partner = allUsers.find(
-    user => user.id === partnerID && user.type === "partner"
-  );
-  if (!member) {
-    return res.status(404).json({ error: "Member not found" });
-  }
-  if (!partner) {
-    return res.status(404).json({ error: "Partner not found" });
-  }
-  const review = member.userData.reviews.find(review => review.id === reviewId);
-  if (!review) {
-    return res.status(404).json({ err: "review Not Found" });
-  }
-  const datePosted = review.datePosted;
-  const reviewIndex = member.userData.reviews.indexOf(review);
-  const memberIndex = allUsers.indexOf(member);
-  const id = reviewId;
-  allUsers[memberIndex].userData.reviews[reviewIndex] = {
-    id,
-    partner,
-    reviewText,
-    rating,
-    datePosted
-  };
+    if (!member) {
+      return res.status(400).json({ error: "Member not found" });
+    }
 
-  return res.json({
-    data: allUsers[memberIndex].userData.reviews[reviewIndex]
-  });
+    const review = member.userData.reviews.find(
+      (review) => review._id == reviewId
+    );
+    if (!review) {
+      return res.status(400).json({ err: "review Not Found" });
+    }
+    const datePosted = review.datePosted;
+    const reviewIndex = member.userData.reviews.indexOf(review);
+    const id = reviewId;
+    // member.userData.reviews[reviewIndex] = {
+    //   id,
+    //   partner:member.userData.reviews[reviewIndex].partner,
+    //   reviewText,
+    //   rating,
+    //   datePosted
+    // };
+    member.userData.reviews[reviewIndex] = {
+      ...member.userData.reviews[reviewIndex],
+      reviewText,
+      rating,
+     
+    };
+    await User.updateOne(query1, member);
+    return res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
 });
 
-router.delete("/delete/:memberId/:reviewId", (req, res) => {
-  const { memberId, reviewId } = req.params;
-  const member = allUsers.find(
-    user => user.id === memberId && user.type === "member"
-  );
-  if (!member) {
-    return res.status(404).send({ error: "Member not found" });
-  }
-  const review = member.userData.reviews.find(review => review.id === reviewId);
-  if (!review) {
-    return res.status(404).json({ err: "review Not Found" });
-  }
-  const reviewIndex = member.userData.reviews.indexOf(review);
-  const removed = member.userData.reviews.splice(reviewIndex, 1);
+router.delete("/delete/:memberId/:reviewId", async (req, res) => {
+  try {
+    const { memberId, reviewId } = req.params;
+    const query1 = { _id: memberId, type: "member" };
+    const member = await User.findOne(query1);
 
-  res.sendStatus(200);
+    if (!member) {
+      return res.status(400).send({ error: "Member not found" });
+    }
+    const review = member.userData.reviews.find(
+      review => review._id == reviewId
+    );
+    if (!review) {
+      return res.status(400).json({ err: "review Not Found" });
+    }
+    const reviewIndex = member.userData.reviews.indexOf(review);
+    member.userData.reviews.splice(reviewIndex, 1);
+    await User.updateOne(query1, member);
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
 });
 
 // router.get("/read/", (req, res) => {
