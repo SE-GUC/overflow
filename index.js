@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 // API Imports go here
 const users = require("./routes/api/users");
 
@@ -10,6 +11,7 @@ const slots = require("./routes/api/slot");
 const review = require("./routes/api/review");
 
 const app = express();
+app.use(cors());
 // DB Config
 const db = require("./config/keys").mongoURI;
 const dbConfig = { useNewUrlParser: true };
