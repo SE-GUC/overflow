@@ -13,7 +13,7 @@ test(
             //You should only put properties that are required in your schema
             _id: expect.any(String),
             type: "lifeCoach",
-            name: expect.acny(String),
+            name: expect.any(String),
             email: expect.any(String),
             password: expect.any(String),
             userData: expect.any(Object)
