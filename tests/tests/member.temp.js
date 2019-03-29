@@ -20,7 +20,7 @@ test(
           })
         ])
       );
-    else expect(users.data.data).toEqual([]);
+    else expect(members.data.data).toEqual([]);
   },
   50000
 );
