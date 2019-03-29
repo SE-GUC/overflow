@@ -20,7 +20,7 @@ test(
           })
         ])
       );
-    else expect(users.data.data).toEqual([]);
+    else expect(admins.data.data).toEqual([]);
   },
   50000
 );
@@ -48,7 +48,7 @@ test(
   "Create an admin with incomplete or incorrect data",
   async () => {
     expect.assertions(1);
-    const member = await functions
+    const admin = await functions
       .createAdmin({
         name: "jest",
         email: "test" + Math.random() + "@hotmail.com"
@@ -92,9 +92,9 @@ test(
     expect.assertions(1);
     const admins = await functions.getAdmins();
     if (admins.data.data.length > 0) {
-      const admins = admins.data.data[0];
+      const admin = admins.data.data[0];
       await functions
-        .updateMember(admin._id, {
+        .updateAdmin(admin._id, {
           name: "jest",
           email: "test" + Math.random() + "@hotmail.com"
         })
@@ -110,7 +110,7 @@ test(
   "Update a non existing admin",
   async () => {
     expect.assertions(1);
-    const member = await functions
+    const admin = await functions
       .updateAdmin("1234", {
         name: "jest",
         email: "test" + Math.random() + "@hotmail.com",
