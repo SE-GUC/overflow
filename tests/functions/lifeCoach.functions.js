@@ -14,7 +14,7 @@ const functions = {
     });
     return lifeCoaches;
   },
-  updatelifeCoach: async (id, body) => {
+  updateLifeCoach: async (id, body) => {
     await axios({
       method: "put",
       url: "http://localhost:3000/api/users/lifeCoaches/update/" + id,

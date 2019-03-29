@@ -29,7 +29,7 @@ test(
   "Create a lifeCoaches",
   async () => {
     expect.assertions(1);
-    const member = await functions.createLifeCoaches({
+    const lifeCoach = await functions.createLifeCoaches({
       name: "jest",
       email: "test" + Math.random() + "@hotmail.com",
       dateOfBirth: "3/3/1980",
