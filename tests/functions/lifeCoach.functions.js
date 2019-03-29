@@ -2,17 +2,19 @@ const axios = require("axios");
 
 const functions = {
   getLifeCoaches: async () => {
-    const lifeCoaches = await axios.get("http://localhost:3000/api/users/lifeCoaches");
+    const lifeCoaches = await axios.get(
+      "http://localhost:3000/api/users/lifeCoaches"
+    );
     return lifeCoaches;
   },
-  createLifeCoaches: async body => {
-    const lifeCoaches = await axios({
+  createLifeCoach: async body => {
+    const lifeCoach = await axios({
       method: "post",
       url: "http://localhost:3000/api/users/lifeCoaches/create",
       data: body,
       headers: { "Content-Type": "application/json" }
     });
-    return lifeCoaches;
+    return lifeCoach;
   },
   updateLifeCoach: async (id, body) => {
     await axios({

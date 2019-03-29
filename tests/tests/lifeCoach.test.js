@@ -20,16 +20,16 @@ test(
           })
         ])
       );
-    else expect(users.data.data).toEqual([]);
+    else expect(lifeCoaches.data.data).toEqual([]);
   },
   50000
 );
 
 test(
-  "Create a lifeCoaches",
+  "Create a lifeCoach",
   async () => {
     expect.assertions(1);
-    const lifeCoach = await functions.createLifeCoaches({
+    const lifeCoach = await functions.createLifeCoach({
       name: "jest",
       email: "test" + Math.random() + "@hotmail.com",
       dateOfBirth: "3/3/1980",
@@ -49,7 +49,7 @@ test(
   async () => {
     expect.assertions(1);
     const lifeCoach = await functions
-      .createLifeCoaches({
+      .createLifeCoach({
         name: "jest",
         email: "test" + Math.random() + "@hotmail.com"
       })
@@ -73,7 +73,7 @@ test(
         userData: { gender, dateOfBirth }
       } = lifeCoach;
       const newName = name + "test3";
-      await functions.updatelifeCoach(lifeCoach._id, {
+      await functions.updateLifeCoach(lifeCoach._id, {
         name: newName,
         email,
         gender,
@@ -94,7 +94,7 @@ test(
     if (lifeCoaches.data.data.length > 0) {
       const lifeCoach = lifeCoaches.data.data[0];
       await functions
-        .updatelifeCoach(lifeCoach._id, {
+        .updateLifeCoach(lifeCoach._id, {
           name: "jest",
           email: "test" + Math.random() + "@hotmail.com"
         })
@@ -111,7 +111,7 @@ test(
   async () => {
     expect.assertions(1);
     const lifeCoach = await functions
-      .updatelifeCoach("1234", {
+      .updateLifeCoach("1234", {
         name: "jest",
         email: "test" + Math.random() + "@hotmail.com",
         dateOfBirth: "3/3/1980",
