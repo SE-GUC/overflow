@@ -7,7 +7,7 @@ const functions = {
   },
   getPartnerVacancies: async partnerId => {
     const vacancies = await axios.get(
-      "http://localhost:3000/api/partnerVacancies/" + partnerId
+      "http://localhost:3000/api/vacancies/partnerVacancies/" + partnerId
     );
     return vacancies;
   },
@@ -20,19 +20,19 @@ const functions = {
   deleteVacancy: async id => {
     await axios.delete("http://localhost:3000/api/vacancies/delete/" + id);
   },
-  createMember: async body => {
-    const member = await axios({
+  createVacancy: async body => {
+    const vacancy = await axios({
       method: "post",
-      url: "http://localhost:3000/api/users/members/create",
+      url: "http://localhost:3000/api/vacancies/create",
       data: body,
       headers: { "Content-Type": "application/json" }
     });
-    return member;
+    return vacancy;
   },
-  updateMember: async (id, body) => {
+  updateVacancy: async (id, body) => {
     await axios({
       method: "put",
-      url: "http://localhost:3000/api/users/members/update/" + id,
+      url: "http://localhost:3000/api/vacancies/update/" + id,
       data: body,
       headers: { "Content-Type": "application/json" }
     });
