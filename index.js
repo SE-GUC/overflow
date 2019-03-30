@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 // API Imports go here
 const users = require("./routes/api/users");
-
 const vacancies = require("./routes/api/vacancies");
 const jobApplications = require("./routes/api/jobApplications");
 const feedbacks = require("./routes/api/feedback");
