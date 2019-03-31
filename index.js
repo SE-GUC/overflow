@@ -27,7 +27,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => {
-  res.send("<h1>Oveflow Lirten Hub</h1>");
+  res.send("<h1>Overflow Lirten Hub</h1>");
 });
 //firebase For testing purposes
 /*
