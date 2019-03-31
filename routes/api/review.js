@@ -65,7 +65,7 @@ router.get("/readReview/:reviewId", async (req, res) => {
     allUsers.map(user => {
       if (user.type === "member") {
         fetchedReview = user.userData.reviews.find(
-          review => review.id == reviewId
+          review => review._id == reviewId
         );
         if (fetchedReview) {
           found = true;
