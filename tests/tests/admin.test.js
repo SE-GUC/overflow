@@ -1,4 +1,4 @@
-const functions = require("../functions/Admin.functions");
+const functions = require("../functions/admin.functions");
 const userFunctions = require("../functions/user.functions");
 
 test(
