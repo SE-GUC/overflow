@@ -2,7 +2,7 @@ const functions = require("../functions/partner.functions");
 const userFunctions = require("../functions/user.functions");
 
 test(
-  "Get all partners",
+  "Get all reviews of a member",
   async () => {
     expect.assertions(1);
     const partners = await functions.getPartners();
