@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const passport = require("passport");
 const cors = require("cors");
 const path = require("path");
 // API Imports go here
@@ -25,7 +26,9 @@ mongoose
   .catch(err => console.log(err));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
+// app.use(passport.initialize())
+// Passport configuration
+// require('./config/passport')(passport)
 app.get("/", (req, res) => {
   res.send("<h1>Overflow Lirten Hub</h1>");
 });
