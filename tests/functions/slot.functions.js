@@ -1,5 +1,5 @@
 const axios = require("axios");
-const slotsUrl = "http://localhost:3000/api/slots/";
+const slotsUrl = "https://lirten-hub-overflow.herokuapp.com/api/slots/";
 const functions = {
   getLifeCoachSlots: async lifeCoachId => {
     const slots = await axios.get(slotsUrl + "lifeCoachSlots/" + lifeCoachId);

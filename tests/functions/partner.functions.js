@@ -3,14 +3,15 @@ const axios = require("axios");
 const functions = {
   getPartners: async () => {
     const partners = await axios.get(
-      "http://localhost:3000/api/users/partners"
+      "https://lirten-hub-overflow.herokuapp.com/api/users/partners"
     );
     return partners;
   },
   createPartner: async body => {
     const partner = await axios({
       method: "post",
-      url: "http://localhost:3000/api/users/partners/create",
+      url:
+        "https://lirten-hub-overflow.herokuapp.com/api/users/partners/create",
       data: body,
       headers: { "Content-Type": "application/json" }
     });
@@ -19,7 +20,9 @@ const functions = {
   updatePartner: async (id, body) => {
     await axios({
       method: "put",
-      url: "http://localhost:3000/api/users/partners/update/" + id,
+      url:
+        "https://lirten-hub-overflow.herokuapp.com/api/users/partners/update/" +
+        id,
       data: body,
       headers: { "Content-Type": "application/json" }
     });
