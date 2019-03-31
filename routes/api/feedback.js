@@ -85,7 +85,6 @@ router.put("/update/:partnerId/:feedbackId", async (req, res) => {
     if (!feedback) return res.status(400).json({ error: "feedback not found" });
     const feedbackIndex = partner.userData.feedback.indexOf(feedback);
     partner.userData.feedback[feedbackIndex].feedbackText = feedbackText;
-    partner.userData.feedback.push(feedback);
     const newPartner = await User.findOneAndUpdate(
       { _id: partnerId, type: "partner" },
       partner,

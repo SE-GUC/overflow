@@ -1,7 +1,7 @@
 const Joi = require("joi");
 const createValidation = request => {
   const createSchema = {
-    name: Joi.string().min(3).max(30).required(),
+    name: Joi.string().min(3).required(),
     dateOfBirth: Joi.date().required(),
     gender: Joi.string().min(4).max(6).required(),
     hourlyRate: Joi.string(),
@@ -14,7 +14,7 @@ const createValidation = request => {
 };
 const updateValidation = request => {
   const updateSchema = {
-    name: Joi.string().min(3).max(30).required(),
+    name: Joi.string().min(3).required(),
     dateOfBirth: Joi.date().required(),
     gender: Joi.string().min(4).max(6).required(),
     hourlyRate: Joi.string(),
