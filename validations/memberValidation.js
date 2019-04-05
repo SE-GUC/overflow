@@ -10,7 +10,8 @@ const createValidation = request => {
     interests: Joi.array().allow(null),
     password: Joi.string().required(),
     image: Joi.string(),
-    availability: Joi.string()
+    availability: Joi.string(),
+    location: Joi.string()
   };
   return Joi.validate(request, createSchema);
 };
@@ -24,7 +25,8 @@ const updateValidation = request => {
     skills: Joi.array().allow(null),
     interests: Joi.array().allow(null),
     image: Joi.string(),
-    availability: Joi.string()
+    availability: Joi.string(),
+    location: Joi.string()
   }
   return Joi.validate(request, updateSchema);
 };

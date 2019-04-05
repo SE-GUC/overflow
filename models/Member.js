@@ -27,6 +27,9 @@ const memberSchema = new Schema(
     },
     availability: {
       type: String
+    },
+    location: {
+      type: String
     }
   },
   { _id: false }
