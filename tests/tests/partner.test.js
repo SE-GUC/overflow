@@ -32,7 +32,8 @@ test(
     const partner = await functions.createPartner({
       name: "jest",
       email: "test" + Math.random() + "@hotmail.com",
-      password: "test"
+      password: "test",
+      approved: "false"
     });
     const partners = await functions.getPartners();
     expect(partners.data.data).toEqual(
@@ -65,11 +66,16 @@ test(
     const partners = await functions.getPartners();
     if (partners.data.data.length > 0) {
       const partner = partners.data.data[0];
-      const { name, email } = partner;
+      const {
+        name,
+        email,
+        userData: { approved }
+      } = partner;
       const newName = name + "test";
       await functions.updatePartner(partner._id, {
         name: newName,
-        email
+        email,
+        approved: Boolean(approved)
       });
       const updatedPartner = await userFunctions.getUser(partner._id);
       expect(updatedPartner.data.data.name).toEqual(newName);
@@ -104,7 +110,8 @@ test(
     const partner = await functions
       .updatePartner("1234", {
         name: "jest",
-        email: "test" + Math.random() + "@hotmail.com"
+        email: "test" + Math.random() + "@hotmail.com",
+        approved: "false"
       })
       .catch(error => {
         expect(error.response.status).toEqual(400);
