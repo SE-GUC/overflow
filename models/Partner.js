@@ -26,6 +26,9 @@ const partnerSchema = new Schema(
     },
     feedback: {
       type: [feedbackSchema]
+    },
+    approved: {
+      type: Boolean
     }
   },
   { _id: false }

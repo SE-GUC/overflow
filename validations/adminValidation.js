@@ -9,7 +9,8 @@ const createValidation = request => {
     gender: Joi.string().min(4).max(6),
     salary: Joi.string(),
     isSuper: Joi.boolean(),
-    dateOfBirth: Joi.date().required()
+    dateOfBirth: Joi.date().required(),
+    image: Joi.string()
   };
   return Joi.validate(request, createSchema);
 };
@@ -21,7 +22,8 @@ const updateSchema = {
   gender: Joi.string().min(4).max(6),
   salary: Joi.string(),
   isSuper: Joi.boolean(),
-  dateOfBirth: Joi.date().required()
+  dateOfBirth: Joi.date().required(),
+  image: Joi.string()
 }
   return Joi.validate(request, updateSchema);
 };

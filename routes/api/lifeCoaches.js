@@ -17,7 +17,7 @@ router.post("/create", async (req, res) => {
       .status(400)
       .send({ error: isValidated.error.details[0].message });
   }
-  const { name, email, password, ...userData } = req.body;
+  const { name, email, password, image, ...userData } = req.body;
   const emailCheck = await User.findOne({ email });
   if (emailCheck)
     return res.status(400).json({ error: "Email already exists" });
@@ -32,6 +32,7 @@ router.post("/create", async (req, res) => {
     type: "lifeCoach",
     name,
     email,
+    image,
     userData: lifeCoach,
     password: hashedPassword
   });
@@ -51,7 +52,7 @@ router.put("/update/:id", async (req, res) => {
         .status(400)
         .send({ error: isValidated.error.details[0].message });
     }
-    const { name, email, ...userData } = req.body;
+    const { name, email, image, ...userData } = req.body;
     const emailCheck = await User.findOne({ _id: { $ne: id }, email });
     if (emailCheck)
       return res.status(400).json({ error: "Email already exists" });
@@ -61,7 +62,7 @@ router.put("/update/:id", async (req, res) => {
     userData.age = newAge;
     //saving monthlySlots (can only be updated from slot routes)
     userData.monthlySlots = user.userData.monthlySlots;
-    await User.updateOne(query, { name, email, userData });
+    await User.updateOne(query, { name, email, image, userData });
     return res.sendStatus(200);
   } catch (error) {
     console.log(error);

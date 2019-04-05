@@ -10,7 +10,9 @@ const createValidation = request => {
     dailyHours: Joi.string(),
     startDate: Joi.date(),
     endDate: Joi.date(),
-    state: Joi.string()
+    state: Joi.string(),
+    availability: Joi.string(),
+    skills: Joi.array()
   };
   return Joi.validate(request, createSchema);
 };
@@ -25,6 +27,8 @@ const updateValidation = request => {
     startDate: Joi.date(),
     endDate: Joi.date(),
     state: Joi.string(),
+    availability: Joi.string(),
+    skills: Joi.array(),
     acceptedMemberId: Joi.string()
   };
   return Joi.validate(request, updateSchema);
