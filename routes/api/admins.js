@@ -17,7 +17,7 @@ router.post("/create", async (req, res) => {
       .status(400)
       .send({ error: isValidated.error.details[0].message });
   }
-  const { name, email, password, ...userData } = req.body;
+  const { name, email, password, image, ...userData } = req.body;
   //checking email
   const emailCheck = await User.findOne({ email });
   if (emailCheck)
@@ -33,6 +33,7 @@ router.post("/create", async (req, res) => {
     type: "admin",
     name,
     email,
+    image,
     userData: admin,
     password: hashedPassword
   });
@@ -53,14 +54,14 @@ router.put("/update/:id", async (req, res) => {
         .status(400)
         .send({ error: isValidated.error.details[0].message });
     }
-    const { name, email, ...userData } = req.body;
+    const { name, email, image, ...userData } = req.body;
     const emailCheck = await User.findOne({ _id: { $ne: id }, email });
     if (emailCheck)
       return res.status(400).json({ error: "Email already exists" });
     const { dateOfBirth } = userData;
     const age = new Date().getFullYear() - new Date(dateOfBirth).getFullYear();
     userData.age = age;
-    await User.updateOne(query, { name, email, userData });
+    await User.updateOne(query, { name, email, image, userData });
     return res.sendStatus(200);
   } catch (error) {
     console.log(error);
