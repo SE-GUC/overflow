@@ -32,6 +32,12 @@ const vacancySchema = new Schema({
   state: {
     type: String
   },
+  availability: {
+    type: String
+  },
+  skills: {
+    type: [String]
+  },
   acceptedMember: {
     type: userSchema
   }
