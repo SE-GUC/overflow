@@ -10,7 +10,8 @@ const jobApplications = require("./routes/api/jobApplications");
 const feedbacks = require("./routes/api/feedback");
 const slots = require("./routes/api/slot");
 const review = require("./routes/api/review");
-//const sendNotifications = require("./services/firebaseApp");
+const sendNotifications = require("./services/firebaseApp");
+const recommender = require("./services/recommendations");
 
 const app = express();
 app.use(cors());
@@ -26,20 +27,20 @@ mongoose
   .catch(err => console.log(err));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-// app.use(passport.initialize())
+ app.use(passport.initialize())
 // Passport configuration
-// require('./config/passport')(passport)
+ require('./config/passport')(passport)
 app.get("/", (req, res) => {
   res.send("<h1>Overflow Lirten Hub</h1>");
 });
 //firebase For testing purposes
-/*
+
 app.get("/messageTest", (req, res) => {
   res.sendFile(path.join(__dirname + "/messageTest.html"));
 });
 app.get("/firebase-messaging-sw.js", (req, res) => {
   res.sendFile(path.join(__dirname + "/firebase-messaging-sw.js"));
-});*/
+});
 // API Routes go here
 app.use("/api/users", users);
 app.use("/api/vacancies", vacancies);
@@ -51,6 +52,7 @@ app.use("/api/reviews", review);
 app.use("/", (req, res) => {
   return res.sendStatus(404);
 });
-
+recommender.setVacanciesProperties();
+recommender.setMemberProperties();
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Server up and running on port ${port}`));

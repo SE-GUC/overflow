@@ -4,14 +4,35 @@ const Vacancy = require("../../models/Vacancy");
 const User = require("../../models/User");
 const JobApplication = require("../../models/JobApplication");
 const validator = require("../../validations/vacancyValidation");
-
+const recommender = require("../../services/recommendations");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
   const vacancies = await Vacancy.find();
   return res.json({ data: vacancies });
 });
-
+router.post("/updateRecommendation/:memberID/:vacancyID", async (req, res) => {
+  const { vacancyID, memberID } = req.params;
+  try {
+    const member = await User.findById(memberID);
+    const vacancy = await Vacancy.findById(vacancyID);
+    if (vacancy) {
+      await recommender.addItemDetails(vacancy);
+      if (member) {
+        await recommender.addMemberDetails(member);
+        await recommender.addDetailView(vacancyID, memberID);
+        return res.sendStatus(200);
+      } else {
+        return res.sendStatus(400);
+      }
+    } else {
+      return res.sendStatus(400);
+    }
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
+});
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -25,7 +46,48 @@ router.get("/:id", async (req, res) => {
     res.sendStatus(400);
   }
 });
-
+router.get("/getRecommendationsNormal/:memberID", async (req, res) => {
+  const { memberID } = req.params;
+  const allVacancies = await Vacancy.find();
+  const recommendedVacancies = [];
+  const matchedObject = {
+    skillsCount:0,
+    vacancyID:''
+  }
+  const member  = await User.findById(memberID);
+  all
+  if(allVacancies.length>0){
+    if(member){
+      allVacancies.map((vacancy)=>{
+        
+      })
+    }
+  }
+});
+router.get("/getRecommendationsInter/:memberID", async (req, res) => {
+  const { memberID } = req.params;
+  const allVacancies = await Vacancy.find();
+  try {
+    const recommendedVacancies = await recommender.getRecommendations(
+      memberID,
+      2,
+      recommendedVacancies => {
+        console.log(recommendedVacancies, "In dest");
+        const fullVacancies = [];
+        recommendedVacancies.recomms.forEach(vacancyID => {
+          const vacancy = allVacancies.find(vacancy => {
+            return vacancy._id == vacancyID.id;
+          });
+          fullVacancies.push(vacancy);
+        });
+        return res.json({ data: fullVacancies });
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
+});
 router.get("/partnerVacancies/:partnerId", async (req, res) => {
   try {
     const { partnerId } = req.params;
