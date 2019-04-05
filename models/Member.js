@@ -24,6 +24,9 @@ const memberSchema = new Schema(
     },
     age: {
       type: Number
+    },
+    availability: {
+      type: String
     }
   },
   { _id: false }
