@@ -10,11 +10,8 @@ const jobApplications = require("./routes/api/jobApplications");
 const feedbacks = require("./routes/api/feedback");
 const slots = require("./routes/api/slot");
 const review = require("./routes/api/review");
-
 const recommender = require("./services/recommendations");
-
 const subscribers = require("./routes/api/subscribers");
-
 
 const app = express();
 app.use(cors());
@@ -30,9 +27,9 @@ mongoose
   .catch(err => console.log(err));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
- app.use(passport.initialize())
+app.use(passport.initialize());
 // Passport configuration
- require('./config/passport')(passport)
+require("./config/passport")(passport);
 app.get("/", (req, res) => {
   res.send("<h1>Overflow Lirten Hub</h1>");
 });
