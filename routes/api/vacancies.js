@@ -4,14 +4,35 @@ const Vacancy = require("../../models/Vacancy");
 const User = require("../../models/User");
 const JobApplication = require("../../models/JobApplication");
 const validator = require("../../validations/vacancyValidation");
-
+const recommender = require("../../services/recommendations");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
   const vacancies = await Vacancy.find();
   return res.json({ data: vacancies });
 });
-
+router.post("/updateRecommendation/:memberID/:vacancyID", async (req, res) => {
+  const { vacancyID, memberID } = req.params;
+  try {
+    const member = await User.findById(memberID);
+    const vacancy = await Vacancy.findById(vacancyID);
+    if (vacancy) {
+      await recommender.addItemDetails(vacancy);
+      if (member) {
+        await recommender.addMemberDetails(member);
+        await recommender.addDetailView(vacancyID, memberID);
+        return res.sendStatus(200);
+      } else {
+        return res.sendStatus(400);
+      }
+    } else {
+      return res.sendStatus(400);
+    }
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
+});
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -25,7 +46,108 @@ router.get("/:id", async (req, res) => {
     res.sendStatus(400);
   }
 });
+router.get("/getRecommendationsNormal/:memberID", async (req, res) => {
+  const { memberID } = req.params;
+  try {
+    const allVacancies = await Vacancy.find();
+    const recommendedVacancies = [];
+    let matchedArray = [];
+    let id = memberID;
+    const member = await User.findById(id);
+    console.log(member);
+    if (allVacancies) {
+      if (member) {
+        allVacancies.map(vacancy => {
+          let matchedObject = {
+            skillsMatchCount: 0,
+            locationMatch: false,
+            availabilityMatch: false,
+            vacancyID: ""
+          };
+          matchedObject.vacancyID = vacancy._id;
+          if (vacancy.location === member.userData.location) {
+            matchedObject.locationMatch = true;
+          }
+          if (vacancy.availability === member.userData.availability) {
+            matchedObject.availabilityMatch = true;
+          }
+          if (member.userData.skills.length > 0) {
+            member.userData.skills.map(skill => {
+              // console.log(vacancy.skills);
+              if (vacancy.skills.length > 0) {
+                if (vacancy.skills.includes(skill)) {
+                  matchedObject.skillsMatchCount =
+                    matchedObject.skillsMatchCount + 1;
+                }
+              }
+            });
+          }
 
+          matchedArray.push(matchedObject);
+        });
+        console.log(matchedArray, "Before Sorting");
+        const sortedArray = matchedArray.sort((v1, v2) => {
+          let tp1 = v1.skillsMatchCount;
+          let tp2 = v2.skillsMatchCount;
+          if (v1.locationMatch === true) {
+            tp1 = tp1 + 3;
+          }
+          if (v2.locationMatch === true) {
+            tp2 = tp2 + 3;
+          }
+          if (v1.availabilityMatch === true) {
+            tp1 = tp1 + 2;
+          }
+          if (v2.availabilityMatch === true) {
+            tp2 = tp2 + 2;
+          }
+          return tp2 - tp1;
+        });
+        let recommended = [];
+        sortedArray.map(x => {
+          recommended.push(
+            allVacancies.find(vacancy => {
+              return x.vacancyID == vacancy._id;
+            })
+          );
+        });
+        console.log(recommended);
+        return res.json({ data: recommended });
+      } else {
+        return res.sendStatus(400);
+      }
+    } else {
+      return res.sendStatus(400);
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(400);
+  }
+});
+router.get("/getRecommendationsInter/:memberID", async (req, res) => {
+  const { memberID } = req.params;
+  const allVacancies = await Vacancy.find();
+  try {
+    const recommendedVacancies = await recommender.getRecommendations(
+      memberID,
+      2,
+      recommendedVacancies => {
+        console.log(recommendedVacancies, "In dest");
+        const fullVacancies = [];
+        recommendedVacancies.recomms.forEach(vacancyID => {
+          const vacancy = allVacancies.find(vacancy => {
+            return vacancy._id == vacancyID.id;
+          });
+          fullVacancies.push(vacancy);
+        });
+        return res.json({ data: fullVacancies });
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
+});
 router.get("/partnerVacancies/:partnerId", async (req, res) => {
   try {
     const { partnerId } = req.params;
