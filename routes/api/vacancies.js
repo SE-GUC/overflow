@@ -48,20 +48,80 @@ router.get("/:id", async (req, res) => {
 });
 router.get("/getRecommendationsNormal/:memberID", async (req, res) => {
   const { memberID } = req.params;
-  const allVacancies = await Vacancy.find();
-  const recommendedVacancies = [];
-  const matchedObject = {
-    skillsCount:0,
-    vacancyID:''
-  }
-  const member  = await User.findById(memberID);
-  all
-  if(allVacancies.length>0){
-    if(member){
-      allVacancies.map((vacancy)=>{
-        
-      })
+  try {
+    const allVacancies = await Vacancy.find();
+    const recommendedVacancies = [];
+    let matchedArray = [];
+    let id = memberID;
+    const member = await User.findById(id);
+    console.log(member);
+    if (allVacancies) {
+      if (member) {
+        allVacancies.map(vacancy => {
+          let matchedObject = {
+            skillsMatchCount: 0,
+            locationMatch: false,
+            availabilityMatch: false,
+            vacancyID: ""
+          };
+          matchedObject.vacancyID = vacancy._id;
+          if (vacancy.location === member.userData.location) {
+            matchedObject.locationMatch = true;
+          }
+          if (vacancy.availability === member.userData.availability) {
+            matchedObject.availabilityMatch = true;
+          }
+          if (member.userData.skills.length > 0) {
+            member.userData.skills.map(skill => {
+              // console.log(vacancy.skills);
+              if (vacancy.skills.length > 0) {
+                if (vacancy.skills.includes(skill)) {
+                  matchedObject.skillsMatchCount =
+                    matchedObject.skillsMatchCount + 1;
+                }
+              }
+            });
+          }
+
+          matchedArray.push(matchedObject);
+        });
+        console.log(matchedArray, "Before Sorting");
+        const sortedArray = matchedArray.sort((v1, v2) => {
+          let tp1 = v1.skillsMatchCount;
+          let tp2 = v2.skillsMatchCount;
+          if (v1.locationMatch === true) {
+            tp1 = tp1 + 3;
+          }
+          if (v2.locationMatch === true) {
+            tp2 = tp2 + 3;
+          }
+          if (v1.availabilityMatch === true) {
+            tp1 = tp1 + 2;
+          }
+          if (v2.availabilityMatch === true) {
+            tp2 = tp2 + 2;
+          }
+          return tp2 - tp1;
+        });
+        let recommended = [];
+        sortedArray.map(x => {
+          recommended.push(
+            allVacancies.find(vacancy => {
+              return x.vacancyID == vacancy._id;
+            })
+          );
+        });
+        console.log(recommended);
+        return res.json({ data: recommended });
+      } else {
+        return res.sendStatus(400);
+      }
+    } else {
+      return res.sendStatus(400);
     }
+  } catch (error) {
+    console.log(error);
+    return res.status(400);
   }
 });
 router.get("/getRecommendationsInter/:memberID", async (req, res) => {

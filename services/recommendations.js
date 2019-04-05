@@ -17,6 +17,8 @@ const setVacanciesProperties = () => {
       new rqs.AddItemProperty("monthlyWage", "string"),
       new rqs.AddItemProperty("location", "string"),
       new rqs.AddItemProperty("dailyHours", "string"),
+      new rqs.AddItemProperty("availablity", "string"),
+      new rqs.AddItemProperty("skills", "set"),
       new rqs.AddItemProperty("startDate", "date"),
       new rqs.AddItemProperty("endDate", "endDate")
     ])
@@ -34,12 +36,13 @@ const setMemberProperties = () => {
       new rqs.AddUserProperty("skills", "set"),
       new rqs.AddUserProperty("location", "string"),
       new rqs.AddUserProperty("age", "int"),
-      new rqs.AddUserProperty("interests", "set")
+      new rqs.AddUserProperty("interests", "set"),
+      new rqs.AddUserProperty("availability", "string")
     ])
   );
 };
 const addMemberDetails = member => {
-  const { skills, location, age, interests } = member.userData;
+  const { skills, location, age, interests, availability } = member.userData;
   const memberID = member._id;
   const currentDate = new Date();
   client.send(
@@ -49,7 +52,8 @@ const addMemberDetails = member => {
         skills: skills,
         location: location,
         age: age,
-        interests: interests
+        interests: interests,
+        availability: availability
       },
       { timestamp: currentDate, cascadeCreate: true }
     )
@@ -64,6 +68,8 @@ const addItemDetails = vacancy => {
     location,
     dailyHours,
     startDate,
+    availability,
+    skills,
     endDate
   } = vacancy;
   const partnerID = vacancy.partner._id;
@@ -79,6 +85,8 @@ const addItemDetails = vacancy => {
         location: location,
         dailyHours: dailyHours,
         startDate: startDate,
+        skills: skills,
+        availability: availability,
         endDate: endDate
       },
       { timestamp: currentDate, cascadeCreate: true }
