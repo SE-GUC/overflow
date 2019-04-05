@@ -13,17 +13,27 @@ messaging.setBackgroundMessageHandler(payload => {
     "[firebase-messaging-sw.js NOIS] Received background message ",
     payload
   );
-  console.log(payload);
-  const notificationTitle = payload.data.title;
+  const { title, body, link, actionTitle, emoji} = payload.data;
+  const notificationTitle = emoji ? title + String.fromCodePoint(emoji) : title
   const notificationOptions = {
-    body: payload.data.body,
-    icon: "/firebase-logo.png"
-  };
+    body,
+    icon: "https://www.w3schools.com/images/w3schools_green.jpg",
+    actions: [
+              {
+                action: link,
+                title: actionTitle
+              }
+             ]
+  }
 
   return self.registration.showNotification(
     notificationTitle,
     notificationOptions
   );
 });
-
-// Customize notification here
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+  event.waitUntil(
+    clients.openWindow(event.action)
+  );
+})

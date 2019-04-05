@@ -10,8 +10,11 @@ const jobApplications = require("./routes/api/jobApplications");
 const feedbacks = require("./routes/api/feedback");
 const slots = require("./routes/api/slot");
 const review = require("./routes/api/review");
-const sendNotifications = require("./services/firebaseApp");
+
 const recommender = require("./services/recommendations");
+
+const subscribers = require("./routes/api/subscribers");
+
 
 const app = express();
 app.use(cors());
@@ -33,7 +36,8 @@ app.use(express.urlencoded({ extended: false }));
 app.get("/", (req, res) => {
   res.send("<h1>Overflow Lirten Hub</h1>");
 });
-//firebase For testing purposes
+
+//firebase serviceworker
 
 app.get("/messageTest", (req, res) => {
   res.sendFile(path.join(__dirname + "/messageTest.html"));
@@ -48,6 +52,7 @@ app.use("/api/jobApplications", jobApplications);
 app.use("/api/feedback", feedbacks);
 app.use("/api/slots", slots);
 app.use("/api/reviews", review);
+app.use("/api/subscribers", subscribers);
 // 404s
 app.use("/", (req, res) => {
   return res.sendStatus(404);

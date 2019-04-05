@@ -19,6 +19,9 @@ const UserSchema = new Schema(
       required: true
       //select: false
     },
+    image: {
+      type: String
+    },
     userData: {}
   },
   { strict: false }

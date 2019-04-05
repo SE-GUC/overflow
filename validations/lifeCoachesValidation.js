@@ -8,8 +8,8 @@ const createValidation = (request) => {
     dateOfBirth: Joi.date().required(),
     gender: Joi.string().min(4).max(6).required(),
     hourlyRate:Joi.string(),
-    email: Joi.string().email({ minDomainAtoms: 2 }).required()
-
+    email: Joi.string().email({ minDomainAtoms: 2 }).required(),
+    image: Joi.string()
   };
   return Joi.validate(request, createSchema);
 };
@@ -19,8 +19,8 @@ const updateValidation = (request) => {
     dateOfBirth: Joi.date().required(),
     gender: Joi.string().min(4).max(6).required(),
     hourlyRate:Joi.string(),
-    email: Joi.string().email({ minDomainAtoms: 2 }).required()
-
+    email: Joi.string().email({ minDomainAtoms: 2 }).required(),
+    image: Joi.string()
   }
   return Joi.validate(request, updateSchema);
 };

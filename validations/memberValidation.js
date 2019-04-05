@@ -8,7 +8,10 @@ const createValidation = request => {
     email: Joi.string().email({ minDomainAtoms: 2 }).required(),
     skills: Joi.array().allow(null),
     interests: Joi.array().allow(null),
-    password: Joi.string().required()
+    password: Joi.string().required(),
+    image: Joi.string(),
+    availability: Joi.string(),
+    location: Joi.string()
   };
   return Joi.validate(request, createSchema);
 };
@@ -20,7 +23,10 @@ const updateValidation = request => {
     hourlyRate: Joi.string(),
     email: Joi.string().email({ minDomainAtoms: 2 }).required(),
     skills: Joi.array().allow(null),
-    interests: Joi.array().allow(null)
+    interests: Joi.array().allow(null),
+    image: Joi.string(),
+    availability: Joi.string(),
+    location: Joi.string()
   }
   return Joi.validate(request, updateSchema);
 };
