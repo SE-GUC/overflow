@@ -31,7 +31,7 @@ router.post("/send", async (req, res) => {
       url: "https://fcm.googleapis.com/fcm/send",
       data: {
         registration_ids,
-        data,
+        data
       },
       headers
     });
@@ -56,6 +56,10 @@ router.post("/add", async (req, res) => {
   if (result.error)
     return res.status(400).send({ error: result.error.details[0].message });
   try {
+    const subscriberCheck = await Subscribers.find({ userId, token });
+    console.log(subscriberCheck);
+    if (subscriberCheck.length > 0)
+      return res.json({ msg: "token already exists" });
     const subscriber = await Subscribers.create({
       userId,
       token
