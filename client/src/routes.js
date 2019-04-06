@@ -1,8 +1,8 @@
 import React from "react";
 import { Route } from "react-router-dom";
-import VacancyPage from './pages/VacancyPage'
+import Vacancy from './pages/Vacancy'
 export default () => {
   return [
-  <Route exact path="/VacancyPage" component={VacancyPage} />
+  <Route exact path="/Vacancy/:id" component={Vacancy} />
 ];
 };

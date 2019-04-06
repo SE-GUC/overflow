@@ -1,17 +1,15 @@
 import Axios from "axios";
 
-const path = "http://overflow-se.herokuapp.com/api/";
+const path = "https://lirten-hub-overflow.herokuapp.com/api/";
 export const get = urlInput => {
   let result = [];
   let url = path + urlInput;
   return Axios.get(url)
-    .catch(error => {
-      console.log(error);
+    .then(response => {
+      console.log(response);
+      return response.data.data;
     })
-    .then(function(response) {
-      console.log(response)
-      return response.data;
-    });
+    .catch(error => console.log(error));
 };
 
 const postData = (url = ``, data = {}) => {
@@ -24,4 +22,3 @@ export const post = (urlInput, req) => {
   let url = path + urlInput;
   return postData(url, req);
 };
-
