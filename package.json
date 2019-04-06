@@ -2,12 +2,13 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "dependencies": {
     "@firebase/messaging": "^0.3.15",
     "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",
     "circular-json": "^0.5.9",
+    "concurrently": "^4.1.0",
     "config": "^3.0.1",
     "cors": "^2.8.5",
     "express": "^4.16.4",
@@ -26,9 +27,12 @@
     "nodemon": "^1.18.10"
   },
   "scripts": {
+    "client-install": "npm install --prefix client",
+    "start": "node server",
+    "server": "nodemon server",
     "test": "jest --runInBand",
-    "start": "node index",
-    "dev": "nodemon index"
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "Overflow",
   "license": "ISC"
