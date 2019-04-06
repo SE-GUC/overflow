@@ -107,7 +107,9 @@ const getRecommendations = async (memberID, requiredNumber, fn) => {
   let recommendedItems = [];
   client
     .send(
-      new rqs.RecommendItemsToUser(memberID, requiredNumber),
+      new rqs.RecommendItemsToUser(memberID, requiredNumber, {
+        cascadeCreate: true
+      }),
       (err, recommended) => {
         console.log(recommended, "In source");
         fn(recommended);
