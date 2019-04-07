@@ -1,0 +1,27 @@
+.vacancies-icon {
+  display: inline-flex !important;
+}
+.vacancy-card {
+  margin: auto !important;
+  margin-bottom: 10px !important;
+  width: 50% !important;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+.vacancy-card img {
+  margin: 5px;
+}
+.vacancy-label {
+  margin-top: 5px !important;
+}
+
+@media (max-width: 768px) {
+  .vacancy-card {
+    width: 90% !important;
+  }
+  .vacancy-card img {
+    align-self: flex-start;
+  }
+}

@@ -21,7 +21,7 @@ const updateValidation = request => {
   const updateSchema = {
     partnerId: Joi.required(),
     description: Joi.string().required(),
-    title:Joi.string(),
+    title: Joi.string(),
     duration: Joi.string(),
     monthlyWage: Joi.string(),
     location: Joi.string(),

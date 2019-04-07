@@ -8,7 +8,7 @@ const vacancySchema = new Schema({
     required: true
   },
   title: {
-    type: String,
+    type: String
   },
   description: {
     type: String,

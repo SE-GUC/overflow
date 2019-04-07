@@ -1,0 +1,27 @@
+.main-menu.ui.menu.fixed{
+background-image: linear-gradient(to right top, #06191d, #091f23, #0b2529,
+  #0c2b30, #0e3136, #102f37, #142c37, #182a36, #1b202a,
+  #19161d, #120d10, #000000);
+
+
+}
+.mainMenu-link{
+  color:white;
+  font-family: 'Roboto'
+
+}
+.mainMenu-link:hover {
+ color:grey;
+}
+.ui.menu:not(.vertical) .item>.button.login-button {
+  margin-right:0.5em;
+  border-color:white;
+}
+/*#centerLogo {
+ text-align: center;
+ position: absolute;
+ top: 50%;
+ left: 48%;
+ transform: translate(-50%, -50%);
+ color: white;
+}*/
