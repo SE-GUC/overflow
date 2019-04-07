@@ -74,9 +74,9 @@ class Vacancy extends Component {
         }
       }
       toBeReturned = (
-        <div class="vacancyGrid">
-          <Responsive>
-            <Grid celled centered raised>
+      
+         
+            <Grid celled container stackable centered raised id="vacancyGrid">
               <Grid.Row>
                 <Grid.Column textAlign="center">
                   <Header as="h1">{title}</Header>
@@ -108,7 +108,7 @@ class Vacancy extends Component {
                   </Grid.Row>
                   <Divider />
                   <Grid.Row textAlign="center">
-                    <Button stretch>Apply On This Job</Button>
+                    <Button color="yellow" stretch>Apply On This Job</Button>
                   </Grid.Row>
                 </Grid.Column>
               </Grid.Row>
@@ -164,8 +164,8 @@ class Vacancy extends Component {
                 </Grid.Column>
               </Grid.Row>
             </Grid>
-          </Responsive>
-        </div>
+        
+       
       );
     }
     return toBeReturned;
