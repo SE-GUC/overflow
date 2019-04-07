@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import decode from 'jwt-decode'
+import decode from "jwt-decode";
 import * as axios from "../services/axios.js";
 import {
   Form,
@@ -110,7 +110,6 @@ class SignUp extends React.Component {
     this.setState({ userInfo: userInfo });
   };
   componentDidMount() {
-    console.log(decode(localStorage.getItem("jwtToken")))
     this.setState({ reserveAttrs: this.state.userInfo });
   }
   checkInputArray = arr => {
@@ -250,10 +249,10 @@ class SignUp extends React.Component {
       type === "Member"
         ? "users/members/create"
         : type === "Partner"
-        ? "users/partners/create/"
-        : type === "LifeCoach"
-        ? "users/lifeCoaches/create/"
-        : "";
+          ? "users/partners/create/"
+          : type === "LifeCoach"
+            ? "users/lifeCoaches/create/"
+            : "";
     let data = this.state.userInfo;
     let newData = {};
     Object.keys(data).map(key => {
@@ -295,7 +294,7 @@ class SignUp extends React.Component {
           .post("users/login", body)
           .then(data => {
             console.log(data.data.data, "After Login");
-            localStorage.setItem("jwtToken",data.data.data)
+            localStorage.setItem("jwtToken", data.data.data);
             this.redirect();
           })
           .catch(error => {
@@ -354,10 +353,10 @@ class SignUp extends React.Component {
       addedMembers,
       addedProjects
     } = this.state;
- 
+
     return (
-    //   <div class="signup">
-        <Grid centered container id="signup"  stackable>
+      //   <div class="signup">
+      <Grid centered container id="signup" stackable>
         <Container>
           <Grid.Row id="header-row">
             <Header as="h1"> SignUp to LirtenHub </Header>
@@ -603,9 +602,9 @@ class SignUp extends React.Component {
               <Message.Header>{errorContent}</Message.Header>
             </Message.Content>
           </Message>
-          </Container>
-        </Grid>
-    //   </div>
+        </Container>
+      </Grid>
+      //   </div>
     );
   }
 }
