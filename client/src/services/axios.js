@@ -15,7 +15,7 @@ export const get = urlInput => {
 };
 
 const postData = (url = ``, data = {}) => {
-  return Axios.post(url, data).then(response => response);
+  return Axios.post(url, data);
 };
 export const post = (urlInput, req) => {
   let url = path + urlInput;

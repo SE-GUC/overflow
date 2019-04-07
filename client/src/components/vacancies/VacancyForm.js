@@ -74,7 +74,6 @@ export default class VacancyForm extends Component {
     Axios.post(url, data)
       .then(resp => {
         this.setState({ loader: false });
-        console.log(resp.data.data + "HI");
         //Goes to Vacancy Page here
       })
       .catch(error => {
