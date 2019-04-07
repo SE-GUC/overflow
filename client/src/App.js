@@ -1,28 +1,45 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import React, { Component } from "react";
+import "./App.css";
+import { Responsive } from "semantic-ui-react";
+import { withRouter } from "react-router-dom";
+import DesktopMenu from "./components/appMenus/DesktopMenu.js";
+import MobileMenu from "./components/appMenus/MobileMenu.js";
 class App extends Component {
+  state = {
+    isSidebarVisible: false
+  };
+  showSideBar = () => {
+    this.setState({ isSidebarVisible: true });
+  };
+  hideSidebar = () => {
+    this.setState({ isSidebarVisible: false });
+  };
   render() {
+    const { isSidebarVisible } = this.state;
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
+      <div>
+        <Responsive minWidth={Responsive.onlyTablet.minWidth}>
+          <DesktopMenu />
+          <div className="app-container">{this.props.children}</div>
+        </Responsive>
+        <Responsive maxWidth={Responsive.onlyMobile.maxWidth}>
+          <MobileMenu
+            showSideBar={this.showSideBar}
+            isSidebarVisible={isSidebarVisible}
+          />
+
+          <div
+            onClick={this.hideSidebar}
+            className="element app-container"
+            //temp height (until there are children)
+            style={{ overflow: "hidden", "min-height": "60em" }}
           >
-            Learn React
-          </a>
-        </header>
+            {this.props.children}
+          </div>
+        </Responsive>
       </div>
     );
   }
 }
 
-export default App;
+export default withRouter(App);
