@@ -99,9 +99,9 @@ class Vacancy extends Component {
         }
       }
       toBeReturned = (
-        <div class="vacancyGrid">
-          <Responsive>
-            <Grid celled centered raised>
+      
+         
+            <Grid celled container stackable centered raised id="vacancyGrid">
               <Grid.Row>
                 <Grid.Column textAlign="center">
                   <Header as="h1">{title}</Header>
@@ -133,6 +133,7 @@ class Vacancy extends Component {
                   </Grid.Row>
                   <Divider />
                   <Grid.Row textAlign="center">
+
                     {!applied ? (
                       <Button
                         disabled={!memberType}
@@ -152,6 +153,7 @@ class Vacancy extends Component {
                         Application in Process
                       </Button>
                     )}
+
                   </Grid.Row>
                 </Grid.Column>
               </Grid.Row>
@@ -207,7 +209,8 @@ class Vacancy extends Component {
                 </Grid.Column>
               </Grid.Row>
             </Grid>
-          </Responsive>
+
+        
           <ApplyModal
             vacancy={this.state.vacancy}
             memberId={this.state.memberId}
@@ -215,7 +218,8 @@ class Vacancy extends Component {
             handleHidden={()=>this.toggleHidden}
             applied = {()=>this.setApplied()}
           />
-        </div>
+      
+
       );
     }
     return toBeReturned;
