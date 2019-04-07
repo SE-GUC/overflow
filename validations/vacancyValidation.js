@@ -20,7 +20,6 @@ const createValidation = request => {
 const updateValidation = request => {
   const updateSchema = {
     partnerId: Joi.required(),
-    title: Joi.string(),
     description: Joi.string().required(),
     title: Joi.string(),
     duration: Joi.string(),
