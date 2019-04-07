@@ -32,7 +32,7 @@ class App extends Component {
             onClick={this.hideSidebar}
             className="element app-container"
             //temp height (until there are children)
-            style={{ overflow: "hidden", "min-height": "60em" }}
+            style={{ overflow: "hidden", minHeight: "60em" }}
           >
             {this.props.children}
           </div>

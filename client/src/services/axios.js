@@ -15,10 +15,7 @@ export const get = urlInput => {
 };
 
 const postData = (url = ``, data = {}) => {
-  // Default options are marked with *
-  return Axios.post(url, data)
-    .then(response => console.log(response))
-    .catch(error => console.log(error));
+  return Axios.post(url, data);
 };
 export const post = (urlInput, req) => {
   let url = path + urlInput;

@@ -9,7 +9,7 @@ export default class MobileField extends Component {
       <div>
         <Link className="mainMenu-link" to={to}>
           <Menu.Item>
-            <Header textAlign=" center" icon inverted>
+            <Header textAlign="center" icon inverted>
               <Icon name={icon} />
               {name}
             </Header>
