@@ -1,9 +1,7 @@
 import Axios from "axios";
-import qs from "qs";
-const path = "http://localhost:3000/api/";
+const path = "https://lirten-hub-overflow.herokuapp.com/api/";
 
 export const get = urlInput => {
-  let result = [];
   let url = path + urlInput;
   return Axios.get(url)
     .then(response => {

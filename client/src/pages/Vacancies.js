@@ -25,9 +25,7 @@ class Vacancies extends Component {
 
   componentDidMount() {
     get("vacancies")
-      .then(response =>
-        this.setState({ vacancies: response.data, loading: false })
-      )
+      .then(response => this.setState({ vacancies: response, loading: false }))
       .catch(error => this.setState({ error: true, loading: false }));
   }
   search = vacancies => {
