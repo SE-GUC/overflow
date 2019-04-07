@@ -35,8 +35,13 @@ class Vacancy extends Component {
     });
   };
   componentDidMount() {
+    const tokenCheck = localStorage.getItem("jwtToken");
+    if (!tokenCheck) {
+      this.setState({ memberType: false });
+      this.getVacancy();
+      return;
+    }
     let decoded = decode(localStorage.getItem("jwtToken"));
-    console.log(decoded);
     if (decoded.type) {
       if (decoded.type === "member") {
         this.setState({ memberType: true, memberId: decoded.id });
