@@ -13,8 +13,10 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/create", async (req, res) => {
+  console.log("BODYY")
   const isValidated = validator.createValidation(req.body);
   if (isValidated.error) {
+    console.log("ERORRR");
     return res
       .status(400)
       .send({ error: isValidated.error.details[0].message });

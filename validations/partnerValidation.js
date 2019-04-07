@@ -14,7 +14,7 @@ const createValidation = request => {
     password: Joi.string().required(),
     image: Joi.string(),
     approved: Joi.boolean().required()
-  };
+  };  
   return Joi.validate(request, createSchema);
 };
 const updateValidation = request => {
