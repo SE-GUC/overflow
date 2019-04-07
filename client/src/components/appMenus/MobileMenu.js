@@ -36,8 +36,8 @@ class MobileMenu extends Component {
           <MobileField to="/" icon="building outline" name="Partners" />
           <MobileField to="/" icon="flag outline" name="Life Coaches" />
           <MobileField to="/Vacancies" icon="wpforms" name="Vacancies" />
-          <MobileField to="/" name="Log in" />
-          <MobileField to="/" name="Sign up" />
+          <MobileField login={this.props.login} to="/" name="Log in" />
+          <MobileField to="/SignUp" name="Sign up" />
         </Sidebar>
       </div>
     );

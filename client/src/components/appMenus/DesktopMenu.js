@@ -32,10 +32,12 @@ class DesktopMenu extends Component {
           </Link>
         </Menu.Item>
         <Menu.Item position="right">
-          <Button className="login-button" inverted>
+          <Button onClick={this.props.login} className="login-button" inverted>
             Log In
           </Button>
-          <Button inverted> Sign Up </Button>
+          <Button onClick={this.props.redirectSignUp} inverted>
+            Sign Up
+          </Button>
         </Menu.Item>
       </Menu>
     );
