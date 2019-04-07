@@ -4,9 +4,11 @@ import { Responsive } from "semantic-ui-react";
 import { withRouter } from "react-router-dom";
 import DesktopMenu from "./components/appMenus/DesktopMenu.js";
 import MobileMenu from "./components/appMenus/MobileMenu.js";
+import LoginModal from "./components/login/LoginModal.js";
 class App extends Component {
   state = {
-    isSidebarVisible: false
+    isSidebarVisible: false,
+    openLoginModal: false
   };
   showSideBar = () => {
     this.setState({ isSidebarVisible: true });
@@ -14,20 +16,33 @@ class App extends Component {
   hideSidebar = () => {
     this.setState({ isSidebarVisible: false });
   };
+  redirectSignUp = () => {
+    this.props.history.push("/SignUp");
+  };
+  openLoginModal = () => {
+    this.setState({ openLoginModal: true });
+  };
+  closeLoginModal = () => {
+    this.setState({ openLoginModal: false });
+  };
+
   render() {
-    const { isSidebarVisible } = this.state;
+    const { isSidebarVisible, openLoginModal } = this.state;
     return (
       <div>
         <Responsive minWidth={Responsive.onlyTablet.minWidth}>
-          <DesktopMenu />
+          <DesktopMenu
+            redirectSignUp={this.redirectSignUp}
+            login={this.openLoginModal}
+          />
           <div className="app-container">{this.props.children}</div>
         </Responsive>
         <Responsive maxWidth={Responsive.onlyMobile.maxWidth}>
           <MobileMenu
             showSideBar={this.showSideBar}
             isSidebarVisible={isSidebarVisible}
+            login={this.openLoginModal}
           />
-
           <div
             onClick={this.hideSidebar}
             className="element app-container"
@@ -37,6 +52,7 @@ class App extends Component {
             {this.props.children}
           </div>
         </Responsive>
+        <LoginModal open={openLoginModal} close={this.closeLoginModal} />
       </div>
     );
   }
