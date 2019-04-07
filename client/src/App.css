@@ -31,10 +31,25 @@
     transform: rotate(360deg);
   }
 }
-.element::-webkit-scrollbar { width: 0 !important }
-.element { -ms-overflow-style: none; }
-.element { overflow: -moz-scrollbars-none; }
+.element::-webkit-scrollbar {
+  width: 0 !important;
+}
+.element {
+  -ms-overflow-style: none;
+}
+.element {
+  overflow: -moz-scrollbars-none;
+}
 .app-container {
   margin-top: 5em;
-  min-height:40em;
+}
+.app-wrapper {
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: 194px;
+}
+.ui.dimmer {
+  height: 100vh !important;
+  position: fixed !important;
+  top: 0 !important;
 }
