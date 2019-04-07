@@ -27,7 +27,7 @@ class DesktopMenu extends Component {
           </Link>
         </Menu.Item>
         <Menu.Item>
-          <Link className="mainMenu-link" to="/VacancyPage">
+          <Link className="mainMenu-link" to="/">
             Vacancies
           </Link>
         </Menu.Item>
