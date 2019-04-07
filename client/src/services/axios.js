@@ -1,21 +1,25 @@
 import Axios from "axios";
-
+import qs from "qs";
 const path = "http://localhost:3000/api/";
+
 export const get = urlInput => {
   let result = [];
   let url = path + urlInput;
   return Axios.get(url)
-    .catch(error => {
-      console.log(error);
-    })
-    .then(function(response) {
+    .then(response => {
       console.log(response);
-      return response.data;
-    });
+      return response.data.data;
+    })
+    .catch(error => console.log(error));
 };
 
 const postData = (url = ``, data = {}) => {
-  return Axios.post(url, data);
+  return Axios({
+    method: "post",
+    url: url,
+    data: data,
+    headers: { "Content-Type": "application/json" }
+  });
 };
 export const post = (urlInput, req) => {
   let url = path + urlInput;
