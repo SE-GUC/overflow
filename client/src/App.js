@@ -55,7 +55,7 @@ class App extends Component {
           </div>
         </Responsive>
         <LoginModal open={openLoginModal} close={this.closeLoginModal} />
-        <Footer
+         <Footer
           redirectSignUp={this.redirectSignUp}
           login={this.openLoginModal}
         />

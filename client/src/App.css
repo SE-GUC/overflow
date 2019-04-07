@@ -36,4 +36,5 @@
 .element { overflow: -moz-scrollbars-none; }
 .app-container {
   margin-top: 5em;
+  min-height:40em;
 }
