@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import decode from 'jwt-decode'
 import * as axios from "../services/axios.js";
 import {
   Form,
@@ -109,6 +110,7 @@ class SignUp extends React.Component {
     this.setState({ userInfo: userInfo });
   };
   componentDidMount() {
+    console.log(decode(localStorage.getItem("jwtToken")))
     this.setState({ reserveAttrs: this.state.userInfo });
   }
   checkInputArray = arr => {

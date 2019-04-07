@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import * as axios from "../services/axios.js";
+import ApplyModal from "../components/vacancies/ApplyModal";
+import decode from "jwt-decode";
 import {
   Button,
   Grid,
@@ -18,7 +20,11 @@ class Vacancy extends Component {
   constructor() {
     super();
     this.state = {
-      vacancy: null
+      vacancy: null,
+      modalHidden: true,
+      memberType: false,
+      memberId: "",
+      applied: false
     };
   }
   getVacancy = async () => {
@@ -29,10 +35,29 @@ class Vacancy extends Component {
     });
   };
   componentDidMount() {
+    let decoded = decode(localStorage.getItem("jwtToken"));
+    console.log(decoded);
+    if (decoded.type) {
+      if (decoded.type === "member") {
+        this.setState({ memberType: true, memberId: decoded.id });
+      }
+    } else {
+      this.setState({ memberType: false });
+    }
     this.getVacancy();
   }
+  handleApply = () => {
+    this.setState({ modalHidden: false });
+  };
+  setApplied = ()=>{
+    console.log("In applied")
+    this.setState({applied:true,modalHidden:false})
+  }
+  toggleHidden = ()=>{
+    this.setState({modalHidden:!this.state.modalHidden})
+  }
   render() {
-    const { vacancy } = this.state;
+    const { vacancy, applied, memberType } = this.state;
     let toBeReturned = "";
 
     if (!vacancy) {
@@ -108,7 +133,27 @@ class Vacancy extends Component {
                   </Grid.Row>
                   <Divider />
                   <Grid.Row textAlign="center">
-                    <Button color="yellow" stretch>Apply On This Job</Button>
+
+                    {!applied ? (
+                      <Button
+                        disabled={!memberType}
+                        onClick={this.handleApply}
+                        stretch
+                      >
+                        Apply On This Job
+                      </Button>
+                    ) : (
+                      <Button
+                        disabled={true}
+                        icon
+                        
+                        stretch
+                      >
+                      <Icon name="check circle" color="green"/>
+                        Application in Process
+                      </Button>
+                    )}
+
                   </Grid.Row>
                 </Grid.Column>
               </Grid.Row>
@@ -164,8 +209,17 @@ class Vacancy extends Component {
                 </Grid.Column>
               </Grid.Row>
             </Grid>
+
         
-       
+          <ApplyModal
+            vacancy={this.state.vacancy}
+            memberId={this.state.memberId}
+            hidden={this.state.modalHidden}
+            handleHidden={()=>this.toggleHidden}
+            applied = {()=>this.setApplied()}
+          />
+      
+
       );
     }
     return toBeReturned;
