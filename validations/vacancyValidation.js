@@ -3,6 +3,7 @@ const Joi = require("joi");
 const createValidation = request => {
   const createSchema = {
     partnerId: Joi.required(),
+    title: Joi.string(),
     description: Joi.string().required(),
     duration: Joi.string(),
     monthlyWage: Joi.string(),
@@ -19,6 +20,7 @@ const createValidation = request => {
 const updateValidation = request => {
   const updateSchema = {
     partnerId: Joi.required(),
+    title: Joi.string(),
     description: Joi.string().required(),
     duration: Joi.string(),
     monthlyWage: Joi.string(),
