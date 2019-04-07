@@ -73,7 +73,6 @@ class Vacancies extends Component {
   render() {
     const { vacancies, error, loading, searchBar } = this.state;
     const filteredVacancies = this.search(vacancies);
-    console.log(vacancies);
     return (
       <div>
         <Dimmer active={loading}>
