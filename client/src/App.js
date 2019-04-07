@@ -5,6 +5,8 @@ import { withRouter } from "react-router-dom";
 import DesktopMenu from "./components/appMenus/DesktopMenu.js";
 import MobileMenu from "./components/appMenus/MobileMenu.js";
 import LoginModal from "./components/login/LoginModal.js";
+import Footer from "./components/footer/Footer.js";
+
 class App extends Component {
   state = {
     isSidebarVisible: false,
@@ -53,6 +55,10 @@ class App extends Component {
           </div>
         </Responsive>
         <LoginModal open={openLoginModal} close={this.closeLoginModal} />
+        <Footer
+          redirectSignUp={this.redirectSignUp}
+          login={this.openLoginModal}
+        />
       </div>
     );
   }
