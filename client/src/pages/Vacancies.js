@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { get } from "../services/axios";
 import "../styling/Vacancies.css";
-import VacanciesList from "../components/Vacancies/List.js";
+import VacanciesList from "../components/vacancies/List.js";
 import {
   Header,
   Dimmer,
