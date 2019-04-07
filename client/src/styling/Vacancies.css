@@ -25,3 +25,11 @@
     align-self: flex-start;
   }
 }
+.highlight-font {
+  color:blue;
+  background: none;
+}
+.highlight-meta {
+  color:rgba(0,0,0,0.4);
+
+}

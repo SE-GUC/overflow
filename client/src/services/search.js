@@ -1,7 +1,7 @@
 //Global search function expecting a Key String ,an array of objects
 // & values that will be disregarded by the search
-search = (arr, searchKey, excludedValues) => {
-  if (keys.length === 0) return arr;
+export const search = (arr, searchKey, excludedValues) => {
+  if (searchKey.length === 0) return arr;
   const keys = searchKey.split(" ");
   const filteredArray = [];
   //searching all objects for all keys,manual filter to avoid filtering after
