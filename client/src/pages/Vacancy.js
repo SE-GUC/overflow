@@ -69,7 +69,7 @@ class Vacancy extends Component {
       toBeReturned = (
         <div>
           <Dimmer active>
-            <Loader inverted />
+            <Loader size="huge" inverted />
           </Dimmer>
         </div>
       );
@@ -94,9 +94,9 @@ class Vacancy extends Component {
         if (skills.length > 0) {
           skills.map(skill => {
             skillCards.push(
-              <Card fluid>
+              <Card className="skill-card" fluid>
                 <Card.Content textAlign="center">
-                  <Card.Header>{skill}</Card.Header>
+                  <Card.Header id="skill-header">{skill}</Card.Header>
                 </Card.Content>
               </Card>
             );
@@ -139,6 +139,7 @@ class Vacancy extends Component {
                     disabled={!memberType}
                     onClick={this.handleApply}
                     stretch
+                    color = "green"
                   >
                     Apply On This Job
                   </Button>
