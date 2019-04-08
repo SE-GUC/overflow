@@ -72,7 +72,7 @@ class Vacancies extends Component {
     const { vacancies, error, loading, searchBar } = this.state;
     const filteredVacancies = this.search(vacancies);
     return (
-      <div>
+      <div className="vacancy-container">
         <Dimmer active={loading}>
           <Loader size="massive" />
         </Dimmer>
@@ -99,7 +99,7 @@ class Vacancies extends Component {
             >
               {" "}
               <Icon size="mini" name="search" />
-              No results found
+              No results found for {searchBar}
             </Message>
           </Header.Subheader>
         </Header>

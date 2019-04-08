@@ -17,9 +17,9 @@ class Footer extends Component {
         <div className="footer-icons">
           <h2>Follow Us</h2>
           <div>
-            <Icon name="linkedin" clor="white" size="big" />
-            <Icon name="facebook f" color="white" size="big" />
-            <Icon name="twitter" color="white" size="big" />
+            <Icon name="linkedin" inverted size="big" />
+            <Icon name="facebook f" inverted size="big" />
+            <Icon name="twitter" inverted size="big" />
           </div>
         </div>
         <div>

@@ -15,7 +15,7 @@ class List extends Component {
       <div>
         {vacancies.map(vacancy => (
           <Link to={`/Vacancy/${vacancy._id}`}>
-            <Card className="vacancy-card">
+            <Card className="vacancy-card hvr-grow">
               <Card.Content>
                 {vacancy.title ? (
                   <Card.Header>
