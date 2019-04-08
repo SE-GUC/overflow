@@ -31,7 +31,7 @@ class App extends Component {
   render() {
     const { isSidebarVisible, openLoginModal } = this.state;
     return (
-      <div>
+      <div className="app-wrapper">
         <Responsive minWidth={Responsive.onlyTablet.minWidth}>
           <DesktopMenu
             redirectSignUp={this.redirectSignUp}
@@ -49,13 +49,13 @@ class App extends Component {
             onClick={this.hideSidebar}
             className="element app-container"
             //temp height (until there are children)
-            style={{ overflow: "hidden", minHeight: "60em" }}
+            style={{ minHeight: "60em" }}
           >
             {this.props.children}
           </div>
         </Responsive>
         <LoginModal open={openLoginModal} close={this.closeLoginModal} />
-         <Footer
+        <Footer
           redirectSignUp={this.redirectSignUp}
           login={this.openLoginModal}
         />

@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { Grid, Form, Dropdown, Button, Header } from "semantic-ui-react";
+import {
+  Grid,
+  Form,
+  Dropdown,
+  Button,
+  Header,
+  Divider
+} from "semantic-ui-react";
 import "../../styling/VacancyForm.css";
 import * as Axios from "../../services/axios.js";
 
@@ -114,6 +121,7 @@ export default class VacancyForm extends Component {
     const formSize = isMobile ? "tiny" : "large";
     const vacancyDuration = [
       <Form.Input
+        key="startDate"
         value={startDate}
         type="Date"
         label="Start Date"
@@ -122,35 +130,27 @@ export default class VacancyForm extends Component {
         }}
       />,
       <Form.Input
+        key="endDate"
         value={endDate}
         type="Date"
         label="End Date"
         onChange={e => {
           this.handleAllChanges("endDate", e);
         }}
-      />,
-      <Form.Input
-        width={7}
-        required
-        value={dailyHours}
-        type="Number"
-        label="Daily Hours"
-        onChange={e => {
-          this.handleAllChanges("dailyHours", e);
-        }}
       />
     ];
 
     return (
-      <Grid padded centered>
+      <Grid centered padded>
         <Grid.Row>
           <Form
+            inverted
             error
             className="box-shadow"
             size={formSize}
             onSubmit={this.createVacancy}
           >
-            <Header size="huge" textAlign="left">
+            <Header inverted size="huge" textAlign="left">
               Create Vacancy
               <Header.Subheader>Submit a vacancy for approval</Header.Subheader>
             </Header>
@@ -196,7 +196,16 @@ export default class VacancyForm extends Component {
             ) : (
               <Form.Group>{vacancyDuration}</Form.Group>
             )}
-
+            <Form.Input
+              key="hours"
+              required
+              value={dailyHours}
+              type="Number"
+              label="Daily Hours"
+              onChange={e => {
+                this.handleAllChanges("dailyHours", e);
+              }}
+            />
             <Form.Field>
               <label> Availability </label>
               <Dropdown

@@ -31,10 +31,28 @@
     transform: rotate(360deg);
   }
 }
-.element::-webkit-scrollbar { width: 0 !important }
-.element { -ms-overflow-style: none; }
-.element { overflow: -moz-scrollbars-none; }
+.element::-webkit-scrollbar {
+  width: 0 !important;
+
+}
+.element {
+  -ms-overflow-style: none;
+}
+.element {
+  overflow: -moz-scrollbars-none;
+
+}
 .app-container {
-  margin-top: 5em;
-  min-height:40em;
+  margin-top: 4.1em;
+}
+.app-wrapper {
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: 194px;
+  background-color: #f2f2f2
+}
+.ui.dimmer {
+  height: 100vh !important;
+  position: fixed !important;
+  top: 0 !important;
 }
