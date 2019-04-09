@@ -6,11 +6,20 @@ import DesktopMenu from "./components/appMenus/DesktopMenu.js";
 import MobileMenu from "./components/appMenus/MobileMenu.js";
 import LoginModal from "./components/login/LoginModal.js";
 import Footer from "./components/footer/Footer.js";
-
+import decode from "jwt-decode";
 class App extends Component {
   state = {
     isSidebarVisible: false,
     openLoginModal: false
+  };
+  componentDidMount() {
+    this.setToken();
+  }
+  setToken = () => {
+    const token = localStorage.getItem("jwtToken");
+    if (!token) return;
+    const userInfo = decode(token);
+    this.setState({ userInfo });
   };
   showSideBar = () => {
     this.setState({ isSidebarVisible: true });
@@ -27,15 +36,23 @@ class App extends Component {
   closeLoginModal = () => {
     this.setState({ openLoginModal: false });
   };
+  logOut = () => {
+    localStorage.removeItem("jwtToken");
+    const newState = this.state;
+    delete newState.userInfo;
+    this.setState(newState);
+  };
 
   render() {
-    const { isSidebarVisible, openLoginModal } = this.state;
+    const { isSidebarVisible, openLoginModal, userInfo } = this.state;
     return (
       <div className="app-wrapper">
         <Responsive minWidth={Responsive.onlyTablet.minWidth}>
           <DesktopMenu
             redirectSignUp={this.redirectSignUp}
             login={this.openLoginModal}
+            userInfo={userInfo}
+            logOut={this.logOut}
           />
           <div className="app-container">{this.props.children}</div>
         </Responsive>
@@ -44,6 +61,8 @@ class App extends Component {
             showSideBar={this.showSideBar}
             isSidebarVisible={isSidebarVisible}
             login={this.openLoginModal}
+            userInfo={userInfo}
+            logOut={this.logOut}
           />
           <div
             onClick={this.hideSidebar}
@@ -54,8 +73,14 @@ class App extends Component {
             {this.props.children}
           </div>
         </Responsive>
-        <LoginModal open={openLoginModal} close={this.closeLoginModal} />
+        <LoginModal
+          setToken={this.setToken}
+          open={openLoginModal}
+          close={this.closeLoginModal}
+        />
         <Footer
+          logOut={this.logOut}
+          userInfo={userInfo}
           redirectSignUp={this.redirectSignUp}
           login={this.openLoginModal}
         />

@@ -7,7 +7,7 @@ export default class MobileField extends Component {
     const { to, icon, name } = this.props;
     return (
       <div>
-        <Link onClick={this.props.login} className="mainMenu-link" to={to}>
+        <Link className="mainMenu-link" to={to}>
           <Menu.Item>
             <Header textAlign="center" icon inverted>
               <Icon name={icon} />

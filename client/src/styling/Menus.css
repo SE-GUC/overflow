@@ -11,7 +11,7 @@ background-image: linear-gradient(to right top, #06191d, #091f23, #0b2529,
 
 }
 .mainMenu-link:hover {
-  color:#EFCA08
+  color:#EFCA08 !important
 }
 .ui.menu:not(.vertical) .item>.button.login-button {
   margin-right:0.5em;
@@ -54,4 +54,15 @@ background-image: linear-gradient(to right top, #06191d, #091f23, #0b2529,
 .tooltip:hover .tooltiptext {
   visibility: visible;
    opacity: 1;
+}
+.ui.avatar.image.user-menu {
+  margin-right:0.5em;
+}
+#drop-options{
+  position: absolute;
+  top:2.2em;
+  left:0.8em;
+}
+.ui.header.profile-header{
+  display:inline;
 }

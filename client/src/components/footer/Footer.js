@@ -5,6 +5,7 @@ import "../../styling/Footer.css";
 
 class Footer extends Component {
   render() {
+    const { userInfo, redirectSignUp, logOut, login } = this.props;
     return (
       <div className="footer">
         <h1>Logo Here</h1>
@@ -29,12 +30,25 @@ class Footer extends Component {
           <p>email: lirtenhub@gmail.com</p>
         </div>
         <div className="footer-signup">
-          <Button onClick={this.props.login} className="login-button" inverted>
-            Log In
-          </Button>
-          <Button onClick={this.props.redirectSignUp} inverted>
-            Sign Up
-          </Button>
+          {userInfo ? (
+            <Button onClick={logOut} inverted>
+              Log out
+            </Button>
+          ) : (
+            [
+              <Button
+                key="footerLogin"
+                onClick={login}
+                className="login-button"
+                inverted
+              >
+                Log In
+              </Button>,
+              <Button key="footerSignUp" onClick={redirectSignUp} inverted>
+                Sign Up
+              </Button>
+            ]
+          )}
         </div>
         <div className="footer-copyright">© 2019 Copyright: Overflow</div>
       </div>

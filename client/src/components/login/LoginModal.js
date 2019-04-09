@@ -42,6 +42,7 @@ export default class LoginModal extends Component {
     Axios.post("users/login", body)
       .then(data => {
         localStorage.setItem("jwtToken", data.data.data);
+        this.props.setToken();
         this.resetModal();
       })
       .catch(error => {
@@ -65,7 +66,7 @@ export default class LoginModal extends Component {
                 Lirten Hub Login
               </Header>
             </Grid.Row>
-            <Form padded id="login-form" error onSubmit={this.login}>
+            <Form id="login-form" error onSubmit={this.login}>
               {hidden ? null : (
                 <Message error icon size="small">
                   <Icon name="times circle" />
