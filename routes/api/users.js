@@ -91,6 +91,7 @@ router.post("/login", async (req, res) => {
     if (match) {
       const payload = {
         id: user._id,
+        type:user.type,
         name: user.name,
         email: user.email
       };
