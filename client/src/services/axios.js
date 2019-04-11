@@ -1,14 +1,12 @@
 import Axios from "axios";
-const path = "http://localhost:3000/api/";
+const path = "https://lirten-hub-overflow.herokuapp.com/api/";
 
 export const get = urlInput => {
   let url = path + urlInput;
-  return Axios.get(url)
-    .then(response => {
-      console.log(response);
-      return response.data.data;
-    })
-    .catch(error => console.log(error));
+  return Axios.get(url).then(response => {
+    console.log(response);
+    return response.data.data;
+  });
 };
 
 const postData = (url = ``, data = {}) => {
@@ -22,4 +20,13 @@ const postData = (url = ``, data = {}) => {
 export const post = (urlInput, req) => {
   let url = path + urlInput;
   return postData(url, req);
+};
+
+export const put = (url, body) => {
+  return Axios({
+    method: "put",
+    url: path + url,
+    data: body,
+    headers: { "Content-Type": "application/json" }
+  });
 };

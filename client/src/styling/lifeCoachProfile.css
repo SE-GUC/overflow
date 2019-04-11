@@ -1,0 +1,26 @@
+.lifeCoach-error-message {
+  padding-top: 50px !important;
+}
+.lifeCoach-info-container {
+  padding-top: 50px !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.lifeCoach-info-container .column {
+  font-size: 18px !important;
+}
+.lifeCoach-review-container {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 767px) {
+  .lifeCoach-info-container .segment {
+    width: 90%;
+  }
+}
