@@ -11,6 +11,7 @@ class ApplyModal extends Component {
       disabled: true
     };
   }
+  
   handleChange = (e, { value }) => {
       if(value!=''){
           this.setState({disabled:false,applicationText:value})
@@ -35,6 +36,9 @@ class ApplyModal extends Component {
         this.setState({hidden:true})
     })
   }
+  handleClose=()=>{
+    this.setState({ hidden: true });
+  }
   componentWillReceiveProps(newProps){
       this.setState({hidden:newProps.hidden})
   }
@@ -46,7 +50,7 @@ class ApplyModal extends Component {
     const {hidden} = this.state;
     console.log(hidden, memberId, vacancy, "Inside Modal");
     return (
-      <Modal open={!hidden}>
+      <Modal open={!hidden} onClose = {this.handleClose}>
         <Modal.Header>Confirm Job Application</Modal.Header>
         <Modal.Content>
           <Grid padded columns={2} divided>
