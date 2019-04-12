@@ -24,6 +24,11 @@ export default class ProfileCard extends Component {
     const { _id } = this.props.data;
     this.props.del(_id);
   };
+  redirect = () => {
+    const { _id } = this.props.data;
+    const { redirect } = this.props;
+    if (redirect) redirect(_id);
+  };
 
   render() {
     const { approveLoading } = this.state;
@@ -126,7 +131,7 @@ export default class ProfileCard extends Component {
     ];
 
     return (
-      <Card className="hvr-grow centered">
+      <Card onClick={this.redirect} className="hvr-grow centered">
         <Image src="https://react.semantic-ui.com/images/wireframe/image.png" />
         <Card.Content>
           <Card.Header className="first-header" textAlign="center">

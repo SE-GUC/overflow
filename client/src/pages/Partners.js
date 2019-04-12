@@ -144,8 +144,8 @@ export default class Members extends Component {
           pageTitle="Partners"
           pageSubHeader="Our trusted partners"
           data={filteredPartners}
-          filterTitles={["Field"]}
-          filterValues={[fieldofWorkFilters]}
+          filterTitles={["Field", "Approved"]}
+          filterValues={[fieldofWorkFilters, ["Yes", "No"]]}
         />
         <Confirm
           open={openConfirm}

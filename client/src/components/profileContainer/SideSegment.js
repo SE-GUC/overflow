@@ -29,7 +29,8 @@ export default class SideSegment extends Component {
       Gender,
       Rating,
       adminType,
-      pendingCount
+      pendingCount,
+      Approved
     } = this.props;
     const { rating } = this.state;
     return (
@@ -50,8 +51,10 @@ export default class SideSegment extends Component {
         <Header size="medium">Filters</Header>
         <Divider />
         {filterTitles.map((title, index) => {
+          if (title === "Approved" && !adminType) return null;
           return (
             <SideFilter
+              Approved={Approved}
               Rate={HourlyRate}
               Gender={Gender}
               Field={Field}

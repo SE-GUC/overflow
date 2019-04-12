@@ -188,7 +188,7 @@ class Slots extends Component {
                   <Card.Content extra>
                     <Button
                       disabled={slot.location || !slot.booked}
-                      color="blue"
+                      primary
                       onClick={() => this.handleOpenLocationModal(slot)}
                     >
                       Set Location
