@@ -101,7 +101,7 @@ class SignUp extends React.Component {
     addedMembers: [],
     addedProjects: [],
     addedPartners: [],
-    loading:false,
+    loading: false,
     user_id: "",
     hidden: true
   };
@@ -261,7 +261,7 @@ class SignUp extends React.Component {
         : "";
     let data = this.state.userInfo;
     let newData = {};
-    this.setState({loading:true});
+    this.setState({ loading: true });
     Object.keys(data).map(key => {
       if (type === "Member") {
         if (
@@ -302,7 +302,7 @@ class SignUp extends React.Component {
           .then(data => {
             console.log(data.data.data, "After Login");
             localStorage.setItem("jwtToken", data.data.data);
-            this.setState({loading:false})
+            this.setState({ loading: false });
             this.redirect();
           })
           .catch(error => {
@@ -372,288 +372,296 @@ class SignUp extends React.Component {
             <Loader size="huge" inverted />
           </Dimmer>
         </div>
-      ) : 
-      <Grid id="signup" columns={1} centered stackable>
-        <Grid.Row columns={1} id="header-row">
-          <Grid.Column textAlign="center">
-            <Form inverted size="big" widths={16} error onSubmit={this.signUp}>
-              <Header inverted as="h1">
-                {" "}
-                SignUp to LirtenHub{" "}
-              </Header>
-              <Form.Field required>
-                <label>Name</label>
-                <Input
-                  inverted
-                  fluid
-                  type="name"
-                  iconPosition="left"
-                  icon="male"
-                  name="name"
-                  value={name}
-                  onChange={e => this.handleAllChanges("name", e)}
-                  placeholder="Peter Johnson"
-                />
-              </Form.Field>
-              <Form.Field required>
-                <label>Email</label>
-                <Input
-                  fluid
-                  type="email"
-                  iconPosition="left"
-                  icon="mail"
-                  name="Email"
-                  value={email}
-                  onChange={e => this.handleAllChanges("email", e)}
-                  placeholder="example@gmail.com"
-                />
-              </Form.Field>
-              <Form.Field required>
-                <label>Password</label>
-                <Input
-                  icon="lock"
-                  fluid
-                  iconPosition="left"
-                  type="password"
-                  name="password"
-                  value={password}
-                  onChange={e => this.handleAllChanges("password", e)}
-                />
-              </Form.Field>
-              <Form.Field required>
-                <label>UserType</label>
-                <Dropdown
-                  fluid
-                  floating
-                  options={options}
-                  selection
-                  value={type}
-                  onChange={this.handleDropChange}
-                />
-              </Form.Field>
-              {type === "Member"
-                ? [
-                    <Form.Group widths="equal">
-                      <Form.Input
-                        fluid
-                        type="date"
-                        value={dateOfBirth}
-                        onChange={e => this.handleAllChanges("dateOfBirth", e)}
-                        required
-                        label="Birth Date"
-                      />
-                      {/* <Form.Field required>
-                        <label>Gender</label> */}
-                      <Form.Dropdown
-                        fluid
-                        options={genderOptions}
-                        label="Gender"
-                        selection
-                        value={gender}
-                        onChange={this.handleGenderChange}
-                      />
-                      {/* </Form.Field> */}
-                    </Form.Group>,
-
-                    <Form.Field>
-                      <label>Skills</label>
-                      <Form.Dropdown
-                        options={addedSkills}
-                        selection
-                        fluid
-                        multiple
-                        allowAdditions
-                        search
-                        value={skills}
-                        onAddItem={this.handleSkillAdd}
-                        onChange={this.handleChangeSkill}
-                      />
-                    </Form.Field>,
-
-                    <Form.Field>
-                      <label>Interests</label>
-                      <Form.Dropdown
-                        options={addedInterests}
-                        selection
-                        fluid
-                        multiple
-                        allowAdditions
-                        search
-                        value={interests}
-                        onAddItem={this.handleInterestAdd}
-                        onChange={this.handleChangeInterest}
-                      />
-                    </Form.Field>,
-                    <Form.Group widths="equal">
-                      <Form.Dropdown
-                        options={availabilityOptions}
-                        selection
-                        fluid
-                        label="Availability"
-                        value={availability}
-                        onChange={this.handleAvailabilityDrop}
-                      />
-
-                      <Form.Input
-                        fluid
-                        value={location}
-                        onChange={e => this.handleAllChanges("location", e)}
-                        label="Location"
-                      />
-                    </Form.Group>,
-                    <Form.Group widths={16}>
-                      <Form.Input
-                        value={hourlyRate}
-                        width={10}
-                        onChange={e => this.handleAllChanges("hourlyRate", e)}
-                        label="Hour Rate"
-                      />
-                      <Form.Input
-                        value={image}
-                        onChange={e => this.handleAllChanges("image", e)}
-                        label="Image Link"
-                      />
-                    </Form.Group>
-                  ]
-                : null}
-              {type === "Partner"
-                ? [
-                    <Form.Input
-                      value={fieldOfWork}
-                      fluid
-                      onChange={e => this.handleAllChanges("fieldOfWork", e)}
-                      label="Work Field"
-                    />,
-                    <Form.Group widths="equal">
-                      <Form.Input
-                        value={fax}
-                        fluid
-                        onChange={e => this.handleAllChanges("fax", e)}
-                        label="Fax"
-                      />
-
-                      <Form.Input
-                        value={phone}
-                        fluid
-                        onChange={e => this.handleAllChanges("phone", e)}
-                        label="Phone"
-                      />
-                    </Form.Group>,
-                    <Form.Group widths="equal">
-                      <Form.Input
-                        value={address}
-                        fluid
-                        onChange={e => this.handleAllChanges("address", e)}
-                        label="Address"
-                      />
-                      <Form.Input
-                        value={image}
-                        // width={16}
-                        fluid
-                        onChange={e => this.handleAllChanges("image", e)}
-                        label="Link"
-                      />
-                    </Form.Group>,
-                    <Form.Field>
-                      <Form.Dropdown
-                        label="Partners"
-                        options={addedPartners}
-                        selection
-                        multiple
-                        allowAdditions
-                        search
-                        width={16}
-                        value={partners}
-                        onAddItem={this.handlePartnerAdd}
-                        onChange={this.handleChangePartners}
-                      />
-                    </Form.Field>,
-                    <Form.Field>
-                      <Form.Dropdown
-                        options={addedMembers}
-                        selection
-                        label="Members"
-                        multiple
-                        fluid
-                        allowAdditions
-                        search
-                        value={members}
-                        onAddItem={this.handleMemberAdd}
-                        onChange={this.handleChangeMembers}
-                      />
-                    </Form.Field>,
-                    <Form.Field>
-                      <Form.Dropdown
-                        options={addedProjects}
-                        selection
-                        multiple
-                        label="Projects"
-                        allowAdditions
-                        search
-                        fluid
-                        value={projects}
-                        onAddItem={this.handleProjectAdd}
-                        onChange={this.handleChangeProjets}
-                      />
-                    </Form.Field>
-                  ]
-                : null}
-              {type === "LifeCoach"
-                ? [
-                    <Form.Group widths="equal">
-                      <Form.Input
-                        type="date"
-                        value={dateOfBirth}
-                        onChange={e => this.handleAllChanges("dateOfBirth", e)}
-                        required
-                        fluid
-                        label="Birth Date"
-                      />
-                      <Form.Field required>
-                        <label>Gender</label>
-                        <Dropdown
-                          options={genderOptions}
-                          selection
+      ) : (
+        <Grid id="signup" columns={1} centered stackable>
+          <Grid.Row columns={1} id="header-row">
+            <Grid.Column textAlign="center">
+              <Form
+                inverted
+                size="big"
+                widths={16}
+                error
+                onSubmit={this.signUp}
+              >
+                <Header inverted as="h1">
+                  {" "}
+                  Join LirtenHub{" "}
+                </Header>
+                <Form.Field required>
+                  <label>Name</label>
+                  <Input
+                    inverted
+                    fluid
+                    type="name"
+                    iconPosition="left"
+                    icon="male"
+                    name="name"
+                    value={name}
+                    onChange={e => this.handleAllChanges("name", e)}
+                    placeholder="Peter Johnson"
+                  />
+                </Form.Field>
+                <Form.Field required>
+                  <label>Email</label>
+                  <Input
+                    fluid
+                    type="email"
+                    iconPosition="left"
+                    icon="mail"
+                    name="Email"
+                    value={email}
+                    onChange={e => this.handleAllChanges("email", e)}
+                    placeholder="example@gmail.com"
+                  />
+                </Form.Field>
+                <Form.Field required>
+                  <label>Password</label>
+                  <Input
+                    icon="lock"
+                    fluid
+                    iconPosition="left"
+                    type="password"
+                    name="password"
+                    value={password}
+                    onChange={e => this.handleAllChanges("password", e)}
+                  />
+                </Form.Field>
+                <Form.Field required>
+                  <label>UserType</label>
+                  <Dropdown
+                    fluid
+                    floating
+                    options={options}
+                    selection
+                    value={type}
+                    onChange={this.handleDropChange}
+                  />
+                </Form.Field>
+                {type === "Member"
+                  ? [
+                      <Form.Group widths="equal">
+                        <Form.Input
                           fluid
+                          type="date"
+                          value={dateOfBirth}
+                          onChange={e =>
+                            this.handleAllChanges("dateOfBirth", e)
+                          }
+                          required
+                          label="Birth Date"
+                        />
+                        {/* <Form.Field required>
+                        <label>Gender</label> */}
+                        <Form.Dropdown
+                          fluid
+                          options={genderOptions}
+                          label="Gender"
+                          selection
                           value={gender}
                           onChange={this.handleGenderChange}
                         />
-                      </Form.Field>
-                    </Form.Group>,
-                    <Form.Group>
-                      <Form.Input
-                        value={hourlyRate}
-                        fluid
-                        onChange={e => this.handleAllChanges("hourlyRate", e)}
-                        label="Hour Rate"
-                      />
+                        {/* </Form.Field> */}
+                      </Form.Group>,
+
+                      <Form.Field>
+                        <label>Skills</label>
+                        <Form.Dropdown
+                          options={addedSkills}
+                          selection
+                          fluid
+                          multiple
+                          allowAdditions
+                          search
+                          value={skills}
+                          onAddItem={this.handleSkillAdd}
+                          onChange={this.handleChangeSkill}
+                          noResultsMessage=""
+                        />
+                      </Form.Field>,
+
+                      <Form.Field>
+                        <label>Interests</label>
+                        <Form.Dropdown
+                          options={addedInterests}
+                          selection
+                          fluid
+                          multiple
+                          allowAdditions
+                          search
+                          value={interests}
+                          onAddItem={this.handleInterestAdd}
+                          onChange={this.handleChangeInterest}
+                          noResultsMessage=""
+                        />
+                      </Form.Field>,
+                      <Form.Group widths="equal">
+                        <Form.Dropdown
+                          options={availabilityOptions}
+                          selection
+                          fluid
+                          label="Availability"
+                          value={availability}
+                          onChange={this.handleAvailabilityDrop}
+                        />
+
+                        <Form.Input
+                          fluid
+                          value={location}
+                          onChange={e => this.handleAllChanges("location", e)}
+                          label="Location"
+                        />
+                      </Form.Group>,
                       <Form.Input
                         value={image}
                         onChange={e => this.handleAllChanges("image", e)}
                         label="Image Link"
                       />
-                    </Form.Group>
-                  ]
-                : null}
+                    ]
+                  : null}
+                {type === "Partner"
+                  ? [
+                      <Form.Input
+                        value={fieldOfWork}
+                        fluid
+                        onChange={e => this.handleAllChanges("fieldOfWork", e)}
+                        label="Work Field"
+                      />,
+                      <Form.Group widths="equal">
+                        <Form.Input
+                          value={fax}
+                          fluid
+                          onChange={e => this.handleAllChanges("fax", e)}
+                          label="Fax"
+                        />
 
-              <Button
-                disabled={!this.checkInput()}
-                color="yellow"
-                type="submit"
-              >
-                Sign Up
-              </Button>
-            </Form>
+                        <Form.Input
+                          value={phone}
+                          fluid
+                          onChange={e => this.handleAllChanges("phone", e)}
+                          label="Phone"
+                        />
+                      </Form.Group>,
+                      <Form.Group widths="equal">
+                        <Form.Input
+                          value={address}
+                          fluid
+                          onChange={e => this.handleAllChanges("address", e)}
+                          label="Address"
+                        />
+                        <Form.Input
+                          value={image}
+                          // width={16}
+                          fluid
+                          onChange={e => this.handleAllChanges("image", e)}
+                          label="Link"
+                        />
+                      </Form.Group>,
+                      <Form.Field>
+                        <Form.Dropdown
+                          label="Partners"
+                          options={addedPartners}
+                          selection
+                          multiple
+                          allowAdditions
+                          search
+                          width={16}
+                          value={partners}
+                          onAddItem={this.handlePartnerAdd}
+                          onChange={this.handleChangePartners}
+                          noResultsMessage=""
+                        />
+                      </Form.Field>,
+                      <Form.Field>
+                        <Form.Dropdown
+                          options={addedMembers}
+                          selection
+                          label="Members"
+                          multiple
+                          fluid
+                          allowAdditions
+                          search
+                          value={members}
+                          onAddItem={this.handleMemberAdd}
+                          onChange={this.handleChangeMembers}
+                          noResultsMessage=""
+                        />
+                      </Form.Field>,
+                      <Form.Field>
+                        <Form.Dropdown
+                          options={addedProjects}
+                          selection
+                          multiple
+                          label="Projects"
+                          allowAdditions
+                          search
+                          fluid
+                          value={projects}
+                          onAddItem={this.handleProjectAdd}
+                          onChange={this.handleChangeProjets}
+                          noResultsMessage=""
+                        />
+                      </Form.Field>
+                    ]
+                  : null}
+                {type === "LifeCoach"
+                  ? [
+                      <Form.Group widths="equal">
+                        <Form.Input
+                          type="date"
+                          value={dateOfBirth}
+                          onChange={e =>
+                            this.handleAllChanges("dateOfBirth", e)
+                          }
+                          required
+                          fluid
+                          label="Birth Date"
+                        />
+                        <Form.Field required>
+                          <label>Gender</label>
+                          <Dropdown
+                            options={genderOptions}
+                            selection
+                            fluid
+                            value={gender}
+                            onChange={this.handleGenderChange}
+                          />
+                        </Form.Field>
+                      </Form.Group>,
+                      <Form.Group>
+                        <Form.Input
+                          value={hourlyRate}
+                          fluid
+                          onChange={e => this.handleAllChanges("hourlyRate", e)}
+                          label="Hour Rate"
+                        />
+                        <Form.Input
+                          value={image}
+                          onChange={e => this.handleAllChanges("image", e)}
+                          label="Image Link"
+                        />
+                      </Form.Group>
+                    ]
+                  : null}
 
-            <Message icon hidden={hidden} error size="small">
-              <Icon name="times circle" />
-              <Message.Content>
-                <Message.Header>{errorContent}</Message.Header>
-              </Message.Content>
-            </Message>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
+                <Button
+                  disabled={!this.checkInput()}
+                  color="yellow"
+                  type="submit"
+                >
+                  Sign Up
+                </Button>
+              </Form>
+
+              <Message icon hidden={hidden} error size="small">
+                <Icon name="times circle" />
+                <Message.Content>
+                  <Message.Header>{errorContent}</Message.Header>
+                </Message.Content>
+              </Message>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      )
 
       //   </div>
     );

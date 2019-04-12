@@ -190,7 +190,12 @@ export default class Container extends Component {
       filterValues,
       pageTitle,
       pageSubHeader,
-      loading
+      loading,
+      adminType,
+      pendingCount,
+      approve,
+      approveLoading,
+      del
     } = this.props;
     const {
       searchBar,
@@ -221,6 +226,8 @@ export default class Container extends Component {
       <Grid stackable columns={3}>
         <Grid.Column width={3}>
           <SideSegment
+            adminType={adminType}
+            pendingCount={pendingCount}
             setSearch={this.setSearchBar}
             Skills={this.handleSkillFilter}
             Location={this.handleLocationFilter}
@@ -254,13 +261,19 @@ export default class Container extends Component {
             <Transition.Group duration={400}>
               {data.map(profile => (
                 <Grid.Column key={profile._id}>
-                  <ProfileCard searchWords={searchBar} data={profile} />
+                  <ProfileCard
+                    del={del}
+                    adminType={adminType}
+                    approve={approve}
+                    searchWords={searchBar}
+                    data={profile}
+                  />
                 </Grid.Column>
               ))}
             </Transition.Group>
           </Grid>
         </Grid.Column>
-        <Grid.Column only="computer largeScreen" width={3} />
+        <Grid.Column only="computer" width={3} />
       </Grid>
     );
   }
