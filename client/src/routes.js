@@ -6,7 +6,6 @@ import Vacancies from "./pages/Vacancies";
 import CreateVacancy from "./pages/CreateVacancy";
 import SubmitModal from './components/reviews/SubmitModal';
 import SubmitFeedbackModal from './components/feedbacks/SubmitFeedbackModal';
-import * as axios from "./services/axios.js";
 
 export default () => {
   
