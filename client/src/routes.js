@@ -7,6 +7,8 @@ import CreateVacancy from "./pages/CreateVacancy";
 import Members from "./pages/Members";
 import Partners from "./pages/Partners";
 import LifeCoaches from "./pages/LifeCoaches";
+import SubmitModal from "./components/reviews/SubmitModal";
+import * as axios from "./services/axios.js";
 
 export default () => {
   return [
@@ -26,6 +28,7 @@ export default () => {
       exact
       path="/LifeCoaches"
       component={LifeCoaches}
-    />
+    />,
+    <Route key={"/SubmitModal"} path="/SubmitModal" component={SubmitModal} />
   ];
 };
