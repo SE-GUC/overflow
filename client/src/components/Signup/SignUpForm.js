@@ -12,6 +12,8 @@ import {
   Segment,
   Message,
   Container,
+  Dimmer,
+  Loader,
   Icon
 } from "semantic-ui-react";
 import "../../styling/signup.css";
@@ -97,6 +99,7 @@ class SignUp extends React.Component {
     addedMembers: [],
     addedProjects: [],
     addedPartners: [],
+    loading:false,
     user_id: "",
     hidden: true
   };
@@ -256,6 +259,7 @@ class SignUp extends React.Component {
         : "";
     let data = this.state.userInfo;
     let newData = {};
+    this.setState({loading:true});
     Object.keys(data).map(key => {
       if (type === "Member") {
         if (
@@ -296,6 +300,7 @@ class SignUp extends React.Component {
           .then(data => {
             console.log(data.data.data, "After Login");
             localStorage.setItem("jwtToken", data.data.data);
+            this.setState({loading:false})
             this.redirect();
           })
           .catch(error => {
@@ -352,13 +357,20 @@ class SignUp extends React.Component {
       errorContent,
       addedInterests,
       addedPartners,
+      loading,
       addedMembers,
       addedProjects
     } = this.state;
 
     return (
       //   <div class="signup">
-
+      loading ? (
+        <div>
+          <Dimmer active>
+            <Loader size="huge" inverted />
+          </Dimmer>
+        </div>
+      ) : 
       <Grid id="signup" columns={1} centered stackable>
         <Grid.Row columns={1}  id="header-row">
           <Grid.Column textAlign="center">
