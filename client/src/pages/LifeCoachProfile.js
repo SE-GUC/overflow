@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { get } from "../services/axios";
 import { Loader, Dimmer, Header } from "semantic-ui-react";
 import BasicInfo from "../components/lifeCoachProfile/BasicInfo";
+import Slots from "../components/lifeCoachProfile/Slots";
 import "../styling/lifeCoachProfile.css";
 
 class LifeCoachProfile extends Component {
@@ -57,6 +58,7 @@ class LifeCoachProfile extends Component {
                 toggleError={this.toggleError}
                 getLifeCoach={this.getLifeCoach}
               />
+              <Slots lifeCoach={lifeCoach} />
             </div>
           )}
       </div>
