@@ -16,10 +16,9 @@ const createValidation = request => {
     members: Joi.array().allow(null),
     projects: Joi.array().allow(null),
     password: Joi.string().required(),
-    fieldOfWork: Joi.string(),
     image: Joi.string(),
     approved: Joi.boolean().required(),
-    fieldOfWork: Joi.string().required()
+    fieldOfWork: Joi.string()
   };
   return Joi.validate(request, createSchema);
 };
@@ -34,12 +33,13 @@ const updateValidation = request => {
       .required(),
     fax: Joi.string().min(3),
     phone: Joi.number(),
+    fieldOfWork:Joi.string(),
     partners: Joi.array().allow(null),
     members: Joi.array().allow(null),
     projects: Joi.array().allow(null),
     image: Joi.string(),
     approved: Joi.boolean().required(),
-    fieldOfWork: Joi.string().required()
+    fieldOfWork: Joi.string()
   };
   return Joi.validate(request, updateSchema);
 };
