@@ -27,13 +27,17 @@ export default class SideSegment extends Component {
       Field,
       HourlyRate,
       Gender,
-      Rating
+      Rating,
+      adminType,
+      pendingCount
     } = this.props;
     const { rating } = this.state;
     return (
       <Segment compact className="filterSegment">
         <Header size="large">
           {pageTitle}
+          <Divider hidden fitted />
+          {adminType ? " (" + pendingCount + ")" + " Pending" : ""}
           <Header.Subheader>{pageSubHeader}</Header.Subheader>
         </Header>
         <Divider />

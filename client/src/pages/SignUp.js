@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { Responsive, Image, Grid } from "semantic-ui-react";
 import SignUp from "../components/Signup/SignUpForm";
 class SignUpPage extends Component {
-  redirect = ()=>{
+  redirect = () => {
     this.props.history.push("/");
-  }
+  };
   render() {
     return (
       <div>
@@ -12,24 +12,16 @@ class SignUpPage extends Component {
           <Grid columns={3}>
             <Grid.Column width={5} />
             <Grid.Column width={6}>
-              <SignUp
-                redirect={this.redirect}
-              />
+              <SignUp redirect={this.redirect} />
             </Grid.Column>
-            <Grid.Column width={5}>
-            
-            </Grid.Column>
+            <Grid.Column width={5} />
           </Grid>
         </Responsive>
         <Responsive {...Responsive.onlyTablet}>
-          <SignUp 
-            
-          />
+          <SignUp redirect={this.redirect} />
         </Responsive>
         <Responsive {...Responsive.onlyMobile}>
-          <SignUp  
-           
-          />
+          <SignUp redirect={this.redirect} />
         </Responsive>
       </div>
     );

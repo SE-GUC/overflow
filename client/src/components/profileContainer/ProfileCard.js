@@ -6,13 +6,27 @@ import {
   Rating,
   Divider,
   Label,
-  Transition
+  Transition,
+  Popup,
+  Button
 } from "semantic-ui-react";
 import "../../styling/ProfileContainer.css";
 import Highlightable from "../highlightable/Higlightable.js";
 
 export default class ProfileCard extends Component {
+  state = { approveLoading: false };
+  approve = () => {
+    this.setState({ approveLoading: true });
+    const { _id } = this.props.data;
+    this.props.approve(_id);
+  };
+  delete = () => {
+    const { _id } = this.props.data;
+    this.props.del(_id);
+  };
+
   render() {
+    const { approveLoading } = this.state;
     const {
       name,
       email,
@@ -21,7 +35,7 @@ export default class ProfileCard extends Component {
       ratingCount,
       type
     } = this.props.data;
-    let { searchWords } = this.props;
+    let { searchWords, adminType } = this.props;
     searchWords = searchWords.split(" ");
     const {
       age,
@@ -33,7 +47,8 @@ export default class ProfileCard extends Component {
       phone,
       fieldOfWork,
       hourlyRate,
-      gender
+      gender,
+      approved
     } = userData;
     const memberAttributes = [
       <Card.Header key={age} className="card-header" textAlign="center">
@@ -142,6 +157,35 @@ export default class ProfileCard extends Component {
             : type === "partner"
             ? partnerAttributes
             : lifeCoachAttributes}
+
+          {!approved && type === "partner" ? (
+            <div>
+              <Popup
+                on="hover"
+                position="top right"
+                content="Pending approval"
+                trigger={<Label corner icon="clock outline" color="yellow" />}
+              />
+              <Card.Header textAlign="center">
+                <Button
+                  style={{ marginBottom: "0.4em" }}
+                  loading={approveLoading}
+                  onClick={this.approve}
+                  basic
+                  color="green"
+                >
+                  Approve
+                </Button>
+              </Card.Header>
+            </div>
+          ) : null}
+          {type === "partner" && adminType ? (
+            <Card.Header textAlign="center">
+              <Button onClick={this.delete} color="red">
+                Delete
+              </Button>
+            </Card.Header>
+          ) : null}
         </Card.Content>
         <Card.Content extra>
           <div>

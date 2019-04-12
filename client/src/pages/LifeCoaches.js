@@ -42,7 +42,6 @@ export default class Members extends Component {
         if (!rating.rating) return acc;
         return rating.rating + acc;
       }, 0);
-      console.log(ratingSum, "RATING");
       const avg = ratingSum === 0 ? 0 : ratingSum / ratings.length;
       partner.rating = avg;
       partner.ratingCount = ratings.length;

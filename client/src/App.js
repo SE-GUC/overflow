@@ -7,6 +7,8 @@ import MobileMenu from "./components/appMenus/MobileMenu.js";
 import LoginModal from "./components/login/LoginModal.js";
 import Footer from "./components/footer/Footer.js";
 import decode from "jwt-decode";
+import storageChanged from "storage-changed";
+
 class App extends Component {
   state = {
     isSidebarVisible: false,
@@ -14,7 +16,15 @@ class App extends Component {
   };
   componentDidMount() {
     this.setToken();
+    storageChanged("local", {
+      eventName: "GlobaltokenChange"
+    });
+    window.addEventListener("GlobaltokenChange", this.handleTokenChange);
   }
+  handleTokenChange = e => {
+    this.setToken();
+  };
+
   setToken = () => {
     const token = localStorage.getItem("jwtToken");
     if (!token) return;
