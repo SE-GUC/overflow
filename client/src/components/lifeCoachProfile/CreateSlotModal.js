@@ -18,7 +18,7 @@ class CreateSlotModal extends Component {
   };
   handleSubmit = () => {
     const body = {
-      date: this.state.date,
+      date: this.state.date.add(2, "hour"),
       booked: false,
       confirmed: false,
       lifeCoachId: this.props.id

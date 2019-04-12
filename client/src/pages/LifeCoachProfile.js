@@ -4,6 +4,7 @@ import { Loader, Dimmer, Header } from "semantic-ui-react";
 import BasicInfo from "../components/lifeCoachProfile/BasicInfo";
 import Slots from "../components/lifeCoachProfile/Slots";
 import "../styling/lifeCoachProfile.css";
+import storageChanged from "storage-changed";
 
 class LifeCoachProfile extends Component {
   state = {
@@ -14,7 +15,16 @@ class LifeCoachProfile extends Component {
 
   componentDidMount() {
     this.getLifeCoach();
+    storageChanged("local", {
+      eventName: "tokenChange"
+    });
+    window.addEventListener("tokenChange", this.handleTokenChange);
   }
+
+  handleTokenChange = () => {
+    this.toggleLoading();
+    this.getLifeCoach();
+  };
 
   toggleLoading = () => {
     this.setState({ loading: !this.state.loading });

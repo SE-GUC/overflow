@@ -1,5 +1,5 @@
 import Axios from "axios";
-const path = "https://lirten-hub-overflow.herokuapp.com/api/";
+const path = "http://localhost:5000/api/";
 
 export const get = urlInput => {
   let url = path + urlInput;
@@ -21,12 +21,27 @@ export const post = (urlInput, req) => {
   let url = path + urlInput;
   return postData(url, req);
 };
-
-export const put = (url, body) => {
+export const put = (urlInput, req) => {
+  let url = path + urlInput;
+  return putData(url, req);
+};
+const putData = (url = ``, data = {}) => {
   return Axios({
     method: "put",
-    url: path + url,
-    data: body,
+    url: url,
+    data: data,
+    headers: { "Content-Type": "application/json" }
+  });
+};
+export const del = (urlInput, req) => {
+  const url = path + urlInput;
+  return deleteData(url, req);
+};
+const deleteData = (url = ``, data = {}) => {
+  return Axios({
+    method: "delete",
+    url: url,
+    data: data,
     headers: { "Content-Type": "application/json" }
   });
 };

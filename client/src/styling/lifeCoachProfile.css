@@ -34,6 +34,13 @@
 .slots-cards-container .card {
   height: 170px !important;
 }
+.slots-cards-container .card button {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+}
+.no-buttons-cards .card {
+  height: 111px !important;
+}
 .slots-header-container {
   display: flex;
   align-items: center;
