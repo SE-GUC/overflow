@@ -19,7 +19,20 @@ const postData = (url = ``, data = {}) => {
     headers: { "Content-Type": "application/json" }
   });
 };
+
 export const post = (urlInput, req) => {
   let url = path + urlInput;
   return postData(url, req);
+};
+export const put = (urlInput, req) => {
+  let url = path + urlInput;
+  return putData(url, req);
+};
+const putData = (url = ``, data = {}) => {
+  return Axios({
+    method: "put",
+    url: url,
+    data: data,
+    headers: { "Content-Type": "application/json" }
+  });
 };
