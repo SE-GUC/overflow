@@ -5,7 +5,7 @@ import SignUp from "./pages/SignUp";
 import Vacancies from "./pages/Vacancies";
 import CreateVacancy from "./pages/CreateVacancy";
 import SubmitModal from './components/reviews/SubmitModal';
-import * as axios from "./services/axios.js";
+import SubmitFeedbackModal from './components/feedbacks/SubmitFeedbackModal';
 
 export default () => {
   
@@ -14,6 +14,7 @@ export default () => {
     <Route exact path="/SignUp" component={SignUp} />,
     <Route path="/Vacancies" component={Vacancies}  />,
     <Route path="/SubmitModal" component={SubmitModal}  />,
+    <Route path="/SubmitFeedbackModal" component={SubmitFeedbackModal}  />,
     <Route exact path="/CreateVacancy/:partnerId" component={CreateVacancy} />
   ];
 };
