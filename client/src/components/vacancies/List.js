@@ -1,8 +1,10 @@
 import React, { Component } from "react";
-import { Header, Card, Image, Label } from "semantic-ui-react";
+import { Header, Card, Image, Label, Transition } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import Highlighter from "react-highlight-words";
 import "../../styling/Vacancies.css";
+import Highlightable from "../highlightable/Higlightable.js";
+
 class List extends Component {
   render() {
     const { error, vacancies, searchKey } = this.props;
@@ -12,36 +14,30 @@ class List extends Component {
         Something went wrong!
       </Header>
     ) : (
-      <div>
+      <Transition.Group duration={400}>
         {vacancies.map(vacancy => (
           <Link to={`/Vacancy/${vacancy._id}`}>
             <Card className="vacancy-card hvr-grow">
               <Card.Content>
                 {vacancy.title ? (
                   <Card.Header>
-                    <Highlighter
-                      highlightClassName="highlight-font"
-                      searchWords={searchWords}
-                      autoEscape={true}
+                    <Highlightable
                       textToHighlight={vacancy.title}
+                      searchWords={searchWords}
                     />
                   </Card.Header>
                 ) : (
                   <Card.Header>
-                    <Highlighter
-                      highlightClassName="highlight-font"
+                    <Highlightable
                       searchWords={searchWords}
-                      autoEscape={true}
                       textToHighlight={`${vacancy.partner.name} Vacancy`}
                     />
                   </Card.Header>
                 )}
 
                 <span className="highlight-meta">
-                  <Highlighter
-                    highlightClassName="highlight-font"
+                  <Highlightable
                     searchWords={searchWords}
-                    autoEscape={true}
                     textToHighlight={`${vacancy.partner.name}${
                       vacancy.location ? " - " + vacancy.location : ""
                     }`}
@@ -49,10 +45,8 @@ class List extends Component {
                 </span>
 
                 <Card.Description>
-                  <Highlighter
-                    highlightClassName="highlight-font"
+                  <Highlightable
                     searchWords={searchWords}
-                    autoEscape={true}
                     textToHighlight={vacancy.description}
                   />
                 </Card.Description>
@@ -63,10 +57,8 @@ class List extends Component {
                         key={skill}
                         className="vacancy-label"
                       >
-                        <Highlighter
-                          highlightClassName="highlight-font"
+                        <Highlightable
                           searchWords={searchWords}
-                          autoEscape={true}
                           textToHighlight={skill}
                         />
                       </Label>
@@ -81,7 +73,7 @@ class List extends Component {
             </Card>
           </Link>
         ))}
-      </div>
+      </Transition.Group>
     );
   }
 }
