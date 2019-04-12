@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import * as axios from "../services/axios.js";
 import ApplyModal from "../components/vacancies/ApplyModal";
 import decode from "jwt-decode";
+import storageChanged from "storage-changed";
+
 import {
   Button,
   Grid,
@@ -16,6 +18,7 @@ import {
   Responsive
 } from "semantic-ui-react";
 import "../styling/vacancy.css";
+
 class Vacancy extends Component {
   constructor() {
     super();
@@ -27,6 +30,7 @@ class Vacancy extends Component {
       applied: false
     };
   }
+
   getVacancy = async () => {
     const id = this.props.match.params.id;
     const url = "vacancies/" + id;
@@ -36,6 +40,11 @@ class Vacancy extends Component {
   };
   componentDidMount() {
     const tokenCheck = localStorage.getItem("jwtToken");
+    //handling token change
+    storageChanged("local", {
+      eventName: "tokenChange"
+    });
+    window.addEventListener("tokenChange", this.handleTokenChange);
     if (!tokenCheck) {
       this.setState({ memberType: false });
       this.getVacancy();
@@ -50,6 +59,23 @@ class Vacancy extends Component {
       this.setState({ memberType: false });
     }
     this.getVacancy();
+  }
+  handleTokenChange = e => {
+    if (!e.detail.value) {
+      this.setState({ memberType: false });
+      return;
+    }
+    let decoded = decode(e.detail.value);
+    if (decoded.type) {
+      if (decoded.type === "member") {
+        this.setState({ memberType: true, memberId: decoded.id });
+      }
+    } else {
+      this.setState({ memberType: false });
+    }
+  };
+  componentWillUnmount() {
+    window.removeEventListener("storage", this.handleTokenChange);
   }
   handleApply = () => {
     this.setState({ modalHidden: false });
@@ -139,7 +165,7 @@ class Vacancy extends Component {
                     disabled={!memberType}
                     onClick={this.handleApply}
                     stretch
-                    color = "green"
+                    color="green"
                   >
                     Apply On This Job
                   </Button>
