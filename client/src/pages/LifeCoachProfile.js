@@ -58,7 +58,13 @@ class LifeCoachProfile extends Component {
                 toggleError={this.toggleError}
                 getLifeCoach={this.getLifeCoach}
               />
-              <Slots lifeCoach={lifeCoach} />
+              <Slots
+                lifeCoach={lifeCoach}
+                id={this.props.match.params.id}
+                toggleLoading={this.toggleLoading}
+                toggleError={this.toggleError}
+                getLifeCoach={this.getLifeCoach}
+              />
             </div>
           )}
       </div>

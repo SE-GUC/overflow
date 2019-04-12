@@ -409,12 +409,12 @@ class SignUp extends React.Component {
             </Form.Field>
             {type === "Member"
               ? [
-                  <Form.Group widths="equal">
-                    <Form.Input
-                      type="date"
-                      value={dateOfBirth}
-                      onChange={e => this.handleAllChanges("dateOfBirth", e)}
-                      required
+                <Form.Group widths="equal">
+                  <Form.Input
+                    type="date"
+                    value={dateOfBirth}
+                    onChange={e => this.handleAllChanges("dateOfBirth", e)}
+                    required
                       label="Birth Date"
                     />
                     <Form.Field required>

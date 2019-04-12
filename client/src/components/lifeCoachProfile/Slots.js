@@ -1,12 +1,51 @@
 import React, { Component } from "react";
-import { Card, Icon, Header } from "semantic-ui-react";
+import { Card, Icon, Header, Button } from "semantic-ui-react";
+import decode from "jwt-decode";
+import CreateSlotModal from "../../components/lifeCoachProfile/CreateSlotModal";
 
 class Slots extends Component {
+  state = {
+    createModal: false
+  };
+  showAddButton = () => {
+    if (!localStorage.getItem("jwtToken")) return false;
+    return decode(localStorage.getItem("jwtToken")).id === this.props.id;
+  };
+
+  handleOpenCreateModal = () => {
+    this.setState({ createModal: true });
+  };
+
+  handleCloseCreateModal = () => {
+    this.setState({ createModal: false });
+  };
+
   render() {
     const slots = this.props.lifeCoach.userData.monthlySlots;
+    const { createModal } = this.state;
     return (
       <div className="slots-container">
-        <Header as="h1">Upcoming Slots</Header>
+        {createModal && (
+          <CreateSlotModal
+            onClose={this.handleCloseCreateModal}
+            open={createModal}
+            id={this.props.id}
+            toggleLoading={this.props.toggleLoading}
+            toggleError={this.props.toggleError}
+            getLifeCoach={this.props.getLifeCoach}
+          />
+        )}
+        <div className="slots-header-container">
+          <Header as="h1">Upcoming Slots</Header>
+          {this.showAddButton() && (
+            <Button
+              onClick={this.handleOpenCreateModal}
+              icon="add"
+              circular
+              positive
+            />
+          )}
+        </div>
         <Card.Group className="slots-cards-container">
           {slots.filter(slot => new Date(slot.date) > Date.now()).map(slot => (
             <Card>
