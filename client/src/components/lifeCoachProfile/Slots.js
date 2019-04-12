@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Card, Icon, Header, Button } from "semantic-ui-react";
 import decode from "jwt-decode";
 import CreateSlotModal from "../../components/lifeCoachProfile/CreateSlotModal";
+import { put } from "../../services/axios";
 
 class Slots extends Component {
   state = {
@@ -12,12 +13,35 @@ class Slots extends Component {
     return decode(localStorage.getItem("jwtToken")).id === this.props.id;
   };
 
+  showBookButton = () => {
+    if (!localStorage.getItem("jwtToken")) return false;
+    return decode(localStorage.getItem("jwtToken")).type === "member";
+  };
+
   handleOpenCreateModal = () => {
     this.setState({ createModal: true });
   };
 
   handleCloseCreateModal = () => {
     this.setState({ createModal: false });
+  };
+
+  handleBook = (date, lifeCoachId, slotId) => {
+    const body = {
+      date,
+      booked: true,
+      confirmed: false,
+      memberId: decode(localStorage.getItem("jwtToken")).id
+    };
+    this.props.toggleLoading();
+    put("slots/update/" + lifeCoachId + "/" + slotId, body)
+      .then(response => {
+        this.props.getLifeCoach();
+      })
+      .catch(error => {
+        this.props.toggleError();
+        this.props.toggleLoading();
+      });
   };
 
   render() {
@@ -79,6 +103,19 @@ class Slots extends Component {
                   }`}</Card.Description>
                 )}
               </Card.Content>
+              {this.showBookButton() && (
+                <Card.Content extra>
+                  <Button
+                    positive
+                    disabled={slot.booked}
+                    onClick={() =>
+                      this.handleBook(slot.date, this.props.id, slot._id)
+                    }
+                  >
+                    Book
+                  </Button>
+                </Card.Content>
+              )}
             </Card>
           ))}
         </Card.Group>
