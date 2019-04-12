@@ -17,6 +17,7 @@ const postData = (url = ``, data = {}) => {
     headers: { "Content-Type": "application/json" }
   });
 };
+
 export const post = (urlInput, req) => {
   let url = path + urlInput;
   return postData(url, req);

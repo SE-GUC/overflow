@@ -17,24 +17,22 @@ import {
   Icon
 } from "semantic-ui-react";
 import "../../styling/signup.css";
-class SignUp extends React.Component {
+import EditProfileTest from "../../pages/EditProfileTest.js";
+class EditProfileForm extends React.Component {
   state = {
     userInfo: {
       email: "",
-      password: "",
       name: "",
+      fax: "",
       phone: "",
       salary: "",
-      isSuper: "",
-      fax: "",
       address: "",
       approved: false,
       partners: [],
       members: [],
       projects: [],
       hourlyRate: "",
-      fieldOfWork: "",
-      type: "Partner",
+      type: "",
       dateOfBirth: "",
       image: "",
       gender: "",
@@ -52,7 +50,6 @@ class SignUp extends React.Component {
       "email",
       "skills",
       "interests",
-      "password",
       "image",
       "availability",
       "location"
@@ -66,14 +63,11 @@ class SignUp extends React.Component {
       "partners",
       "members",
       "projects",
-      "fieldOfWork",
-      "password",
       "image",
       "approved"
     ],
     lifeCoachAttrs: [
       "name",
-      "password",
       "dateOfBirth",
       "gender",
       "hourlyRate",
@@ -101,7 +95,6 @@ class SignUp extends React.Component {
     addedMembers: [],
     addedProjects: [],
     addedPartners: [],
-    loading: false,
     user_id: "",
     hidden: true
   };
@@ -115,33 +108,127 @@ class SignUp extends React.Component {
     });
     this.setState({ userInfo: userInfo });
   };
+  getCorrectDate = dateIn => {
+    let date = new Date(dateIn);
+    let year = date.getFullYear();
+    let month = date.getUTCMonth().valueOf() + 1 + "";
+    let day = date.getDay() + "";
+    month = month.length == 1 ? "0" + month : month;
+    day = day.length == 1 ? "0" + day : day;
+    return year + "-" + month + "-" + day;
+  };
   componentDidMount() {
-    this.setState({ reserveAttrs: this.state.userInfo });
+    const user = this.props.user;
+    console.log(this.props);
+    const { memberAttrs, partnerAttrs, lifeCoachAttrs } = this.state;
+    const { userData, ...basicAttrs } = user;
+    const allUserData = { ...userData };
+    const data = {
+      ...basicAttrs,
+      ...allUserData
+    };
+
+    console.log(data, "DATA");
+    let newData = {};
+    this.setState({
+      user_id: user._id,
+      userInfo: {
+        ...this.state.userInfo,
+        type: user.type
+      }
+    });
+    Object.keys(data).map(key => {
+      if (key === "type") {
+        newData[key] = data[key];
+      }
+     
+      if (user.type === "member") {
+        if (
+          data[key] != null &&
+          data[key].length != 0 &&
+          memberAttrs.includes(key)
+        )
+          if (key === "skills") {
+            this.setState({
+              addedSkills: data[key].map(project => {
+                return { key: project, text: project, value: project };
+              })
+            });
+          } else if (key === "interests") {
+            this.setState({
+              addedInterests: data[key].map(project => {
+                return { key: project, text: project, value: project };
+              })
+            });
+          }
+        newData[key] = data[key];
+      } else if (user.type === "partner") {
+        if (
+          data[key] != null &&
+          data[key].length != 0 &&
+          partnerAttrs.includes(key)
+        ) {
+          if (key === "partners") {
+            this.setState({
+              addedPartners: data[key].map(partner => {
+                return { key: partner, text: partner, value: partner };
+              })
+            });
+          } else if (key === "projects") {
+            this.setState({
+              addedProjects: data[key].map(project => {
+                return { key: project, text: project, value: project };
+              })
+            });
+          } else if (key === "members") {
+            this.setState({
+              addedMembers: data[key].map(member => {
+                return { key: member, text: member, value: member };
+              })
+            });
+          }
+          newData[key] = data[key];
+        }
+      } else if (user.type === "lifeCoach") {
+        if (
+          data[key] != null &&
+          data[key].length != 0 &&
+          lifeCoachAttrs.includes(key)
+        )
+          newData[key] = data[key];
+      }
+      if (key === "dateOfBirth") {
+        newData[key] = this.getCorrectDate(data[key]);
+      }
+    });
+    console.log(newData, "NEW");
+    this.setState({ userInfo: { ...this.state.userInfo, ...newData } });
   }
   checkInputArray = arr => {
     let result = true;
+    console.log(arr, "ARRAYY");
     arr.map(inp => {
       if (inp.length == 0) result = false;
     });
     return result;
   };
   checkInput = () => {
-    let {
-      email,
-      password,
-      type,
-      name,
-      dateOfBirth,
-      gender
-    } = this.state.userInfo;
-    let allReq = [email, password, type, name];
+    let { email, name, dateOfBirth, type, gender } = this.state.userInfo;
+    let allReq = [email, name];
     let MemReq = [dateOfBirth, gender];
-    let AdminCoachReq = [dateOfBirth];
-    if (!this.checkInputArray(allReq)) return false;
-    if (type === "Member") {
-      if (!this.checkInputArray(MemReq)) return false;
-    } else if (type != "Partner")
+    let AdminCoachReq = [dateOfBirth, gender];
+    console.log(type, "TYPE");
+    if (!this.checkInputArray(allReq)) {
+      return false;
+    }
+    if (type === "member") {
+      if (!this.checkInputArray(MemReq)) {
+        return false;
+      }
+    } else if (type != "Partner") {
+      console.log("IN AdminCoach REQ CHECK");
       if (!this.checkInputArray(AdminCoachReq)) return false;
+    }
     return true;
   };
   handleDropChange = (e, { value }) => {
@@ -248,22 +335,23 @@ class SignUp extends React.Component {
     }
     this.setState({ userInfo: userInfo });
   };
-  signUp = () => {
+  update = () => {
     let { type } = this.state.userInfo;
-    let { memberAttrs, partnerAttrs, lifeCoachAttrs } = this.state;
+    this.setState({ loading: true });
+    let { memberAttrs, partnerAttrs, lifeCoachAttrs, user_id } = this.state;
     let url =
-      type === "Member"
-        ? "users/members/create"
+      type === "member"
+        ? "users/members/update/"
         : type === "Partner"
-        ? "users/partners/create/"
-        : type === "LifeCoach"
-        ? "users/lifeCoaches/create/"
+        ? "users/partners/update/"
+        : type === "lifeCoach"
+        ? "users/lifeCoaches/update/"
         : "";
+    url = url + user_id;
     let data = this.state.userInfo;
     let newData = {};
-    this.setState({ loading: true });
     Object.keys(data).map(key => {
-      if (type === "Member") {
+      if (type === "member") {
         if (
           data[key] != null &&
           data[key].length != 0 &&
@@ -277,7 +365,7 @@ class SignUp extends React.Component {
           partnerAttrs.includes(key)
         )
           newData[key] = data[key];
-      } else if (type === "LifeCoach") {
+      } else if (type === "lifeCoach") {
         if (
           data[key] != null &&
           data[key].length != 0 &&
@@ -289,25 +377,11 @@ class SignUp extends React.Component {
     console.log(data, "Data");
     console.log(newData, "New Data");
     axios
-      .post(url, newData)
+      .put(url, newData)
       .then(data => {
-        this.setState({ hidden: true });
+        this.setState({ hidden: true, loading: false });
         console.log(data);
-        let body = {
-          email: newData.email,
-          password: newData.password
-        };
-        axios
-          .post("users/login", body)
-          .then(data => {
-            console.log(data.data.data, "After Login");
-            localStorage.setItem("jwtToken", data.data.data);
-            this.setState({ loading: false });
-            this.redirect();
-          })
-          .catch(error => {
-            console.log(error);
-          });
+        this.redirect();
       })
       .catch(error => {
         this.setState({
@@ -333,11 +407,11 @@ class SignUp extends React.Component {
       members,
       projects,
       hourlyRate,
-      fieldOfWork,
       type,
       dateOfBirth,
       image,
       gender,
+
       address,
       skills,
       interests,
@@ -359,11 +433,11 @@ class SignUp extends React.Component {
       errorContent,
       addedInterests,
       addedPartners,
-      loading,
       addedMembers,
-      addedProjects
+      addedProjects,
+      loading
     } = this.state;
-
+    console.log(dateOfBirth, "DOB");
     return (
       //   <div class="signup">
       loading ? (
@@ -381,11 +455,11 @@ class SignUp extends React.Component {
                 size="big"
                 widths={16}
                 error
-                onSubmit={this.signUp}
+                onSubmit={this.update}
               >
                 <Header inverted as="h1">
                   {" "}
-                  Join LirtenHub{" "}
+                  Update Your Profile{" "}
                 </Header>
                 <Form.Field required>
                   <label>Name</label>
@@ -414,30 +488,8 @@ class SignUp extends React.Component {
                     placeholder="example@gmail.com"
                   />
                 </Form.Field>
-                <Form.Field required>
-                  <label>Password</label>
-                  <Input
-                    icon="lock"
-                    fluid
-                    iconPosition="left"
-                    type="password"
-                    name="password"
-                    value={password}
-                    onChange={e => this.handleAllChanges("password", e)}
-                  />
-                </Form.Field>
-                <Form.Field required>
-                  <label>UserType</label>
-                  <Dropdown
-                    fluid
-                    floating
-                    options={options}
-                    selection
-                    value={type}
-                    onChange={this.handleDropChange}
-                  />
-                </Form.Field>
-                {type === "Member"
+
+                {type === "member"
                   ? [
                       <Form.Group widths="equal">
                         <Form.Input
@@ -475,14 +527,13 @@ class SignUp extends React.Component {
                           value={skills}
                           onAddItem={this.handleSkillAdd}
                           onChange={this.handleChangeSkill}
-                          noResultsMessage=""
                         />
                       </Form.Field>,
 
                       <Form.Field>
                         <label>Interests</label>
                         <Form.Dropdown
-                          options={addedInterests}
+                          options={interests}
                           selection
                           fluid
                           multiple
@@ -491,7 +542,6 @@ class SignUp extends React.Component {
                           value={interests}
                           onAddItem={this.handleInterestAdd}
                           onChange={this.handleChangeInterest}
-                          noResultsMessage=""
                         />
                       </Form.Field>,
                       <Form.Group widths="equal">
@@ -511,21 +561,23 @@ class SignUp extends React.Component {
                           label="Location"
                         />
                       </Form.Group>,
-                      <Form.Input
-                        value={image}
-                        onChange={e => this.handleAllChanges("image", e)}
-                        label="Image Link"
-                      />
+                      <Form.Group widths={16}>
+                        <Form.Input
+                          value={hourlyRate}
+                          width={10}
+                          onChange={e => this.handleAllChanges("hourlyRate", e)}
+                          label="Hour Rate"
+                        />
+                        <Form.Input
+                          value={image}
+                          onChange={e => this.handleAllChanges("image", e)}
+                          label="Image Link"
+                        />
+                      </Form.Group>
                     ]
                   : null}
                 {type === "Partner"
                   ? [
-                      <Form.Input
-                        value={fieldOfWork}
-                        fluid
-                        onChange={e => this.handleAllChanges("fieldOfWork", e)}
-                        label="Work Field"
-                      />,
                       <Form.Group widths="equal">
                         <Form.Input
                           value={fax}
@@ -568,7 +620,6 @@ class SignUp extends React.Component {
                           value={partners}
                           onAddItem={this.handlePartnerAdd}
                           onChange={this.handleChangePartners}
-                          noResultsMessage=""
                         />
                       </Form.Field>,
                       <Form.Field>
@@ -583,7 +634,6 @@ class SignUp extends React.Component {
                           value={members}
                           onAddItem={this.handleMemberAdd}
                           onChange={this.handleChangeMembers}
-                          noResultsMessage=""
                         />
                       </Form.Field>,
                       <Form.Field>
@@ -598,12 +648,11 @@ class SignUp extends React.Component {
                           value={projects}
                           onAddItem={this.handleProjectAdd}
                           onChange={this.handleChangeProjets}
-                          noResultsMessage=""
                         />
                       </Form.Field>
                     ]
                   : null}
-                {type === "LifeCoach"
+                {type === "lifeCoach"
                   ? [
                       <Form.Group widths="equal">
                         <Form.Input
@@ -648,7 +697,7 @@ class SignUp extends React.Component {
                   color="yellow"
                   type="submit"
                 >
-                  Sign Up
+                  Update
                 </Button>
               </Form>
 
@@ -668,4 +717,4 @@ class SignUp extends React.Component {
   }
 }
 
-export default SignUp;
+export default EditProfileForm;
