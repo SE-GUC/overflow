@@ -23,9 +23,9 @@ class DesktopMenu extends Component {
             Logo Here
           </Link>
         </Menu.Item>
-        <DesktopField to="/" icon="users" text="Members" />
-        <DesktopField to="/" icon="building outline" text="Partners" />
-        <DesktopField to="/" icon="flag" text="Life Coaches" />
+        <DesktopField to="/Members" icon="users" text="Members" />
+        <DesktopField to="/Partners" icon="building outline" text="Partners" />
+        <DesktopField to="/LifeCoaches" icon="flag" text="Life Coaches" />
         <DesktopField to="/Vacancies" icon="wpforms" text="Vacancies" />
         <Menu.Item position="right">
           {userInfo ? (
