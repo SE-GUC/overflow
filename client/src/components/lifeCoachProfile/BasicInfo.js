@@ -22,6 +22,7 @@ class BasicInfo extends Component {
   };
 
   getRating = () => {
+    if (!this.props.lifeCoach.userData.ratings) return "No rating yet";
     if (this.props.lifeCoach.userData.ratings.length === 0)
       return "No rating yet";
     let totalRating = 0;
