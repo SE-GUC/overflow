@@ -33,6 +33,7 @@
   color:rgba(0,0,0,0.4);
 
 }
+@media (min-width: 1024px) {
 .hvr-grow {
   display: inline-block;
   vertical-align: middle;
@@ -47,6 +48,7 @@
 .hvr-grow:hover, .hvr-grow:focus, .hvr-grow:active{
   -webkit-transform: scale(1.1) !important;
   transform: scale(1.1) !important;
+}
 }
 .vacancy-container {
    padding-top:1em;

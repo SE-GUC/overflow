@@ -43,9 +43,11 @@ export default class LoginModal extends Component {
       .then(data => {
         localStorage.setItem("jwtToken", data.data.data);
         this.props.setToken();
+        //this.props.forceUpdate();
         this.resetModal();
       })
       .catch(error => {
+        console.log(error, error);
         this.setState({
           error: error.response.data.error,
           hidden: false,
