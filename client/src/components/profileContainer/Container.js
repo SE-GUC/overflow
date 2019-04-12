@@ -24,6 +24,7 @@ export default class Container extends Component {
     currentRate: [],
     currentRating: "",
     currentGender: [],
+    currentApproval: [],
     searchBar: "",
     memberExclued: [
       "_id",
@@ -80,6 +81,9 @@ export default class Container extends Component {
   };
   handleGenderFilter = currentGender => {
     this.setState({ currentGender });
+  };
+  handleApprovalFilter = currentApproval => {
+    this.setState({ currentApproval });
   };
 
   setSearchBar = searchBar => {
@@ -183,6 +187,19 @@ export default class Container extends Component {
     data = data.filter(lifeCoach => lifeCoach.rating >= currentRating);
     return data;
   };
+  filterApproved = data => {
+    const { currentApproval } = this.state;
+    if (currentApproval.length === 0 || !this.props.adminType) return data;
+    data = data.filter(partner => {
+      let found = false;
+      currentApproval.forEach(key => {
+        if (key === "Yes" && partner.userData.approved) found = true;
+        if (key === "No" && !partner.userData.approved) found = true;
+      });
+      return found;
+    });
+    return data;
+  };
 
   render() {
     const {
@@ -195,7 +212,8 @@ export default class Container extends Component {
       pendingCount,
       approve,
       approveLoading,
-      del
+      del,
+      redirect
     } = this.props;
     const {
       searchBar,
@@ -212,7 +230,9 @@ export default class Container extends Component {
       );
     }
     if (pageTitle === "Partners") {
-      data = this.filterField(search(data, searchBar, partnerExcluded));
+      data = this.filterApproved(
+        this.filterField(search(data, searchBar, partnerExcluded))
+      );
     }
     if (pageTitle === "Life Coaches") {
       data = this.filterRating(
@@ -235,6 +255,7 @@ export default class Container extends Component {
             Field={this.handleFieldOfWorkFilter}
             HourlyRate={this.handleRateFilter}
             Gender={this.handleGenderFilter}
+            Approved={this.handleApprovalFilter}
             Rating={
               pageTitle === "Life Coaches" ? this.handleRatingFilter : false
             }
@@ -262,6 +283,7 @@ export default class Container extends Component {
               {data.map(profile => (
                 <Grid.Column key={profile._id}>
                   <ProfileCard
+                    redirect={redirect}
                     del={del}
                     adminType={adminType}
                     approve={approve}

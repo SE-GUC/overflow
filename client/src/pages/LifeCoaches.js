@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { get } from "../services/axios";
 import Container from "../components/profileContainer/Container.js";
+import { withRouter } from "react-router-dom";
 import {
   Dimmer,
   Loader,
@@ -10,7 +11,7 @@ import {
   Icon,
   Image
 } from "semantic-ui-react";
-export default class Members extends Component {
+class LifeCoaches extends Component {
   state = {
     loading: true,
     error: false,
@@ -49,7 +50,9 @@ export default class Members extends Component {
 
     this.setState({ hourlyRates });
   };
-
+  redirectProfile = id => {
+    this.props.history.push("/LifeCoach/" + id);
+  };
   render() {
     const { lifeCoaches, partners, loading, hourlyRates } = this.state;
     return (
@@ -58,6 +61,7 @@ export default class Members extends Component {
           <Loader size="massive" />
         </Dimmer>
         <Container
+          redirect={this.redirectProfile}
           loading={loading}
           pageTitle="Life Coaches"
           pageSubHeader="Your guide to a better life"
@@ -69,3 +73,4 @@ export default class Members extends Component {
     );
   }
 }
+export default withRouter(LifeCoaches);
