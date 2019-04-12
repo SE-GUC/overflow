@@ -1,5 +1,5 @@
 import Axios from "axios";
-const path = "http://localhost:5000/api/";
+const path = "http://localhost:3000/api/";
 
 export const get = urlInput => {
   let url = path + urlInput;
@@ -17,10 +17,12 @@ const postData = (url = ``, data = {}) => {
     headers: { "Content-Type": "application/json" }
   });
 };
+
 export const post = (urlInput, req) => {
   let url = path + urlInput;
   return postData(url, req);
 };
+
 export const put = (urlInput, req) => {
   let url = path + urlInput;
   return putData(url, req);

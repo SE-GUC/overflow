@@ -49,9 +49,13 @@ class MobileMenu extends Component {
             </Menu.Item>
           ) : null}
           <Divider fitted />
-          <MobileField to="/" icon="users" name="Members" />
-          <MobileField to="/" icon="building outline" name="Partners" />
-          <MobileField to="/" icon="flag outline" name="Life Coaches" />
+          <MobileField to="/Members" icon="users" name="Members" />
+          <MobileField to="/Partners" icon="building outline" name="Partners" />
+          <MobileField
+            to="/LifeCoaches"
+            icon="flag outline"
+            name="Life Coaches"
+          />
           <MobileField to="/Vacancies" icon="wpforms" name="Vacancies" />
           {userInfo ? (
             <Menu.Item onClick={logOut}>
