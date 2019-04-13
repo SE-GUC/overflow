@@ -12,6 +12,7 @@ import Members from "./pages/Members";
 import Partners from "./pages/Partners";
 import LifeCoaches from "./pages/LifeCoaches";
 import LifeCoachProfile from "./pages/LifeCoachProfile";
+import CreateAdmin from "./pages/CreateAdmin";
 
 export default () => {
   return [
@@ -36,6 +37,7 @@ export default () => {
       path="/LifeCoaches"
       component={LifeCoaches}
     />,
-    <Route exact path="/LifeCoach/:id" component={LifeCoachProfile} />
+    <Route exact path="/LifeCoach/:id" component={LifeCoachProfile} />,
+    <Route exact path="/CreateAdmin" component={CreateAdmin} />
   ];
 };
