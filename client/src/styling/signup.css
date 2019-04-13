@@ -3,11 +3,17 @@
    
 }
 #signup {
-   margin:5vw;
-   padding-top: 2vw;
-   padding-bottom: 2vw;
-     background: rgba(194, 189, 189, 0.486); 
+    color: white;
     box-shadow: 0 15px 30px 0 rgba(0,0,0,0.11),
               0 5px 15px 0 rgba(0,0,0,0.08);
-    
+      background-color:#06191d;
+      margin: 5em;
+      padding: 2em;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      border-radius: 17px;
+      
+  }
+  #header-row > .ui.inverted.header {
+    padding-bottom: 0.6em;
   }

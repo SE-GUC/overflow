@@ -1,5 +1,8 @@
 #sendAppButton{
-    max-width: 40%;
-    margin-left: 60%;
-    margin-top: 10%;
+    max-width: 10em;
+    margin:auto;
+}
+.modal-header {
+  background-color: #06191d !important ;
+  color:white !important;
 }

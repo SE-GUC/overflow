@@ -50,7 +50,8 @@
   min-height: 100vh;
   position: relative;
   padding-bottom: 194px;
-  background-color: #f2f2f2
+  background-color: #f2f2f2;
+  overflow-x: hidden;
 
 }
 .ui.dimmer {

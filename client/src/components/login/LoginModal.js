@@ -42,10 +42,10 @@ export default class LoginModal extends Component {
     Axios.post("users/login", body)
       .then(data => {
         localStorage.setItem("jwtToken", data.data.data);
-        this.props.setToken();
         this.resetModal();
       })
       .catch(error => {
+        console.log(error, error);
         this.setState({
           error: error.response.data.error,
           hidden: false,

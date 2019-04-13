@@ -62,6 +62,8 @@ router.put("/update/:id", async (req, res) => {
     userData.age = newAge;
     //saving monthlySlots (can only be updated from slot routes)
     userData.monthlySlots = user.userData.monthlySlots;
+    if (!userData.ratings)
+      if (user.userData.ratings) userData.ratings = user.userData.ratings;
     await User.updateOne(query, { name, email, image, userData });
     return res.sendStatus(200);
   } catch (error) {
