@@ -76,17 +76,17 @@ class EditProfileForm extends React.Component {
     ],
 
     options: [
-      { key: "member", text: "Member", value: "Member" },
+      { key: "member", text: "Member", value: "member" },
 
       {
         key: "lifeCoach",
         text: "LifeCoach",
-        value: "LifeCoach"
+        value: "lifeCoach"
       },
       {
         key: "partner",
         text: "Partner",
-        value: "Partner"
+        value: "partner"
       }
     ],
     errorContent: "",
@@ -141,7 +141,7 @@ class EditProfileForm extends React.Component {
       if (key === "type") {
         newData[key] = data[key];
       }
-     
+
       if (user.type === "member") {
         if (
           data[key] != null &&
@@ -225,7 +225,7 @@ class EditProfileForm extends React.Component {
       if (!this.checkInputArray(MemReq)) {
         return false;
       }
-    } else if (type != "Partner") {
+    } else if (type != "partner") {
       console.log("IN AdminCoach REQ CHECK");
       if (!this.checkInputArray(AdminCoachReq)) return false;
     }
@@ -342,7 +342,7 @@ class EditProfileForm extends React.Component {
     let url =
       type === "member"
         ? "users/members/update/"
-        : type === "Partner"
+        : type === "partner"
         ? "users/partners/update/"
         : type === "lifeCoach"
         ? "users/lifeCoaches/update/"
@@ -358,7 +358,7 @@ class EditProfileForm extends React.Component {
           memberAttrs.includes(key)
         )
           newData[key] = data[key];
-      } else if (type === "Partner") {
+      } else if (type === "partner") {
         if (
           data[key] != null &&
           data[key].length != 0 &&
@@ -381,17 +381,96 @@ class EditProfileForm extends React.Component {
       .then(data => {
         this.setState({ hidden: true, loading: false });
         console.log(data);
-        this.redirect();
+        let userData = {};
+        let user = {};
+        Object.keys(newData).map(key => {
+          if (type === "partner") {
+            if (
+              newData[key] != null &&
+              newData[key].length != 0 &&
+              partnerAttrs.includes(key) &&
+              key !== "name" &&
+              key !== "email" &&
+              key !== "password" &&
+              key !== "type"
+            ) {
+              userData[key] = newData[key];
+            } else if (
+              newData[key] != null &&
+              newData[key].length != 0 &&
+              partnerAttrs.includes(key) &&
+              (key === "name" || key === "email" || key !== "type")
+            ) {
+              user[key] = newData[key];
+            }
+           
+          } else if (type === "lifeCoach") {
+            if (
+              newData[key] != null &&
+              newData[key].length != 0 &&
+              lifeCoachAttrs.includes(key) &&
+              key !== "name" &&
+              key !== "email" &&
+              key !== "password" &&
+              key !== "type"
+            ) {
+              userData[key] = newData[key];
+            } else if (
+              newData[key] != null &&
+              newData[key].length != 0 &&
+              lifeCoachAttrs.includes(key) &&
+              (key === "name" || key === "email" || key !== "type")
+            ) {
+              user[key] = newData[key];
+            }
+            
+          } else if (type === "member") {
+            if (
+              newData[key] != null &&
+              newData[key].length != 0 &&
+              memberAttrs.includes(key) &&
+              key !== "name" &&
+              key !== "email" &&
+              key !== "password" &&
+              key !== "type"
+            ) {
+              userData[key] = newData[key];
+            } else if (
+              newData[key] != null &&
+              newData[key].length != 0 &&
+              memberAttrs.includes(key) &&
+              (key === "name" || key === "email" || key !== "type")
+            ) {
+              user[key] = newData[key];
+            }
+          }
+        });
+        if(type==="lifeCoach"){
+          userData={
+            ...userData,
+            monthlySlots:this.props.user.userData.monthlySlots,
+            ratings:this.props.user.userData.ratings
+          }
+        }
+        user = {
+          ...user,
+          userData: userData,
+          password: this.props.user.password,
+          type:this.props.user.type
+        };
+       
+        this.redirect(user_id, user);
       })
       .catch(error => {
+        console.log(error);
         this.setState({
           errorContent: error.response.data.error,
           hidden: false
         });
       });
   };
-  redirect = () => {
-    this.props.redirect();
+  redirect = (id, user) => {
+    this.props.redirect(id, user);
   };
 
   render() {
@@ -576,7 +655,7 @@ class EditProfileForm extends React.Component {
                       </Form.Group>
                     ]
                   : null}
-                {type === "Partner"
+                {type === "partner"
                   ? [
                       <Form.Group widths="equal">
                         <Form.Input

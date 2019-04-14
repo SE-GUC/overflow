@@ -22,6 +22,7 @@ class EditProfileTest extends React.Component {
     });
   }
   handleEdit = () => {
+    // console.log()
     this.props.history.push({
       pathname: "/EditProfile",
       user: this.state.user
