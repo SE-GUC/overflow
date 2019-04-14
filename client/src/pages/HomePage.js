@@ -25,6 +25,7 @@ export default class HomePage extends Component {
                   integrated on the front-end yet)
                 </List.Item>
                 <List.Item>Deleting Profiles</List.Item>
+                <List.Item>Editing Profiles</List.Item>
               </List.List>
             </List.Item>
             <List.Item>
