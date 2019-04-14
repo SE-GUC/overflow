@@ -46,11 +46,16 @@ class Slots extends Component {
       memberId: decode(localStorage.getItem("jwtToken")).id
     };
     //this.props.toggleLoading();
+    const member = decode(localStorage.getItem("jwtToken"));
     this.setState({ bookedLoading: true, bookedId: slotId });
     put("slots/update/" + lifeCoachId + "/" + slotId, body)
       .then(response => {
         //this.props.getLifeCoach();
-        this.props.setBooked({ _id: slotId, ...body });
+        this.props.setBooked({
+          member: { _id: member.id, name: member.name },
+          _id: slotId,
+          ...body
+        });
         this.setState({ bookedLoading: false, bookedId: "" });
       })
       .catch(error => {
