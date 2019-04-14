@@ -26,6 +26,7 @@ export default class HomePage extends Component {
                 </List.Item>
                 <List.Item>Deleting Profiles</List.Item>
                 <List.Item>Editing Profiles</List.Item>
+                <List.Item>Forgot Password & changing Password</List.Item>
               </List.List>
             </List.Item>
             <List.Item>
@@ -37,10 +38,11 @@ export default class HomePage extends Component {
                 <List.Item>Partner: apple@hotmail.com, password:test</List.Item>
                 <List.Item>Admin: philip@admin.com, password:test</List.Item>
                 <List.Item>
-                  LifeCoach: philip@gotmail.com, password:khara20
+                  LifeCoach: philip@gotmail.com, password:test
                 </List.Item>
               </List.List>
             </List.Item>
+            <List.Item>All images are currently placeholders</List.Item>
             <List.Item>
               This website is fully resposnive (works on all screen sizes)
             </List.Item>

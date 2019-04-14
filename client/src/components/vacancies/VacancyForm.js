@@ -124,7 +124,7 @@ class VacancyForm extends Component {
       startDate,
       title,
       monthlyWage,
-      state:'unapproved',
+      state: "unapproved",
       availability
     };
 
