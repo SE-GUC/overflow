@@ -63,21 +63,25 @@ class LifeCoachProfile extends Component {
 
   addSlot = slot => {
     const { lifeCoach } = this.state;
-    lifeCoach.monthlySlots.push(slot);
+    lifeCoach.userData.monthlySlots.push(slot);
     this.setState({ lifeCoach });
     this.setLocationState(lifeCoach);
   };
   deleteSlot = id => {
     const { lifeCoach } = this.state;
-    const index = lifeCoach.monthlySlots.findIndex(slot => slot._id === id);
-    lifeCoach.monthlySlots.splice(index, 1);
+    const index = lifeCoach.userData.monthlySlots.findIndex(
+      slot => slot._id === id
+    );
+    lifeCoach.userData.monthlySlots.splice(index, 1);
     this.setState({ lifeCoach });
     this.setLocationState(lifeCoach);
   };
   confirm = id => {
     const { lifeCoach } = this.state;
-    const index = lifeCoach.monthlySlots.findIndex(slot => slot._id === id);
-    lifeCoach.monthlySlots[index].confirmed = true;
+    const index = lifeCoach.userData.monthlySlots.findIndex(
+      slot => slot._id === id
+    );
+    lifeCoach.userData.monthlySlots[index].confirmed = true;
     this.setState({ lifeCoach });
     this.setLocationState(lifeCoach);
   };
@@ -89,20 +93,21 @@ class LifeCoachProfile extends Component {
     });
   };
   setSlotLocation = slot => {
+    console.log(slot, "SLOT");
     const { lifeCoach } = this.state;
-    const index = lifeCoach.monthlySlots.findIndex(
+    const index = lifeCoach.userData.monthlySlots.findIndex(
       oldslot => oldslot._id === slot._id
     );
-    lifeCoach.monthlySlots[index] = slot;
+    lifeCoach.userData.monthlySlots[index] = slot;
     this.setState({ lifeCoach });
     this.setLocationState(lifeCoach);
   };
   setBooked = slot => {
     const { lifeCoach } = this.state;
-    const index = lifeCoach.monthlySlots.findIndex(
+    const index = lifeCoach.userData.monthlySlots.findIndex(
       oldslot => oldslot._id === slot._id
     );
-    lifeCoach.monthlySlots[index] = slot;
+    lifeCoach.userData.monthlySlots[index] = slot;
     this.setState({ lifeCoach });
     this.setLocationState(lifeCoach);
   };
@@ -119,6 +124,7 @@ class LifeCoachProfile extends Component {
       deletedId
     } = this.state;
     if (!lifeCoach && !loading) return null;
+    console.log(lifeCoach);
     return (
       <div>
         <Dimmer active={loading}>

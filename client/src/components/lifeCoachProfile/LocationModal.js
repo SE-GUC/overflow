@@ -14,7 +14,7 @@ class LocationModal extends Component {
   };
 
   handleSubmit = () => {
-    const { booked, date, confirmed, _id } = this.props.slot;
+    const { booked, date, confirmed, _id, member } = this.props.slot;
     const memberId = this.props.slot.member._id;
     const body = {
       booked,
@@ -26,7 +26,7 @@ class LocationModal extends Component {
     this.setState({ loading: true });
     put("slots/update/" + this.props.id + "/" + _id, body)
       .then(response => {
-        this.props.setLocation({ _id, ...body });
+        this.props.setLocation({ _id, member, ...body });
         this.setState({ loading: false });
         //this.props.toggleLoading();
         //this.props.getLifeCoach();
