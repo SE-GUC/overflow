@@ -6,15 +6,53 @@ import {
   Label,
   Icon,
   Divider,
-  Popup
+  Popup,
+  Confirm,
+  Modal,
+  Button
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import Highlighter from "react-highlight-words";
 import "../../styling/Vacancies.css";
 import Highlightable from "../highlightable/Higlightable.js";
+import storageChanged from "storage-changed";
+import decode from "jwt-decode";
 import { withRouter } from "react-router-dom";
 
 class List extends Component {
+  state = { approveLoading: false, openConfirm: false, deletedId: "" };
+  closeConfirm = () => {
+    this.setState({ openConfirm: false });
+  };
+  openConfirm = (e, value) => {
+    this.setState({ openConfirm: true, deletedId: value });
+  };
+  approve = (e, value, pid) => {
+    this.setState({ approveLoading: true });
+    // const { _id } = this.props.data;
+    console.log(value, "ID", pid, "pid");
+    this.props.approve(value, pid);
+  };
+  deleteM = () => {
+    // const { _id } = this.props.data;
+    this.closeConfirm();
+    this.props.del(this.state.deletedId);
+  };
+  componentWillReceiveProps(newProps) {
+    this.setState({ approveLoading: newProps.approveLoading });
+  }
+  componentDidMount() {
+    this.setState({ approveLoading: this.props.approveLoading });
+  }
+  handleClick = (e, id) => {
+    if (e.target.name === "deleteButton" || e.target.name == "approveButton") {
+      e.preventDefault();
+      e.stopPropagation();
+    } else {
+      this.redirect();
+    }
+  };
+
   redirect = () => {
     const { fromPartner, vacancy } = this.props;
     if (fromPartner) return;
@@ -44,15 +82,28 @@ class List extends Component {
   };
 
   render() {
-    const { error, vacancy, searchKey, fromPartner, deletedId } = this.props;
+    const { approveLoading, openConfirm } = this.state;
+    const {
+      error,
+      vacancy,
+      searchKey,
+      fromPartner,
+      deletedId,
+      adminType,
+      pendingCount
+    } = this.props;
     const searchWords = searchKey.split(" ");
+    console.log(openConfirm, "OPENCONFIRM");
     return error ? (
       <Header as="h2" textAlign="center">
         Something went wrong!
       </Header>
     ) : (
       <div>
-        <Card onClick={this.redirect} className="vacancy-card hvr-grow">
+        <Card
+          onClick={e => this.handleClick(e, vacancy._id)}
+          className="vacancy-card hvr-grow"
+        >
           <Card.Content>
             {vacancy.title ? (
               <Card.Header>
@@ -135,6 +186,46 @@ class List extends Component {
               />
             ) : null}
           </Card.Content>
+          <Card.Content extra>
+            {vacancy.state === "unapproved" || vacancy.state === "Not taken" ? (
+              <div>
+                <Popup
+                  on="hover"
+                  position="top right"
+                  content="Pending approval"
+                  trigger={<Label corner icon="clock outline" color="yellow" />}
+                />
+                <Card.Header>
+                  {!fromPartner && adminType ? (
+                    <Button
+                      name="approveButton"
+                      style={{ marginBottom: "0.6em" }}
+                      size="small"
+                      loading={approveLoading}
+                      onClick={e =>
+                        this.approve(e, vacancy._id, vacancy.partner._id)
+                      }
+                      basic
+                      color="green"
+                    >
+                      Approve
+                    </Button>
+                  ) : null}
+                </Card.Header>
+              </div>
+            ) : null}
+            {adminType ? (
+              <Card.Header>
+                <Button
+                  name="deleteButton"
+                  onClick={e => this.openConfirm(e, vacancy._id)}
+                  color="red"
+                >
+                  Delete
+                </Button>
+              </Card.Header>
+            ) : null}
+          </Card.Content>
 
           {vacancy.partner.image ? (
             <Image
@@ -150,6 +241,11 @@ class List extends Component {
             />
           )}
         </Card>
+        <Confirm
+          open={openConfirm}
+          onCancel={this.closeConfirm}
+          onConfirm={this.deleteM}
+        />
       </div>
     );
   }

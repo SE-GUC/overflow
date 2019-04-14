@@ -14,6 +14,7 @@ import LifeCoaches from "./pages/LifeCoaches";
 import LifeCoachProfile from "./pages/LifeCoachProfile";
 import PartnerProfile from "./pages/PartnerProfile";
 import HomePage from "./pages/HomePage";
+import CreateAdmin from "./pages/CreateAdmin";
 
 export default () => {
   return [
@@ -60,6 +61,12 @@ export default () => {
       path={"/EditVacancy/:partnerId"}
       component={CreateVacancy}
     />,
-    <Route key={"/HomePage"} exact path={"/"} component={HomePage} />
+    <Route key={"/HomePage"} exact path={"/"} component={HomePage} />,
+    <Route
+      key={"/CreateAdmin"}
+      exact
+      path="/CreateAdmin"
+      component={CreateAdmin}
+    />
   ];
 };

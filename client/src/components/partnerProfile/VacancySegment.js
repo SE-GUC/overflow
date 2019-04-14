@@ -121,7 +121,6 @@ class VacancySegment extends Component {
       loading,
       vacancies,
       error,
-      myProfile,
       vacancyCount,
       searchBar,
       deletedId,
@@ -130,7 +129,8 @@ class VacancySegment extends Component {
       vacancyApprove
     } = this.state;
     const filteredVacancies = this.search(vacancies);
-    const { id } = this.props;
+    const { id, myProfile } = this.props;
+    console.log(myProfile);
     return (
       <Segment id="vacancy-segment" loading={loading} padded>
         <JobAppsModal
