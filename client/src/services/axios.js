@@ -1,5 +1,5 @@
 import Axios from "axios";
-const path = "http://localhost:3000/api/";
+const path = "https://lirten-hub-overflow.herokuapp.com/api/";
 
 export const get = urlInput => {
   let url = path + urlInput;
