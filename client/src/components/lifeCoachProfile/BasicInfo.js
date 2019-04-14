@@ -81,7 +81,9 @@ class BasicInfo extends Component {
         this.props.toggleLoading();
       });
   };
-
+  handleEdit = () => {
+    this.props.redirect();
+  };
   render() {
     const {
       name,
@@ -141,9 +143,9 @@ class BasicInfo extends Component {
           </Grid>
         </Segment>
         {this.showEditButton() && (
-          <Link to="/">
-            <Button color="green">Edit my Profile</Button>
-          </Link>
+          <Button onClick={this.handleEdit} color="green">
+            Edit my Profile
+          </Button>
         )}
         {this.showRating() && (
           <div className="lifeCoach-review-container">

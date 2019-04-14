@@ -111,7 +111,13 @@ class LifeCoachProfile extends Component {
     this.setState({ lifeCoach });
     this.setLocationState(lifeCoach);
   };
-
+  redirect = ()=>{
+    console.log(this.state.lifeCoach,"LIFECOACH")
+    this.props.history.push({
+      pathname: "/EditProfile",
+      user: this.state.lifeCoach
+    });
+  }
   render() {
     const {
       loading,
@@ -143,6 +149,7 @@ class LifeCoachProfile extends Component {
           <div>
             <BasicInfo
               myProfile={myProfile}
+              redirect={this.redirect}
               memberId={memberId}
               memberType={memberType}
               lifeCoach={lifeCoach}

@@ -76,7 +76,13 @@ class PartnerProfile extends Component {
         this.setState({ loading: false, error: true });
       });
   };
-  editProfile = () => {};
+  editProfile = () => {
+    console.log(this.state.partner,"PARTNER")
+    this.props.history.push({
+      pathname: "/EditProfile",
+      user: this.state.partner
+    });
+  };
   createVacancy = () => {
     const { id } = this.props.match.params;
     const { partner } = this.state;
