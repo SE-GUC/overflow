@@ -9,7 +9,8 @@ import {
   Icon,
   Input,
   Divider,
-  Message
+  Message,
+  Transition
 } from "semantic-ui-react";
 
 class Vacancies extends Component {
@@ -103,12 +104,17 @@ class Vacancies extends Component {
             </Message>
           </Header.Subheader>
         </Header>
-
-        <VacanciesList
-          error={error}
-          searchKey={searchBar}
-          vacancies={filteredVacancies}
-        />
+        <Transition.Group duration={400}>
+          {filteredVacancies.map(vacancy => (
+            <div key={vacancy._id}>
+              <VacanciesList
+                error={error}
+                searchKey={searchBar}
+                vacancy={vacancy}
+              />
+            </div>
+          ))}
+        </Transition.Group>
       </div>
     );
   }

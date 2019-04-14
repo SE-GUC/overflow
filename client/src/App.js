@@ -24,6 +24,18 @@ class App extends Component {
   handleTokenChange = e => {
     this.setToken();
   };
+  redirectProfile = () => {
+    const { userInfo } = this.state;
+    switch (userInfo.type) {
+      case "partner":
+        this.props.history.push("/Partner/" + userInfo.id);
+        break;
+      case "lifeCoach":
+        this.props.history.push("/LifeCoach/" + userInfo.id);
+        break;
+      //MEMBER GOES HERE
+    }
+  };
 
   setToken = () => {
     const token = localStorage.getItem("jwtToken");
@@ -59,6 +71,7 @@ class App extends Component {
       <div className="app-wrapper">
         <Responsive minWidth={Responsive.onlyTablet.minWidth}>
           <DesktopMenu
+            redirectProfile={this.redirectProfile}
             redirectSignUp={this.redirectSignUp}
             login={this.openLoginModal}
             userInfo={userInfo}
@@ -68,6 +81,7 @@ class App extends Component {
         </Responsive>
         <Responsive maxWidth={Responsive.onlyMobile.maxWidth}>
           <MobileMenu
+            redirectProfile={this.redirectProfile}
             showSideBar={this.showSideBar}
             isSidebarVisible={isSidebarVisible}
             login={this.openLoginModal}

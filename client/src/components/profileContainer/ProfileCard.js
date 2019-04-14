@@ -6,7 +6,6 @@ import {
   Rating,
   Divider,
   Label,
-  Transition,
   Popup,
   Button
 } from "semantic-ui-react";
@@ -25,9 +24,15 @@ export default class ProfileCard extends Component {
     this.props.del(_id);
   };
   redirect = () => {
+    const { redirect, data, adminType } = this.props;
+    if (adminType) return;
     const { _id } = this.props.data;
-    const { redirect } = this.props;
-    if (redirect) redirect(_id);
+    if (redirect) redirect(_id, data);
+  };
+  adminRedirect = () => {
+    const { redirect, data, adminType } = this.props;
+    const { _id } = this.props.data;
+    if (redirect) redirect(_id, data);
   };
 
   render() {
@@ -132,7 +137,10 @@ export default class ProfileCard extends Component {
 
     return (
       <Card onClick={this.redirect} className="hvr-grow centered">
-        <Image src="https://react.semantic-ui.com/images/wireframe/image.png" />
+        <Image
+          onClick={this.adminRedirect}
+          src="https://react.semantic-ui.com/images/wireframe/image.png"
+        />
         <Card.Content>
           <Card.Header className="first-header" textAlign="center">
             <Highlightable

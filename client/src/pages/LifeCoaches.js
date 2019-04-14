@@ -50,8 +50,11 @@ class LifeCoaches extends Component {
 
     this.setState({ hourlyRates });
   };
-  redirectProfile = id => {
-    this.props.history.push("/LifeCoach/" + id);
+  redirectProfile = (id, lifeCoach) => {
+    this.props.history.push({
+      pathname: "/LifeCoach/" + id,
+      state: { lifeCoach }
+    });
   };
   render() {
     const { lifeCoaches, partners, loading, hourlyRates } = this.state;

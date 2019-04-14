@@ -34,13 +34,11 @@ class BasicInfo extends Component {
   };
 
   showEditButton = () => {
-    if (!localStorage.getItem("jwtToken")) return false;
-    return decode(localStorage.getItem("jwtToken")).id === this.props.id;
+    return this.props.myProfile;
   };
 
   showRating = () => {
-    if (!localStorage.getItem("jwtToken")) return false;
-    return decode(localStorage.getItem("jwtToken")).type === "member";
+    return this.props.memberType;
   };
 
   handleRate = (e, { rating, maxRating }) => {
@@ -73,10 +71,10 @@ class BasicInfo extends Component {
     };
     if (!hourlyRate) delete body.hourlyRate;
     if (!image) delete body.image;
-    this.props.toggleLoading();
+    //this.props.toggleLoading();
     put("users/lifeCoaches/update/" + this.props.id, body)
       .then(response => {
-        this.props.getLifeCoach();
+        //this.props.getLifeCoachWithNoLoading();
       })
       .catch(error => {
         this.props.toggleError();

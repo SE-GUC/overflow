@@ -2,15 +2,9 @@ import React, { Component } from "react";
 import decode from "jwt-decode";
 import * as axios from "../services/axios";
 import {
-  Modal,
-  Button,
-  Header,
-  Rating,
-  Grid,
   Dimmer,
   Loader,
-  Form,
-  TextArea
+  Button
 } from "semantic-ui-react";
 class EditProfileTest extends React.Component {
   constructor() {

@@ -12,13 +12,11 @@ class Slots extends Component {
     setLocationSlot: {}
   };
   showAddButton = () => {
-    if (!localStorage.getItem("jwtToken")) return false;
-    return decode(localStorage.getItem("jwtToken")).id === this.props.id;
+    return this.props.myProfile;
   };
 
   showBookButton = () => {
-    if (!localStorage.getItem("jwtToken")) return false;
-    return decode(localStorage.getItem("jwtToken")).type === "member";
+    return this.props.memberType;
   };
 
   handleOpenCreateModal = () => {
@@ -47,12 +45,16 @@ class Slots extends Component {
       confirmed: false,
       memberId: decode(localStorage.getItem("jwtToken")).id
     };
-    this.props.toggleLoading();
+    //this.props.toggleLoading();
+    this.setState({ bookedLoading: true, bookedId: slotId });
     put("slots/update/" + lifeCoachId + "/" + slotId, body)
       .then(response => {
-        this.props.getLifeCoach();
+        //this.props.getLifeCoach();
+        this.props.setBooked({ _id: slotId, ...body });
+        this.setState({ bookedLoading: false, bookedId: "" });
       })
       .catch(error => {
+        console.log(error);
         this.props.toggleError();
         this.props.toggleLoading();
       });
@@ -60,6 +62,7 @@ class Slots extends Component {
 
   handleConfirm = (slot, lifeCoachId) => {
     const { booked, date, location, member, _id } = slot;
+    this.setState({ confirmLoading: true, confirmId: _id });
     const body = {
       date,
       booked,
@@ -67,10 +70,12 @@ class Slots extends Component {
       memberId: member._id,
       confirmed: true
     };
-    this.props.toggleLoading();
+    //this.props.toggleLoading();
     put("slots/update/" + lifeCoachId + "/" + _id, body)
       .then(response => {
-        this.props.getLifeCoach();
+        //this.props.getLifeCoach();
+        this.props.confirm(_id);
+        this.setState({ confirmLoading: false, confirmId: "" });
       })
       .catch(error => {
         this.props.toggleError();
@@ -79,20 +84,41 @@ class Slots extends Component {
   };
 
   handleDelete = (slotId, lifeCoachId) => {
-    this.props.toggleLoading();
+    //this.props.toggleLoading();
+    this.setState({ deleteLoading: true, deletedId: slotId });
     del("slots/delete/" + lifeCoachId + "/" + slotId)
       .then(response => {
-        this.props.getLifeCoach();
+        //this.props.getLifeCoach();
+        this.props.deleteSlot(slotId);
+        this.setState({ deleteLoading: false, deletedId: "" });
       })
       .catch(error => {
+        console.log(error);
         this.props.toggleError();
         this.props.toggleLoading();
       });
   };
-
+  addSlot = slot => {
+    this.setState({ createModal: false });
+    this.props.addSlot(slot);
+  };
+  setLocation = slot => {
+    this.setState({ locationModal: false });
+    this.props.setSlotLocation(slot);
+  };
   render() {
     const slots = this.props.lifeCoach.userData.monthlySlots;
-    const { createModal, locationModal, setLocationSlot } = this.state;
+    const {
+      createModal,
+      locationModal,
+      setLocationSlot,
+      deleteLoading,
+      deletedId,
+      confirmLoading,
+      confirmId,
+      bookedId,
+      bookedLoading
+    } = this.state;
     return (
       <div className="slots-container">
         {createModal && (
@@ -100,6 +126,7 @@ class Slots extends Component {
             onClose={this.handleCloseCreateModal}
             open={createModal}
             id={this.props.id}
+            addSlot={this.addSlot}
             toggleLoading={this.props.toggleLoading}
             toggleError={this.props.toggleError}
             getLifeCoach={this.props.getLifeCoach}
@@ -107,6 +134,7 @@ class Slots extends Component {
         )}
         {locationModal && (
           <LocationModal
+            setLocation={this.setLocation}
             onClose={this.handleCloseLocationModal}
             open={locationModal}
             id={this.props.id}
@@ -175,6 +203,7 @@ class Slots extends Component {
                   <Card.Content extra>
                     <Button
                       positive
+                      loading={bookedLoading && bookedId === slot._id}
                       disabled={slot.booked}
                       onClick={() =>
                         this.handleBook(slot.date, this.props.id, slot._id)
@@ -197,14 +226,18 @@ class Slots extends Component {
                       disabled={
                         slot.confirmed || !slot.booked || !slot.location
                       }
+                      loading={confirmLoading && slot._id === confirmId}
                       color="green"
                       onClick={() => this.handleConfirm(slot, this.props.id)}
                     >
                       Confirm
                     </Button>
                     <Button
+                      loading={deleteLoading && slot._id === deletedId}
                       color="red"
-                      onClick={() => this.handleDelete(slot._id, this.props.id)}
+                      onClick={() => {
+                        this.handleDelete(slot._id, this.props.id);
+                      }}
                     >
                       Delete
                     </Button>
