@@ -19,7 +19,8 @@ class SubmitFeedbackModal extends Component {
     this.state = {
       feedbackText: "",
       memberId: "",
-      partner: null
+      partner: null,
+      loading: false
     };
   }
   handleChange = (e, { value }) => {
@@ -43,8 +44,8 @@ class SubmitFeedbackModal extends Component {
   handleClick = () => {
     let url = "feedback/create";
     this.setState({ loading: true });
-    const { partner } = this.state;
-    const memberId = this.getCurrentMember();
+    const { partner } = this.props;
+    const memberId = this.props.memberId;
     const { feedbackText } = this.state;
     let body = {
       feedbackText: feedbackText,
@@ -52,14 +53,16 @@ class SubmitFeedbackModal extends Component {
       partnerId: partner._id
     };
     axios.post(url, body).then(data => {
-      console.log(data, "Success");
-      this.setState({ hidden: true, loading: false });
+      this.props.addFeedBack(data.data);
+      this.setState({ loading: false });
+      this.props.close();
     });
   };
   componentWillReceiveProps(newProps) {
     this.setState({ hidden: newProps.hidden });
   }
-  componentDidMount() {
+
+  /*componentDidMount() {
     const id = "5ca9f44f4af55e8cbcdd9a52";
     const url = "users/" + id;
     axios
@@ -67,6 +70,7 @@ class SubmitFeedbackModal extends Component {
       .then(partner => {
         this.setState({ partner: partner });
       })
+
       .catch(error => {
         console.log(error);
       });
@@ -74,22 +78,17 @@ class SubmitFeedbackModal extends Component {
   }
   handleClose = () => {
     this.setState({ hidden: true });
-  };
+  };*/
   render() {
-    // let { memberId } = this.props;
-    let { partner, loading, memberId } = this.state;
+    const { memberId, partner, open } = this.props;
+    let { loading } = this.state;
     const name = partner ? partner.name : null;
-    const { hidden } = this.state;
     const placeholder = "Give us your feedback about " + name;
-    return !partner || loading ? (
-      <div>
-        <Dimmer active>
-          <Loader size="huge" inverted />
-        </Dimmer>
-      </div>
-    ) : (
-      <Modal open={!hidden} onClose={this.handleClose}>
-        <Modal.Header>Submit a Feedback</Modal.Header>
+    return (
+      <Modal closeIcon open={open} onClose={this.props.close}>
+        <Modal.Header className="modal-header" inverted>
+          Submit a Feedback
+        </Modal.Header>
         <Modal.Content>
           <Grid padded columns={2} divided>
             <Grid.Row>
@@ -121,8 +120,9 @@ class SubmitFeedbackModal extends Component {
                     />
                   </Form.Field>
                 </Form>
-                <div id="sendAppButton">
+                <div style={{ marginTop: "1em" }} id="sendAppButton">
                   <Button
+                    loading={loading}
                     disabled={this.state.disabled}
                     onClick={this.handleClick}
                     color="yellow"

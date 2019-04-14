@@ -1,4 +1,4 @@
-  import React, { Component } from "react";
+import React, { Component } from "react";
 import {
   Grid,
   Form,
@@ -8,9 +8,10 @@ import {
   Divider
 } from "semantic-ui-react";
 import "../../styling/VacancyForm.css";
-import * as Axios from "../../services/axios.js";
+import { withRouter } from "react-router-dom";
+import { post, put } from "../../services/axios.js";
 
-export default class VacancyForm extends Component {
+class VacancyForm extends Component {
   state = {
     title: "",
     monthlyWage: "",
@@ -25,12 +26,62 @@ export default class VacancyForm extends Component {
     loader: false,
     errorHidden: true,
     errorMessage: "",
+    _id: "",
     availabilityOptions: [
       { key: 1, text: "Full-Time", value: "fullTime" },
       { key: 2, text: "Part-Time", value: "partTime" }
     ],
     skillOptions: []
   };
+
+  componentDidMount() {
+    const { vacancy } = this.props.location.state;
+    if (!vacancy) return;
+    const { dailyHours, description, skills, title, location, _id } = vacancy;
+    let { availability, startDate, endDate, monthlyWage } = vacancy;
+
+    if (availability) {
+      if (availability.includes(`ull`)) availability = `fullTime`;
+      else {
+        availability = `partTime`;
+      }
+    }
+    const skillOptions = skills.map(skill => {
+      return { text: skill, value: skill };
+    });
+    startDate = this.generateDate(startDate);
+    endDate = this.generateDate(endDate);
+    const monthlyWageCurrency = monthlyWage ? monthlyWage.split(" ") : "N/A";
+    monthlyWage = monthlyWage ? monthlyWageCurrency[0] : "N/A";
+    const currency =
+      monthlyWageCurrency.length > 1 ? monthlyWageCurrency[1] : "N/A";
+
+    this.setState({
+      title,
+      dailyHours,
+      availability,
+      description,
+      skillOptions,
+      currentValues: skills,
+      startDate,
+      endDate,
+      location,
+      monthlyWage,
+      currency,
+      _id,
+      edit: true
+    });
+  }
+  generateDate = dateString => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    if (month < 10) month = "0" + month;
+    let day = date.getDate();
+    if (day < 10) day = "0" + day;
+    return `${year}-${month}-${day}`;
+  };
+
   handleAddition = (e, { value }) => {
     this.setState({
       skillOptions: [{ text: value, value }, ...this.state.skillOptions]
@@ -56,11 +107,13 @@ export default class VacancyForm extends Component {
       endDate,
       location,
       startDate,
-      title
+      title,
+      edit,
+      _id
     } = this.state;
     let { monthlyWage } = this.state;
-    monthlyWage += currency;
-    const url = "vacancies/create";
+    monthlyWage += " " + currency;
+    const url = edit ? `vacancies/update/${_id}` : "vacancies/create";
     const data = {
       partnerId,
       skills: currentValues,
@@ -77,12 +130,17 @@ export default class VacancyForm extends Component {
 
     //deleting any empty props incase they are empty
     Object.keys(data).forEach(key => {
+      if (!data[key]) {
+        delete data[key];
+        return;
+      }
       if (data[key].length === 0) delete data[key];
     });
-    Axios.post(url, data)
+    const method = edit ? put : post;
+    method(url, data)
       .then(resp => {
         this.setState({ loader: false });
-        //Goes to Vacancy Page here
+        this.redirectProfile();
       })
       .catch(error => {
         this.setState({ loader: false });
@@ -98,6 +156,16 @@ export default class VacancyForm extends Component {
           });
         }
       });
+  };
+  redirectProfile = () => {
+    const { partnerId } = this.props;
+    let partner = undefined;
+    const { state } = this.props.location;
+    if (state) partner = state.partner;
+    this.props.history.push({
+      pathname: "/Partner/" + partnerId,
+      state: { partner }
+    });
   };
 
   render() {
@@ -116,7 +184,8 @@ export default class VacancyForm extends Component {
       description,
       loader,
       errorHidden,
-      errorMessage
+      errorMessage,
+      edit
     } = this.state;
     const { isMobile } = this.props;
     const formSize = isMobile ? "tiny" : "large";
@@ -151,10 +220,19 @@ export default class VacancyForm extends Component {
             size={formSize}
             onSubmit={this.createVacancy}
           >
-            <Header inverted size="huge" textAlign="left">
-              Create Vacancy
-              <Header.Subheader>Submit a vacancy for approval</Header.Subheader>
-            </Header>
+            {edit ? (
+              <Header inverted size="huge" textAlign="left">
+                Edit Vacancy
+                <Header.Subheader>Set new information</Header.Subheader>
+              </Header>
+            ) : (
+              <Header inverted size="huge" textAlign="left">
+                Create Vacancy
+                <Header.Subheader>
+                  Submit a vacancy for approval
+                </Header.Subheader>
+              </Header>
+            )}
             <Form.Input
               onChange={e => {
                 this.handleAllChanges("title", e);
@@ -241,7 +319,7 @@ export default class VacancyForm extends Component {
             />
 
             <Button loading={loader} fluid color="yellow" type="submit">
-              Create
+              {edit ? <span>Edit </span> : <span>Create</span>}
             </Button>
             {errorHidden ? (
               ""
@@ -254,3 +332,4 @@ export default class VacancyForm extends Component {
     );
   }
 }
+export default withRouter(VacancyForm);

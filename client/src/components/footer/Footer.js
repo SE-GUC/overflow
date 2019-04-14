@@ -10,9 +10,9 @@ class Footer extends Component {
       <div className="footer">
         <h1>Logo Here</h1>
         <div className="footer-links">
-          <Link to="/">Members</Link>
-          <Link to="/">Partners</Link>
-          <Link to="/">Life Coaches</Link>
+          <Link to="/Members">Members</Link>
+          <Link to="/Partners">Partners</Link>
+          <Link to="/LifeCoaches">Life Coaches</Link>
           <Link to="/Vacancies">Vacancies</Link>
         </div>
         <div className="footer-icons">

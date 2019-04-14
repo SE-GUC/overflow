@@ -34,7 +34,7 @@ class MobileMenu extends Component {
           size="tiny"
         >
           {userInfo ? (
-            <Menu.Item>
+            <Menu.Item onClick={this.props.redirectProfile}>
               <Image
                 className="user-menu"
                 src="https://react.semantic-ui.com/images/avatar/large/matthew.png"

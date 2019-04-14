@@ -11,8 +11,9 @@ import {
   Icon,
   Input,
   Divider,
-  Confirm,
-  Message
+  Message,
+  Transition,
+  Confirm
 } from "semantic-ui-react";
 
 class Vacancies extends Component {
@@ -71,7 +72,9 @@ class Vacancies extends Component {
       }
     });
     console.log(newFilteredVacancies, "After Filter");
-    let approvedVacancy = newFilteredVacancies.find(vacancy => vacancy._id === id);
+    let approvedVacancy = newFilteredVacancies.find(
+      vacancy => vacancy._id === id
+    );
 
     approvedVacancy = { ...approvedVacancy, state: "free" };
     const url = "vacancies/update/" + id;
@@ -200,18 +203,23 @@ class Vacancies extends Component {
             </Message>
           </Header.Subheader>
         </Header>
-
-        <VacanciesList
-          error={error}
-          searchKey={searchBar}
-          vacancies={searchedVacancies}
-          approve={this.setApproved}
-          adminType={adminType}
-          del={this.delete}
-          pendingCount={pendingCount}
-          approveLoading={approveLoading}
-          redirect={this.redirect}
-        />
+        <Transition.Group duration={400}>
+          {searchedVacancies.map(vacancy => (
+            <div key={vacancy._id}>
+              <VacanciesList
+                error={error}
+                searchKey={searchBar}
+                vacancy={vacancy}
+                approve={this.setApproved}
+                adminType={adminType}
+                del={this.delete}
+                pendingCount={pendingCount}
+                approveLoading={approveLoading}
+                redirect={this.redirect}
+              />
+            </div>
+          ))}
+        </Transition.Group>
       </div>
     );
   }

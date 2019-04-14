@@ -4,9 +4,10 @@ import {
   Card,
   Image,
   Label,
-  Transition,
-  Confirm,
+  Icon,
+  Divider,
   Popup,
+  Confirm,
   Modal,
   Button
 } from "semantic-ui-react";
@@ -16,6 +17,8 @@ import "../../styling/Vacancies.css";
 import Highlightable from "../highlightable/Higlightable.js";
 import storageChanged from "storage-changed";
 import decode from "jwt-decode";
+import { withRouter } from "react-router-dom";
+
 class List extends Component {
   state = { approveLoading: false, openConfirm: false, deletedId: "" };
   closeConfirm = () => {
@@ -30,7 +33,7 @@ class List extends Component {
     console.log(value, "ID", pid, "pid");
     this.props.approve(value, pid);
   };
-  delete = () => {
+  deleteM = () => {
     // const { _id } = this.props.data;
     this.closeConfirm();
     this.props.del(this.state.deletedId);
@@ -46,12 +49,49 @@ class List extends Component {
       e.preventDefault();
       e.stopPropagation();
     } else {
-      this.props.redirect(id);
+      this.redirect();
     }
   };
+
+  redirect = () => {
+    const { fromPartner, vacancy } = this.props;
+    if (fromPartner) return;
+    this.props.history.push({
+      pathname: "/Vacancy/" + vacancy._id,
+      state: { vacancy }
+    });
+  };
+  redirectComp = () => {
+    const { fromPartner, vacancy } = this.props;
+    if (!fromPartner) return;
+    this.props.history.push({
+      pathname: "/Vacancy/" + vacancy._id,
+      state: { vacancy }
+    });
+  };
+  delete = () => {
+    const { _id } = this.props.vacancy;
+    this.props.del(_id);
+  };
+  edit = () => {
+    const { edit, vacancy } = this.props;
+    edit(vacancy);
+  };
+  viewJobApplications = () => {
+    this.props.viewJobApplications(this.props.vacancy._id, this.props.vacancy);
+  };
+
   render() {
-    const { error, vacancies, searchKey, adminType, pendingCount } = this.props;
     const { approveLoading, openConfirm } = this.state;
+    const {
+      error,
+      vacancy,
+      searchKey,
+      fromPartner,
+      deletedId,
+      adminType,
+      pendingCount
+    } = this.props;
     const searchWords = searchKey.split(" ");
     console.log(openConfirm, "OPENCONFIRM");
     return error ? (
@@ -59,122 +99,156 @@ class List extends Component {
         Something went wrong!
       </Header>
     ) : (
-      [
-        <Transition.Group duration={400}>
-          {vacancies.map(vacancy => (
-            // <Link to={`/Vacancy/${vacancy._id}`}>
-            <div>
-              <Card
-                onClick={e => this.handleClick(e, vacancy._id)}
-                className="vacancy-card hvr-grow"
-              >
-                <Card.Content>
-                  {vacancy.title ? (
-                    <Card.Header>
-                      <Highlightable
-                        textToHighlight={vacancy.title}
-                        searchWords={searchWords}
-                      />
-                    </Card.Header>
-                  ) : (
-                    <Card.Header>
-                      <Highlightable
-                        searchWords={searchWords}
-                        textToHighlight={`${vacancy.partner.name} Vacancy`}
-                      />
-                    </Card.Header>
-                  )}
+      <div>
+        <Card
+          onClick={e => this.handleClick(e, vacancy._id)}
+          className="vacancy-card hvr-grow"
+        >
+          <Card.Content>
+            {vacancy.title ? (
+              <Card.Header>
+                <Highlightable
+                  textToHighlight={vacancy.title}
+                  searchWords={searchWords}
+                />
+              </Card.Header>
+            ) : (
+              <Card.Header>
+                <Highlightable
+                  searchWords={searchWords}
+                  textToHighlight={`${vacancy.partner.name} Vacancy`}
+                />
+              </Card.Header>
+            )}
 
-                  <span className="highlight-meta">
+            <span className="highlight-meta">
+              <Highlightable
+                searchWords={searchWords}
+                textToHighlight={`${vacancy.partner.name}${
+                  vacancy.location ? " - " + vacancy.location : ""
+                }`}
+              />
+            </span>
+            <Card.Description>
+              <Highlightable
+                searchWords={searchWords}
+                textToHighlight={vacancy.description}
+              />
+            </Card.Description>
+            {vacancy.skills
+              ? vacancy.skills.map(skill => (
+                  <Label color="yellow" key={skill} className="vacancy-label">
                     <Highlightable
                       searchWords={searchWords}
-                      textToHighlight={`${vacancy.partner.name}${
-                        vacancy.location ? " - " + vacancy.location : ""
-                      }`}
+                      textToHighlight={skill}
                     />
-                  </span>
-
-                  <Card.Description>
-                    <Highlightable
-                      searchWords={searchWords}
-                      textToHighlight={vacancy.description}
-                    />
-                  </Card.Description>
-                  {vacancy.skills
-                    ? vacancy.skills.map(skill => (
-                        <Label
-                          color="yellow"
-                          key={skill}
-                          className="vacancy-label"
-                        >
-                          <Highlightable
-                            searchWords={searchWords}
-                            textToHighlight={skill}
-                          />
-                        </Label>
-                      ))
-                    : []}
-                </Card.Content>
-                <Card.Content extra>
-                  {vacancy.state === "unapproved" ||
-                  vacancy.state === "Not taken" ? (
-                    <div>
-                      <Popup
-                        on="hover"
-                        position="top right"
-                        content="Pending approval"
-                        trigger={
-                          <Label corner icon="clock outline" color="yellow" />
-                        }
-                      />
-                      <Card.Header>
-                        <Button
-                          name="approveButton"
-                          style={{ marginBottom: "0.6em" }}
-                          size='small'
-                          loading={approveLoading}
-                          onClick={e =>
-                            this.approve(e, vacancy._id, vacancy.partner._id)
-                          }
-                          basic
-                          color="green"
-                        >
-                          Approve
-                        </Button>
-                      </Card.Header>
-                    </div>
+                  </Label>
+                ))
+              : []}
+            {fromPartner ? (
+              <div>
+                <Divider />
+                <Icon
+                  onClick={this.edit}
+                  size="big"
+                  name="pencil alternate"
+                  color="yellow"
+                />
+                <Icon
+                  onClick={this.viewJobApplications}
+                  size="big"
+                  name="wpforms"
+                  color="blue"
+                />
+                <Icon
+                  loading={vacancy._id == deletedId}
+                  onClick={this.delete}
+                  size="big"
+                  name="times circle"
+                  color="red"
+                />
+                <Icon
+                  onClick={this.redirectComp}
+                  size="big"
+                  name="expand"
+                  color="green"
+                />
+              </div>
+            ) : null}
+            {vacancy.state === "taken" ? (
+              <Popup
+                on="hover"
+                position="top right"
+                content={"Taken"}
+                trigger={
+                  <Label corner size="mini" icon="check" color="green" />
+                }
+              />
+            ) : null}
+          </Card.Content>
+          <Card.Content extra>
+            {vacancy.state === "unapproved" || vacancy.state === "Not taken" ? (
+              <div>
+                <Popup
+                  on="hover"
+                  position="top right"
+                  content="Pending approval"
+                  trigger={<Label corner icon="clock outline" color="yellow" />}
+                />
+                <Card.Header>
+                  {!fromPartner && adminType ? (
+                    <Button
+                      name="approveButton"
+                      style={{ marginBottom: "0.6em" }}
+                      size="small"
+                      loading={approveLoading}
+                      onClick={e =>
+                        this.approve(e, vacancy._id, vacancy.partner._id)
+                      }
+                      basic
+                      color="green"
+                    >
+                      Approve
+                    </Button>
                   ) : null}
-                  {adminType ? (
-                    <Card.Header>
-                      <Button
-                        name="deleteButton"
-                        onClick={e => this.openConfirm(e, vacancy._id)}
-                        color="red"
-                      >
-                        Delete
-                      </Button>
-                    </Card.Header>
-                  ) : null}
-                </Card.Content>
+                </Card.Header>
+              </div>
+            ) : null}
+            {adminType ? (
+              <Card.Header>
+                <Button
+                  name="deleteButton"
+                  onClick={e => this.openConfirm(e, vacancy._id)}
+                  color="red"
+                >
+                  Delete
+                </Button>
+              </Card.Header>
+            ) : null}
+          </Card.Content>
 
-                {vacancy.partner.image ? (
-                  <Image size="tiny" src={vacancy.partner.image} />
-                ) : (
-                  <Image size="tiny" src="https://via.placeholder.com/150" />
-                )}
-              </Card>
-            </div>
-            // </Link>
-          ))}
-        </Transition.Group>,
+          {vacancy.partner.image ? (
+            <Image
+              onClick={this.redirectComp}
+              size="tiny"
+              src={vacancy.partner.image}
+            />
+          ) : (
+            <Image
+              onClick={this.redirectComp}
+              size="tiny"
+              src="https://via.placeholder.com/150"
+            />
+          )}
+        </Card>
         <Confirm
           open={openConfirm}
           onCancel={this.closeConfirm}
-          onConfirm={this.delete}
+          onConfirm={this.deleteM}
         />
-      ]
+      </div>
     );
   }
 }
 
-export default List;
+export default withRouter(List);

@@ -26,8 +26,10 @@ class CreateSlotModal extends Component {
     this.setState({ loading: true });
     post("slots/create", body)
       .then(response => {
-        this.props.toggleLoading();
-        this.props.getLifeCoach();
+        this.props.addSlot(response.data.data);
+        this.setState({ loading: false });
+        //this.props.toggleLoading();
+        //this.props.getLifeCoach();
       })
       .catch(error => {
         this.setState({
