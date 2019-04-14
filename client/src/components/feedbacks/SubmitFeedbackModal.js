@@ -59,7 +59,6 @@ class SubmitFeedbackModal extends Component {
   componentWillReceiveProps(newProps) {
     this.setState({ hidden: newProps.hidden });
   }
-
   componentDidMount() {
     const id = "5ca9f44f4af55e8cbcdd9a52";
     const url = "users/" + id;

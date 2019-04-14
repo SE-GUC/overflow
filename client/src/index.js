@@ -7,7 +7,6 @@ import { BrowserRouter } from "react-router-dom";
 import "semantic-ui-css/semantic.min.css";
 import Routes from "./routes";
 import Scrolling from "./ScrollToTop.js";
-
 ReactDOM.render(
   <BrowserRouter>
     {/* <Scrolling> */}
