@@ -30,18 +30,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 // Passport configuration
 require("./config/passport")(passport);
-app.get("/", (req, res) => {
-  res.send("<h1>Overflow Lirten Hub</h1>");
-});
 
 //firebase serviceworker
-
 app.get("/messageTest", (req, res) => {
   res.sendFile(path.join(__dirname + "/messageTest.html"));
 });
 app.get("/firebase-messaging-sw.js", (req, res) => {
   res.sendFile(path.join(__dirname + "/firebase-messaging-sw.js"));
 });
+
 // API Routes go here
 app.use("/api/users", users);
 app.use("/api/vacancies", vacancies);
@@ -50,15 +47,21 @@ app.use("/api/feedback", feedbacks);
 app.use("/api/slots", slots);
 app.use("/api/reviews", review);
 app.use("/api/subscribers", subscribers);
-// 404s
-app.use("/", (req, res) => {
-  return res.sendStatus(404);
-});
+
 recommender.setVacanciesProperties();
 recommender.setMemberProperties();
-app.use(express.static("client/build"));
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
+
+// 404s
+app.use((req, res) => {
+  return res.sendStatus(404);
 });
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Server up and running on port ${port}`));
