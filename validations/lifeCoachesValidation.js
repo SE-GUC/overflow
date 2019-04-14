@@ -20,7 +20,8 @@ const updateValidation = (request) => {
     gender: Joi.string().min(4).max(6).required(),
     hourlyRate:Joi.string(),
     email: Joi.string().email({ minDomainAtoms: 2 }).required(),
-    image: Joi.string()
+    image: Joi.string(),
+    ratings: Joi.array()
   }
   return Joi.validate(request, updateSchema);
 };

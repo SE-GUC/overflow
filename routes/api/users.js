@@ -33,6 +33,7 @@ router.get("/:id", async (req, res) => {
     res.sendStatus(400);
   }
 });
+
 router.delete("/delete/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -48,6 +49,7 @@ router.delete("/delete/:id", async (req, res) => {
     res.sendStatus(400);
   }
 });
+
 router.put("/updatePassword/:id", async (req, res) => {
   const { id } = req.params;
   const { oldPassword, newPassword } = req.body;
@@ -91,6 +93,7 @@ router.post("/login", async (req, res) => {
     if (match) {
       const payload = {
         id: user._id,
+        type: user.type,
         name: user.name,
         email: user.email
       };

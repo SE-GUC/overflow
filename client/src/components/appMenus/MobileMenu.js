@@ -1,11 +1,17 @@
 import React, { Component } from "react";
 import "../../styling/Menus.css";
-import { Menu, Sidebar, Icon, Header, Divider } from "semantic-ui-react";
+import { Menu, Sidebar, Icon, Header, Divider, Image } from "semantic-ui-react";
 
 import MobileField from "./MobileField";
 class MobileMenu extends Component {
   render() {
-    const { isSidebarVisible, showSideBar } = this.props;
+    const {
+      isSidebarVisible,
+      showSideBar,
+      userInfo,
+      login,
+      logOut
+    } = this.props;
     return (
       <div>
         <Menu className="main-menu mobile-menu" borderless fixed="top">
@@ -21,23 +27,52 @@ class MobileMenu extends Component {
           animation="overlay"
           width="thin"
           visible={isSidebarVisible}
-          borderless
           vertical
           inverted
           stackable
           direction="right"
           size="tiny"
         >
-          <Menu.Item>
-            <Header inverted> Profile Info Here </Header>
-          </Menu.Item>
+          {userInfo ? (
+            <Menu.Item>
+              <Image
+                className="user-menu"
+                src="https://react.semantic-ui.com/images/avatar/large/matthew.png"
+                avatar
+              />
+              <Header size="small" className="profile-header" inverted>
+                {userInfo.name}
+              </Header>
+              <Header size="small" inverted>
+                {userInfo.email}
+              </Header>
+            </Menu.Item>
+          ) : null}
           <Divider fitted />
-          <MobileField to="/" icon="users" name="Members" />
-          <MobileField to="/" icon="building outline" name="Partners" />
-          <MobileField to="/" icon="flag outline" name="Life Coaches" />
+          <MobileField to="/Members" icon="users" name="Members" />
+          <MobileField to="/Partners" icon="building outline" name="Partners" />
+          <MobileField
+            to="/LifeCoaches"
+            icon="flag outline"
+            name="Life Coaches"
+          />
           <MobileField to="/Vacancies" icon="wpforms" name="Vacancies" />
-          <MobileField to="/" name="Log in" />
-          <MobileField to="/" name="Sign up" />
+          {userInfo ? (
+            <Menu.Item onClick={logOut}>
+              <Header textAlign="center" icon inverted>
+                Log out
+              </Header>
+            </Menu.Item>
+          ) : (
+            [
+              <Menu.Item key="login" onClick={login}>
+                <Header textAlign="center" icon inverted>
+                  Log In
+                </Header>
+              </Menu.Item>,
+              <MobileField key="signUp" to="/SignUp" name="Sign up" />
+            ]
+          )}
         </Sidebar>
       </div>
     );
