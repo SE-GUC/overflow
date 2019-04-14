@@ -26,10 +26,13 @@ class LocationModal extends Component {
     this.setState({ loading: true });
     put("slots/update/" + this.props.id + "/" + _id, body)
       .then(response => {
-        this.props.toggleLoading();
-        this.props.getLifeCoach();
+        this.props.setLocation({ _id, ...body });
+        this.setState({ loading: false });
+        //this.props.toggleLoading();
+        //this.props.getLifeCoach();
       })
       .catch(error => {
+        console.log(error);
         this.setState({
           error: error.response.data.error,
           loading: false

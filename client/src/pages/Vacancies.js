@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import { get } from "../services/axios";
+import { get, put, del } from "../services/axios";
 import "../styling/Vacancies.css";
+import decode from "jwt-decode";
+import storageChanged from "storage-changed";
 import VacanciesList from "../components/vacancies/List.js";
 import {
   Header,
@@ -9,7 +11,9 @@ import {
   Icon,
   Input,
   Divider,
-  Message
+  Message,
+  Transition,
+  Confirm
 } from "semantic-ui-react";
 
 class Vacancies extends Component {
@@ -17,17 +21,103 @@ class Vacancies extends Component {
     vacancies: [],
     error: false,
     loading: true,
-    searchBar: ""
+    searchBar: "",
+    adminType: false,
+    openConfirm: false,
+    deletedId: "",
+    filteredVacancies: [],
+    pendingCount: 0,
+    partnerId: "",
+    approveLoading: false
   };
   changeSearchBar = e => {
     this.setState({ searchBar: e.target.value });
   };
 
+  setToken = () => {
+    const tokenCheck = localStorage.getItem("jwtToken");
+    if (!tokenCheck) {
+      this.setState({ adminType: false });
+      return;
+    }
+    const decoded = decode(localStorage.getItem("jwtToken"));
+    if (decoded.type === "admin") {
+      this.setState({ adminType: true });
+    }
+  };
+  componentWillUnmount() {
+    window.removeEventListener("storage", this.setToken);
+  }
   componentDidMount() {
+    this.setToken();
+    storageChanged("local", {
+      eventName: "tokenChange"
+    });
+    window.addEventListener("tokenChange", this.setToken);
     get("vacancies")
-      .then(response => this.setState({ vacancies: response, loading: false }))
+      .then(response => {
+        this.setState({ vacancies: response, loading: false });
+        this.setData(response, this.state.adminType);
+      })
       .catch(error => this.setState({ error: true, loading: false }));
   }
+  setApproved = (id, pid) => {
+    const { adminType, filteredVacancies } = this.state;
+
+    let newFilteredVacancies = filteredVacancies.map(vacancy => {
+      if (vacancy._id === id) {
+        return { ...vacancy, state: "free" };
+      } else {
+        return vacancy;
+      }
+    });
+    console.log(newFilteredVacancies, "After Filter");
+    let approvedVacancy = newFilteredVacancies.find(
+      vacancy => vacancy._id === id
+    );
+
+    approvedVacancy = { ...approvedVacancy, state: "free" };
+    const url = "vacancies/update/" + id;
+
+    const data = {
+      ...approvedVacancy,
+      partnerId: pid
+    };
+    const { _id, partner, __v, ...newData } = data;
+    put(url, newData).then(
+      this.setData(newFilteredVacancies, true),
+      this.setState({ approveLoading: false })
+    );
+  };
+  delete = deletedId => {
+    // const { deletedId } = this.state;
+    let { vacancies } = this.state;
+    const vacancyIndex = vacancies.findIndex(
+      vacancy => vacancy._id === deletedId
+    );
+    vacancies.splice(vacancyIndex, 1);
+    this.setState({ vacancies });
+    this.setData(vacancies, true);
+    const url = "vacancies/delete/" + deletedId;
+    del(url, {}).then(this.setState({ openConfirm: false }));
+  };
+
+  setData = (vacancies, adminType) => {
+    if (vacancies.length === 0) return;
+    let pendingCount = 0;
+    const filteredVacancies = [];
+    vacancies.forEach(vacancy => {
+      if (vacancy.state === "free" || vacancy.state === "taken" || adminType) {
+        if (vacancy.state === "unapproved" || vacancy.state === "Not taken")
+          pendingCount++;
+        filteredVacancies.push(vacancy);
+      }
+    });
+    this.setState({ filteredVacancies, pendingCount });
+  };
+  redirect = id => {
+    this.props.history.push("/Vacancy/" + id);
+  };
   search = vacancies => {
     const { searchBar } = this.state;
     if (searchBar.length === 0) return vacancies;
@@ -69,8 +159,18 @@ class Vacancies extends Component {
   };
 
   render() {
-    const { vacancies, error, loading, searchBar } = this.state;
-    const filteredVacancies = this.search(vacancies);
+    const {
+      filteredVacancies,
+      error,
+      loading,
+      searchBar,
+      adminType,
+      openConfirm,
+      approveLoading,
+      pendingCount
+    } = this.state;
+    console.log(filteredVacancies, "Filtered");
+    const searchedVacancies = this.search(filteredVacancies);
     return (
       <div className="vacancy-container">
         <Dimmer active={loading}>
@@ -94,7 +194,7 @@ class Vacancies extends Component {
               compact
               style={{ maxWidth: "20em" }}
               error
-              hidden={filteredVacancies.length > 0 || loading}
+              hidden={searchedVacancies.length > 0 || loading}
               icon
             >
               {" "}
@@ -103,12 +203,23 @@ class Vacancies extends Component {
             </Message>
           </Header.Subheader>
         </Header>
-
-        <VacanciesList
-          error={error}
-          searchKey={searchBar}
-          vacancies={filteredVacancies}
-        />
+        <Transition.Group duration={400}>
+          {searchedVacancies.map(vacancy => (
+            <div key={vacancy._id}>
+              <VacanciesList
+                error={error}
+                searchKey={searchBar}
+                vacancy={vacancy}
+                approve={this.setApproved}
+                adminType={adminType}
+                del={this.delete}
+                pendingCount={pendingCount}
+                approveLoading={approveLoading}
+                redirect={this.redirect}
+              />
+            </div>
+          ))}
+        </Transition.Group>
       </div>
     );
   }

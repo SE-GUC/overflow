@@ -12,13 +12,20 @@ import Members from "./pages/Members";
 import Partners from "./pages/Partners";
 import LifeCoaches from "./pages/LifeCoaches";
 import LifeCoachProfile from "./pages/LifeCoachProfile";
+import PartnerProfile from "./pages/PartnerProfile";
+import HomePage from "./pages/HomePage";
+import CreateAdmin from "./pages/CreateAdmin";
 
 export default () => {
   return [
-    <Route path="/EditTest" component={EditProfileTest} />,
-    <Route path="/EditProfile" component={EditProfile} />,
-    <Route path="/SubmitModal" component={SubmitModal} />,
-    <Route path="/SubmitFeedbackModal" component={SubmitFeedbackModal} />,
+    <Route key={"/EditTest"} path="/EditTest" component={EditProfileTest} />,
+    <Route key={"/EditProfile"} path="/EditProfile" component={EditProfile} />,
+    <Route key={"/SubmitModal"} path="/SubmitModal" component={SubmitModal} />,
+    <Route
+      key={"/SubmitFeedbackModal"}
+      path="/SubmitFeedbackModal"
+      component={SubmitFeedbackModal}
+    />,
     <Route key={"/Vacancy"} exact path="/Vacancy/:id" component={Vacancy} />,
     <Route key={"/SignUp"} exact path="/SignUp" component={SignUp} />,
     <Route key={"/Vacancies"} path="/Vacancies" component={Vacancies} />,
@@ -36,6 +43,30 @@ export default () => {
       path="/LifeCoaches"
       component={LifeCoaches}
     />,
-    <Route exact path="/LifeCoach/:id" component={LifeCoachProfile} />
+    <Route
+      key={"/LifeCoach"}
+      exact
+      path="/LifeCoach/:id"
+      component={LifeCoachProfile}
+    />,
+    <Route
+      key={"/Partner"}
+      exact
+      path="/Partner/:id"
+      component={PartnerProfile}
+    />,
+    <Route
+      key={"/EditVacancy"}
+      exact
+      path={"/EditVacancy/:partnerId"}
+      component={CreateVacancy}
+    />,
+    <Route key={"/HomePage"} exact path={"/"} component={HomePage} />,
+    <Route
+      key={"/CreateAdmin"}
+      exact
+      path="/CreateAdmin"
+      component={CreateAdmin}
+    />
   ];
 };

@@ -3,7 +3,7 @@ import * as axios from "../services/axios.js";
 import ApplyModal from "../components/vacancies/ApplyModal";
 import decode from "jwt-decode";
 import storageChanged from "storage-changed";
-
+import { withRouter } from "react-router-dom";
 import {
   Button,
   Grid,
@@ -27,15 +27,18 @@ class Vacancy extends Component {
       modalHidden: true,
       memberType: false,
       memberId: "",
-      applied: false
+      applied: false,
+      loading: false
     };
   }
 
   getVacancy = async () => {
+    console.log("OK??");
+    this.setState({ loading: true });
     const id = this.props.match.params.id;
     const url = "vacancies/" + id;
     await axios.get(url).then(vacancy => {
-      this.setState({ vacancy: vacancy });
+      this.setState({ vacancy: vacancy, loading: false });
     });
   };
   componentDidMount() {
@@ -47,7 +50,12 @@ class Vacancy extends Component {
     window.addEventListener("tokenChange", this.handleTokenChange);
     if (!tokenCheck) {
       this.setState({ memberType: false });
-      this.getVacancy();
+      if (this.props.location.state) {
+        const { vacancy } = this.props.location.state;
+        this.setState({ vacancy });
+      } else {
+        this.getVacancy();
+      }
       return;
     }
     let decoded = decode(localStorage.getItem("jwtToken"));
@@ -58,7 +66,12 @@ class Vacancy extends Component {
     } else {
       this.setState({ memberType: false });
     }
-    this.getVacancy();
+    if (this.props.location.state) {
+      const { vacancy } = this.props.location.state;
+      this.setState({ vacancy });
+    } else {
+      this.getVacancy();
+    }
   }
   handleTokenChange = e => {
     if (!e.detail.value) {
@@ -87,16 +100,24 @@ class Vacancy extends Component {
     this.setState({ modalHidden: !this.state.modalHidden });
   };
   handleClose = () => {
-    this.setState({ modalHidden: true});
+    this.setState({ modalHidden: true });
+  };
+  redirectProfile = () => {
+    const { vacancy } = this.state;
+    const { partner } = vacancy;
+    this.props.history.push({
+      pathname: `/Partner/${partner._id}`,
+      state: { partner }
+    });
   };
   render() {
-    const { vacancy, applied, memberType } = this.state;
+    const { vacancy, applied, memberType, loading } = this.state;
     let toBeReturned = "";
 
     if (!vacancy) {
       toBeReturned = (
         <div>
-          <Dimmer active>
+          <Dimmer active={loading}>
             <Loader size="huge" inverted />
           </Dimmer>
         </div>
@@ -147,7 +168,11 @@ class Vacancy extends Component {
             </Grid.Column>
             <Grid.Column width={6}>
               <Header textAlign="center">Employer Details</Header>
-              <Card style={{ margin: "auto" }}>
+              <Card
+                className="hvr-grow"
+                onClick={this.redirectProfile}
+                style={{ margin: "auto", cursor: "pointer" }}
+              >
                 <Image
                   fluid
                   src="https://react.semantic-ui.com/images/avatar/small/matthew.png"
@@ -197,12 +222,12 @@ class Vacancy extends Component {
             <Grid.Column width={2}>
               <Container>
                 <Header as="h3">Start Date</Header>
-                <p>{startDate? startDate.toString().slice(0, 10):"N/A"}</p>
+                <p>{startDate ? startDate.toString().slice(0, 10) : "N/A"}</p>
               </Container>
               <Divider />
               <Container>
                 <Header as="h3">End Date</Header>
-                <p>{endDate? endDate.toString().slice(0, 10):"N/A"}</p>
+                <p>{endDate ? endDate.toString().slice(0, 10) : "N/A"}</p>
               </Container>
             </Grid.Column>
             <Grid.Column width={2}>
@@ -234,7 +259,7 @@ class Vacancy extends Component {
           vacancy={this.state.vacancy}
           memberId={this.state.memberId}
           hidden={this.state.modalHidden}
-          handleClose = {this.handleClose}
+          handleClose={this.handleClose}
           applied={() => this.setApplied()}
         />
       ];
@@ -242,4 +267,4 @@ class Vacancy extends Component {
     return toBeReturned;
   }
 }
-export default Vacancy;
+export default withRouter(Vacancy);

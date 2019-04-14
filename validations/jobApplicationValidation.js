@@ -10,7 +10,8 @@ const createValidation = request => {
 };
 const updateValidation = request => {
   const updateSchema = {
-    applicationText: Joi.string()
+    applicationText: Joi.string(),
+    state: Joi.string()
   };
   return Joi.validate(request, updateSchema);
 };

@@ -4,6 +4,7 @@ import Container from "../components/profileContainer/Container.js";
 import { Dimmer, Loader, Confirm } from "semantic-ui-react";
 import decode from "jwt-decode";
 import storageChanged from "storage-changed";
+import { withRouter } from "react-router-dom";
 
 export default class Members extends Component {
   state = {
@@ -121,6 +122,13 @@ export default class Members extends Component {
   closeConfirm = () => {
     this.setState({ deletedId: "", openConfirm: false });
   };
+  redirectProfile = (id, partner) => {
+    this.props.history.push({
+      pathname: "/Partner/" + id,
+      state: { partner }
+    });
+  };
+
   render() {
     const {
       filteredPartners,
@@ -136,6 +144,7 @@ export default class Members extends Component {
           <Loader size="massive" />
         </Dimmer>
         <Container
+          redirect={this.redirectProfile}
           del={this.openConfirm}
           approve={this.setApproved}
           adminType={adminType}
