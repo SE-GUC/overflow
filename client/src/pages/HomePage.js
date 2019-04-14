@@ -37,7 +37,7 @@ export default class HomePage extends Component {
                 <List.Item>Partner: apple@hotmail.com, password:test</List.Item>
                 <List.Item>Admin: philip@admin.com, password:test</List.Item>
                 <List.Item>
-                  LifeCoach: philip@got.com, password:khara20
+                  LifeCoach: philip@gotmail.com, password:khara20
                 </List.Item>
               </List.List>
             </List.Item>
