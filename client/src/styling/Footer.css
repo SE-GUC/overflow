@@ -2,7 +2,7 @@
   position: absolute;
   bottom: 0;
   width: 100vw;
-  background-color: #0e3136;
+  background-color: #050505;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -41,7 +41,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: #06191d;
+  background-color: #000000;
   display: flex;
   justify-content: center;
   align-items: center;

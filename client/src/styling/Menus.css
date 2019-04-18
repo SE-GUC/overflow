@@ -1,21 +1,16 @@
-.main-menu.ui.menu.fixed{
-background-image: linear-gradient(to right top, #06191d, #091f23, #0b2529,
-  #0c2b30, #0e3136, #102f37, #142c37, #182a36, #1b202a,
-  #19161d, #120d10, #000000);
-
-
+.main-menu.ui.menu.fixed {
+  background-color: #000000;
 }
-.mainMenu-link{
-  color:white;
-  font-family: 'Roboto'
-
+.mainMenu-link {
+  color: white;
+  font-family: "Roboto";
 }
 .mainMenu-link:hover {
-  color:#EFCA08 !important
+  color: #efca08 !important;
 }
-.ui.menu:not(.vertical) .item>.button.login-button {
-  margin-right:0.5em;
-  border-color:white;
+.ui.menu:not(.vertical) .item > .button.login-button {
+  margin-right: 0.5em;
+  border-color: white;
 }
 .tooltip {
   position: relative;
@@ -26,7 +21,7 @@ background-image: linear-gradient(to right top, #06191d, #091f23, #0b2529,
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 120px;
-  background-color:black;
+  background-color: black;
   color: #fff;
   text-align: center;
   border-radius: 6px;
@@ -53,64 +48,63 @@ background-image: linear-gradient(to right top, #06191d, #091f23, #0b2529,
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
-   opacity: 1;
+  opacity: 1;
 }
 .ui.avatar.image.user-menu {
-  margin-right:0.5em;
+  margin-right: 0.5em;
 }
-#drop-options{
+#drop-options {
   position: absolute;
-  top:2.2em;
-  left:0.8em;
+  top: 2.2em;
+  left: 0.8em;
 }
-.ui.header.profile-header{
-  display:inline;
+.ui.header.profile-header {
+  display: inline;
 }
-#notif-options{
-  position:absolute;
-  top:0.6em;
-  right:-0.5em;
+#notif-options {
+  position: absolute;
+  top: 0.6em;
+  right: -0.5em;
 }
-#notif-menu{
+#notif-menu {
   max-height: 10em;
   min-width: 20em;
-  overflow-y:scroll
+  overflow-y: scroll;
 }
 
 #mark {
-  float:right;
+  float: right;
   text-transform: none;
   font-style: normal;
-  font-size:0.8em;
-  color:#1877F2;
-  cursor:pointer
+  font-size: 0.8em;
+  color: #1877f2;
+  cursor: pointer;
 }
 #item {
-  font-style:normal;
-
+  font-style: normal;
 }
 @media (max-width: 768px) {
-  #notif-menu{
+  #notif-menu {
     max-height: 10em;
     min-width: 15em;
-    overflow-y:scroll
+    overflow-y: scroll;
   }
 }
 @media (max-width: 320px) {
-  #notif-menu{
+  #notif-menu {
     max-height: 10em;
     min-width: 13em;
-    overflow-y:scroll
+    overflow-y: scroll;
   }
 }
 
 #no-back {
   background-color: white !important;
-  transform:none;
-  margin:0!important;
+  transform: none;
+  margin: 0 !important;
 }
 #blue-back {
-  background-color:#ECF3FF !important;
-  transform:none;
-  margin:0 !important;
+  background-color: #ecf3ff !important;
+  transform: none;
+  margin: 0 !important;
 }
