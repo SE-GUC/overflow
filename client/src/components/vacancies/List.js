@@ -29,7 +29,6 @@ class List extends Component {
   approve = (e, value, pid) => {
     this.setState({ approveLoading: true });
     // const { _id } = this.props.data;
-    console.log(value, "ID", pid, "pid");
     this.props.approve(value, pid);
   };
   deleteM = () => {
@@ -92,7 +91,6 @@ class List extends Component {
       pendingCount
     } = this.props;
     const searchWords = searchKey.split(" ");
-    console.log(openConfirm, "OPENCONFIRM");
     return error ? (
       <Header as="h2" textAlign="center">
         Something went wrong!
