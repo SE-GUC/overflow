@@ -142,6 +142,128 @@
   font-family: "Montserrat", sans-serif;
 }
 
+.homepage-lifecoaches {
+  background-color: black;
+  color: white;
+  padding: 40px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.homepage-lifecoaches h4 {
+  font-size: 24px;
+  font-family: "Montserrat", sans-serif;
+  margin-bottom: 24px;
+}
+
+.homepage-lifecoaches button {
+  font-size: 20px;
+  padding: 0.7em 1.5em;
+  border-radius: 3px;
+  border: none;
+  background-color: white;
+  cursor: pointer;
+  font-family: "Montserrat", sans-serif;
+  font-weight: bold;
+}
+
+.homepage-slider {
+  background-color: white;
+  position: relative;
+}
+
+.homepage-feedback {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px 0;
+  height: 250px;
+  outline: none;
+}
+
+.homepage-feedback div:nth-child(1) {
+  text-align: center;
+}
+
+.homepage-feedback div i {
+  vertical-align: super !important;
+}
+
+.homepage-feedback div p {
+  display: inline;
+  font-size: 26px;
+  font-family: "Montserrat", sans-serif;
+}
+
+.homepage-feedback div:nth-child(2) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.homepage-feedback div:nth-child(2) img {
+  border-radius: 50%;
+  width: 100px;
+}
+
+.homepage-feedback div:nth-child(2) div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin-left: 20px;
+}
+
+.homepage-feedback div:nth-child(2) div p {
+  font-size: 16px;
+  margin: 0;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.slick-next {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  background: none;
+  color: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 50%;
+  right: 100px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  outline: none;
+}
+
+.slick-prev {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  background: none;
+  color: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 50%;
+  left: 100px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  outline: none;
+  z-index: 1;
+}
+
+@media (max-width: 1280px) {
+  .slick-prev {
+    left: 10px;
+  }
+  .slick-next {
+    right: 10px;
+  }
+}
+
 @media (max-width: 1023px) {
   .landing {
     height: 50vh;
@@ -184,5 +306,31 @@
   }
   .homepage-info-section div i {
     margin-top: 14px;
+  }
+  .homepage-lifecoaches h4 {
+    font-size: 20px;
+  }
+  .homepage-lifecoaches button {
+    font-size: 16px;
+  }
+  .homepage-feedback {
+    padding: 20px 0;
+    justify-content: space-around;
+  }
+  .homepage-feedback div p {
+    font-size: 18px;
+  }
+  .homepage-feedback div:nth-child(2) img {
+    width: 80px;
+  }
+  .homepage-feedback div:nth-child(2) {
+    flex-direction: column;
+  }
+  .homepage-feedback div:nth-child(2) div {
+    align-items: center;
+    margin-left: 0;
+  }
+  .homepage-feedback div i {
+    font-size: 16px;
   }
 }
