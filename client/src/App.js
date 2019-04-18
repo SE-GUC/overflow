@@ -7,25 +7,76 @@ import MobileMenu from "./components/appMenus/MobileMenu.js";
 import LoginModal from "./components/login/LoginModal.js";
 import Footer from "./components/footer/Footer.js";
 import decode from "jwt-decode";
-import storageChanged from "storage-changed";
+import * as UserActions from "./actions/UserActions.js";
+import { post, get, del, put } from "./services/axios";
+import { connect } from "react-redux";
+const firebase = require("firebase");
+
+const config = {
+  apiKey: "AIzaSyCww59lGaExhAFFK1kkVQxp4EWHoI-mBI0",
+  authDomain: "lirten-hub.firebaseapp.com",
+  databaseURL: "https://lirten-hub.firebaseio.com",
+  projectId: "lirten-hub",
+  storageBucket: "lirten-hub.appspot.com",
+  messagingSenderId: "901639143723"
+};
 
 class App extends Component {
   state = {
     isSidebarVisible: false,
-    openLoginModal: false
+    openLoginModal: false,
+    notifications: [],
+    notificationCount: 0,
+    firebaseToken: ""
   };
   componentDidMount() {
     this.setToken();
-    storageChanged("local", {
-      eventName: "GlobaltokenChange"
+
+    firebase.initializeApp(config);
+    firebase
+      .messaging()
+      .usePublicVapidKey(
+        "BPgRlyFu7oPQNI34lY9AVdRysmu2JTKA-uDq5y62_nx1CcY0RcpuWz5uB189K9yfvTLtG06QvCnYD9QRVaxYgWQ"
+      );
+    firebase
+      .messaging()
+      .getToken()
+      .then(token => this.setState({ firebaseToken: token }));
+    firebase.messaging().onMessage(payload => {
+      let { notifications, notificationCount } = this.state;
+      //notifications.push(payload);
+      notifications = [payload].concat(notifications);
+      this.setState({
+        notifications,
+        notificationCount: notificationCount + 1
+      });
     });
-    window.addEventListener("GlobaltokenChange", this.handleTokenChange);
   }
+  askPerm = userId => {
+    firebase
+      .messaging()
+      .requestPermission()
+      .then(function(e = null) {
+        console.log("Granted!" + e);
+
+        return firebase.messaging().getToken();
+      })
+      .then(token => {
+        const url = "subscribers/add";
+        post(url, { userId, token }).then(resp => console.log(resp));
+        console.log("Token:" + token + " " + userId);
+        this.setState({ firebaseToken: token });
+      })
+      .catch(function(err) {
+        console.log(err, "ERROR");
+        console.log("Error! :: " + err);
+      });
+  };
   handleTokenChange = e => {
     this.setToken();
   };
   redirectProfile = () => {
-    const { userInfo } = this.state;
+    const { userInfo } = this.props;
     switch (userInfo.type) {
       case "partner":
         this.props.history.push("/Partner/" + userInfo.id);
@@ -36,12 +87,38 @@ class App extends Component {
       //MEMBER GOES HERE
     }
   };
+  markAsRead = () => {
+    const { userInfo } = this.props;
+    const url = `notifications/markAsRead/${userInfo.id}`;
+    put(url, {}).then(() => {
+      this.setState({ notificationCount: 0 });
+    });
+  };
 
   setToken = () => {
     const token = localStorage.getItem("jwtToken");
+    let { notifications, notificationCount } = this.state;
     if (!token) return;
-    const userInfo = decode(token);
-    this.setState({ userInfo });
+    const userInfoToken = decode(token);
+    this.props.dispatch(UserActions.AC_logIn(userInfoToken));
+    const url = `notifications/${userInfoToken.id}`;
+    get(url).then(notifications => {
+      notifications = notifications.sort((a, b) => {
+        if (!a.read) {
+          if (b.read) return -1;
+        }
+        if (a.read) {
+          if (b.read) return 0;
+          else {
+            return 1;
+          }
+        }
+      });
+      this.setState({
+        notifications,
+        notificationCount: notifications.filter(notif => !notif.read).length
+      });
+    });
   };
   showSideBar = () => {
     this.setState({ isSidebarVisible: true });
@@ -50,6 +127,7 @@ class App extends Component {
     this.setState({ isSidebarVisible: false });
   };
   redirectSignUp = () => {
+    localStorage.setItem("firebasePerm", this.askPerm);
     this.props.history.push("/SignUp");
   };
   openLoginModal = () => {
@@ -60,33 +138,64 @@ class App extends Component {
   };
   logOut = () => {
     localStorage.removeItem("jwtToken");
-    const newState = this.state;
-    delete newState.userInfo;
-    this.setState(newState);
+    let { firebaseToken } = this.state;
+    if (this.props.firebaseToken) firebaseToken = this.props.firebaseToken;
+    const { userInfo } = this.props;
+    this.setState({ notifications: [], notificationCount: 0 });
+    if (firebaseToken !== null && firebaseToken) {
+      const url = `subscribers/delete/${userInfo.id}/${firebaseToken}`;
+      del(url, {});
+    }
+    //delete newState.userInfo;
+    //this.setState(newState);
+    this.setState({ firebaseToken: "" });
+    this.props.dispatch(UserActions.AC_logOut());
+  };
+
+  deleteNotifications = () => {
+    const { userInfo } = this.props;
+    const url = `notifications/deleteAll/${userInfo.id}`;
+    del(url, {}).then(() => {
+      this.setState({ notifications: [] });
+    });
   };
 
   render() {
-    const { isSidebarVisible, openLoginModal, userInfo } = this.state;
+    const {
+      isSidebarVisible,
+      openLoginModal,
+      notifications,
+      notificationCount
+    } = this.state;
+    const { userInfo } = this.props;
     return (
       <div className="app-wrapper">
         <Responsive minWidth={Responsive.onlyTablet.minWidth}>
           <DesktopMenu
+            markAsRead={this.markAsRead}
+            notificationCount={notificationCount}
             redirectProfile={this.redirectProfile}
             redirectSignUp={this.redirectSignUp}
             login={this.openLoginModal}
             userInfo={userInfo}
             logOut={this.logOut}
+            notifications={notifications}
+            deleteNotifications={this.deleteNotifications}
           />
           <div className="app-container">{this.props.children}</div>
         </Responsive>
         <Responsive maxWidth={Responsive.onlyMobile.maxWidth}>
           <MobileMenu
+            markAsRead={this.markAsRead}
+            notificationCount={notificationCount}
             redirectProfile={this.redirectProfile}
             showSideBar={this.showSideBar}
             isSidebarVisible={isSidebarVisible}
             login={this.openLoginModal}
             userInfo={userInfo}
             logOut={this.logOut}
+            notifications={notifications}
+            deleteNotifications={this.deleteNotifications}
           />
           <div
             onClick={this.hideSidebar}
@@ -98,6 +207,7 @@ class App extends Component {
           </div>
         </Responsive>
         <LoginModal
+          askPerm={this.askPerm}
           setToken={this.setToken}
           open={openLoginModal}
           close={this.closeLoginModal}
@@ -112,5 +222,9 @@ class App extends Component {
     );
   }
 }
+const mapStateToProps = state => {
+  const { userInfo, firebaseToken } = state;
+  return { userInfo, firebaseToken };
+};
 
-export default withRouter(App);
+export default withRouter(connect(mapStateToProps)(App));

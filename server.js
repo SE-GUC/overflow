@@ -12,6 +12,7 @@ const slots = require("./routes/api/slot");
 const review = require("./routes/api/review");
 const recommender = require("./services/recommendations");
 const subscribers = require("./routes/api/subscribers");
+const notifications = require("./routes/api/notifications");
 
 const app = express();
 app.use(cors());
@@ -35,9 +36,9 @@ require("./config/passport")(passport);
 app.get("/messageTest", (req, res) => {
   res.sendFile(path.join(__dirname + "/messageTest.html"));
 });
-app.get("/firebase-messaging-sw.js", (req, res) => {
+/*app.get("/firebase-messaging-sw.js", (req, res) => {
   res.sendFile(path.join(__dirname + "/firebase-messaging-sw.js"));
-});
+});*/
 
 // API Routes go here
 app.use("/api/users", users);
@@ -47,6 +48,7 @@ app.use("/api/feedback", feedbacks);
 app.use("/api/slots", slots);
 app.use("/api/reviews", review);
 app.use("/api/subscribers", subscribers);
+app.use("/api/notifications", notifications);
 
 recommender.setVacanciesProperties();
 recommender.setMemberProperties();

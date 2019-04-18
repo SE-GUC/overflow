@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { get, put, del } from "../services/axios";
+import { get, put, del, post } from "../services/axios";
 import "../styling/Vacancies.css";
 import decode from "jwt-decode";
-import storageChanged from "storage-changed";
+//import storageChanged from "storage-changed";
 import VacanciesList from "../components/vacancies/List.js";
 import {
   Header,
@@ -15,6 +15,7 @@ import {
   Transition,
   Confirm
 } from "semantic-ui-react";
+import { connect } from "react-redux";
 
 class Vacancies extends Component {
   state = {
@@ -34,32 +35,40 @@ class Vacancies extends Component {
     this.setState({ searchBar: e.target.value });
   };
 
-  setToken = () => {
-    const tokenCheck = localStorage.getItem("jwtToken");
-    if (!tokenCheck) {
-      this.setState({ adminType: false });
-      return;
-    }
-    const decoded = decode(localStorage.getItem("jwtToken"));
-    if (decoded.type === "admin") {
-      this.setState({ adminType: true });
-    }
-  };
-  componentWillUnmount() {
-    window.removeEventListener("storage", this.setToken);
-  }
   componentDidMount() {
-    this.setToken();
-    storageChanged("local", {
-      eventName: "tokenChange"
-    });
-    window.addEventListener("tokenChange", this.setToken);
     get("vacancies")
       .then(response => {
-        this.setState({ vacancies: response, loading: false });
-        this.setData(response, this.state.adminType);
+        const { userInfo } = this.props;
+        let adminType = false;
+        if (userInfo) if (userInfo.type === "admin") adminType = true;
+        this.setState({
+          vacancies: response,
+          loading: false,
+          userInfo,
+          adminType
+        });
+        this.setData(response, adminType);
       })
       .catch(error => this.setState({ error: true, loading: false }));
+  }
+  componentWillReceiveProps(nextProps) {
+    const { userInfo, vacancies } = this.state;
+    let adminType = false;
+    if (nextProps.userInfo !== userInfo) {
+      if (nextProps.userInfo) {
+        if (nextProps.userInfo.type === "admin") {
+          adminType = true;
+          this.setData(vacancies, true);
+        } else {
+          this.setData(vacancies, false);
+        }
+      } else {
+        this.setData(vacancies, false);
+      }
+      this.setState({ userInfo: nextProps.userInfo });
+    }
+
+    this.setState({ adminType });
   }
   setApproved = (id, pid) => {
     const { adminType, filteredVacancies } = this.state;
@@ -71,7 +80,6 @@ class Vacancies extends Component {
         return vacancy;
       }
     });
-    console.log(newFilteredVacancies, "After Filter");
     let approvedVacancy = newFilteredVacancies.find(
       vacancy => vacancy._id === id
     );
@@ -84,10 +92,23 @@ class Vacancies extends Component {
       partnerId: pid
     };
     const { _id, partner, __v, ...newData } = data;
-    put(url, newData).then(
-      this.setData(newFilteredVacancies, true),
-      this.setState({ approveLoading: false })
-    );
+    put(url, newData).then(() => {
+      this.setData(newFilteredVacancies, true);
+      this.setState({ approveLoading: false });
+      const notifUrl = `subscribers/send`;
+      const req = {
+        userIds: [pid],
+        data: {
+          title: "Vacancy Approval!",
+          body: `Members can now view and apply on ${
+            approvedVacancy.title ? approvedVacancy.title : "your vacancy"
+          }`,
+          link: "/Vacancies",
+          actionTitle: "Visit"
+        }
+      };
+      post(notifUrl, req).then(resp => console.log(resp));
+    });
   };
   delete = deletedId => {
     // const { deletedId } = this.state;
@@ -95,11 +116,27 @@ class Vacancies extends Component {
     const vacancyIndex = vacancies.findIndex(
       vacancy => vacancy._id === deletedId
     );
+    const deleted = vacancies[vacancyIndex];
     vacancies.splice(vacancyIndex, 1);
     this.setState({ vacancies });
     this.setData(vacancies, true);
     const url = "vacancies/delete/" + deletedId;
-    del(url, {}).then(this.setState({ openConfirm: false }));
+    del(url, {}).then(() => {
+      this.setState({ openConfirm: false });
+      const notifUrl = `subscribers/send`;
+      const req = {
+        userIds: [deleted.partner._id],
+        data: {
+          title: "Your vacancy has been deleted!",
+          body: `Members can no longer view and apply on ${
+            deleted.title ? deleted.title : "your vacancy"
+          }`,
+          link: "/Vacancies",
+          actionTitle: "Visit"
+        }
+      };
+      post(notifUrl, req).then(resp => console.log(resp));
+    });
   };
 
   setData = (vacancies, adminType) => {
@@ -169,7 +206,6 @@ class Vacancies extends Component {
       approveLoading,
       pendingCount
     } = this.state;
-    console.log(filteredVacancies, "Filtered");
     const searchedVacancies = this.search(filteredVacancies);
     return (
       <div className="vacancy-container">
@@ -224,5 +260,9 @@ class Vacancies extends Component {
     );
   }
 }
+const mapStateToProps = state => {
+  const { userInfo } = state;
+  return { userInfo };
+};
 
-export default Vacancies;
+export default connect(mapStateToProps)(Vacancies);

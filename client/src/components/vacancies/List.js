@@ -15,7 +15,6 @@ import { Link } from "react-router-dom";
 import Highlighter from "react-highlight-words";
 import "../../styling/Vacancies.css";
 import Highlightable from "../highlightable/Higlightable.js";
-import storageChanged from "storage-changed";
 import decode from "jwt-decode";
 import { withRouter } from "react-router-dom";
 

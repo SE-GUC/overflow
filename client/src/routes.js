@@ -27,7 +27,13 @@ export default () => {
       component={SubmitFeedbackModal}
     />,
     <Route key={"/Vacancy"} exact path="/Vacancy/:id" component={Vacancy} />,
-    <Route key={"/SignUp"} exact path="/SignUp" component={SignUp} />,
+    <Route
+      key={"/SignUp"}
+      exact
+      path="/SignUp"
+      state={"hi"}
+      component={SignUp}
+    />,
     <Route key={"/Vacancies"} path="/Vacancies" component={Vacancies} />,
     <Route
       key={"/CreateVacancy"}

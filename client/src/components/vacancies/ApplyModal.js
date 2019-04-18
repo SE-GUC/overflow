@@ -9,7 +9,7 @@ class ApplyModal extends Component {
     this.state = {
       applicationText: "",
       disabled: true,
-      loading:false
+      loading: false
     };
   }
 
@@ -21,9 +21,9 @@ class ApplyModal extends Component {
     }
   };
   handleClick = () => {
-    this.setState({loading:true});
+    this.setState({ loading: true });
     let url = "jobApplications/create";
-    const { vacancy, memberId } = this.props;
+    const { vacancy, memberId, memberName } = this.props;
     const { applicationText } = this.state;
     let body = {
       vacancyId: vacancy._id,
@@ -32,17 +32,29 @@ class ApplyModal extends Component {
     };
     axios.post(url, body).then(data => {
       this.props.applied();
-      this.setState({loading:false });
+      this.setState({ loading: false });
       this.props.handleClose();
+      const notifUrl = `subscribers/send`;
+      const req = {
+        userIds: [vacancy.partner._id],
+        data: {
+          title: "Job Application!",
+          body: `${memberName} has applied on ${
+            vacancy.title ? vacancy.title : "your vacancy"
+          }`,
+          link: `/Partner/${vacancy.partner._id}`,
+          actionTitle: "Visit"
+        }
+      };
+      axios.post(notifUrl, req).then(resp => console.log(resp));
     });
   };
 
-
   render() {
-    let { memberId, vacancy,handleClose,hidden } = this.props;
-    const {loading } = this.state;
+    let { memberId, vacancy, handleClose, hidden } = this.props;
+    const { loading } = this.state;
     return (
-      <Modal  closeIcon open={!hidden} onClose={handleClose}>
+      <Modal closeIcon open={!hidden} onClose={handleClose}>
         <Modal.Header as={Header} inverted className="modal-header">
           Send Job Application
         </Modal.Header>
@@ -50,9 +62,7 @@ class ApplyModal extends Component {
           <Grid padded columns={2} divided>
             <Grid.Row>
               <Grid.Column>
-                <Header as="h3">
-                  Vacancy Details:
-                </Header>
+                <Header as="h3">Vacancy Details:</Header>
                 <Header as="h5">
                   Title: <span>{vacancy.title}</span>
                 </Header>
@@ -67,7 +77,11 @@ class ApplyModal extends Component {
                 </Header>
                 <Header as="h5">
                   Start Date:{" "}
-                  <span>{vacancy.startDate? vacancy.startDate.toString().slice(0, 10) : "N/A"}</span>
+                  <span>
+                    {vacancy.startDate
+                      ? vacancy.startDate.toString().slice(0, 10)
+                      : "N/A"}
+                  </span>
                 </Header>
                 <Header as="h5">
                   Duration: <span>{vacancy.duration}</span>
