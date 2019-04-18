@@ -1,12 +1,13 @@
 import React, { Component } from "react";
-import { get, put, del } from "../services/axios";
+import { get, put, del, post } from "../services/axios";
 import Container from "../components/profileContainer/Container.js";
 import { Dimmer, Loader, Confirm } from "semantic-ui-react";
 import decode from "jwt-decode";
-import storageChanged from "storage-changed";
+//import storageChanged from "storage-changed";
 import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 
-export default class Members extends Component {
+class Partners extends Component {
   state = {
     loading: true,
     error: false,
@@ -19,39 +20,37 @@ export default class Members extends Component {
     openConfirm: false
   };
   componentDidMount() {
-    this.setToken();
     get("users/partners")
       .then(partners => {
-        this.setData(partners, this.state.adminType);
+        const { userInfo } = this.props;
+        this.setState({ userInfo });
+        let adminType = false;
+        if (userInfo) if (userInfo.type === "admin") adminType = true;
+        this.setData(partners, adminType);
         this.setState({ partners, loading: false });
       })
       .catch(error => this.setState({ error: true, loading: false }));
 
     //handling token change
-    storageChanged("local", {
-      eventName: "tokenChange"
-    });
-    window.addEventListener("tokenChange", this.setToken);
   }
-  setToken = () => {
-    const tokenCheck = localStorage.getItem("jwtToken");
-    if (!tokenCheck) {
-      this.setState({ adminType: false });
-      this.setData(this.state.partners, false);
-      return;
+  componentWillReceiveProps(nextProps) {
+    const { userInfo, partners } = this.state;
+    console.log(userInfo, nextProps.userInfo);
+    if (nextProps.userInfo !== userInfo) {
+      if (nextProps.userInfo) {
+        if (nextProps.userInfo.type === "admin") this.setData(partners, true);
+        else {
+          this.setData(partners, false);
+        }
+      } else {
+        this.setData(partners, false);
+      }
+      this.setState({ userInfo: nextProps.userInfo });
     }
-    const decoded = decode(localStorage.getItem("jwtToken"));
-    if (decoded.type === "admin") {
-      this.setState({ adminType: true });
-      this.setData(this.state.partners, true);
-    }
-  };
-
-  componentWillUnmount() {
-    window.removeEventListener("storage", this.setToken);
   }
 
   setData = (partners, adminType) => {
+    console.log(adminType, "ADMIN TYPE");
     if (partners.length === 0) return;
     let pendingCount = 0;
     const filteredPartners = [];
@@ -100,7 +99,20 @@ export default class Members extends Component {
       fieldOfWork,
       approved: true
     };
-    put(url, data).then(this.setData(filteredPartners, true));
+    put(url, data).then(() => {
+      this.setData(filteredPartners, true);
+      const notifUrl = `subscribers/send`;
+      const req = {
+        userIds: [id],
+        data: {
+          title: "Welcome to LirtenHub",
+          body: "You have been approved to join us as a partner",
+          link: "/Partners",
+          actionTitle: "Visit"
+        }
+      };
+      post(notifUrl, req).then(resp => console.log(resp));
+    });
   };
   openConfirm = deletedId => {
     this.setState({ deletedId, openConfirm: true });
@@ -134,10 +146,12 @@ export default class Members extends Component {
       filteredPartners,
       loading,
       fieldofWorkFilters,
-      adminType,
       pendingCount,
       openConfirm
     } = this.state;
+    const { userInfo } = this.state;
+    let adminType = false;
+    if (userInfo) if (userInfo.type === "admin") adminType = true;
     return (
       <div>
         <Dimmer active={loading}>
@@ -165,3 +179,8 @@ export default class Members extends Component {
     );
   }
 }
+const mapStateToProps = state => {
+  const { userInfo } = state;
+  return { userInfo };
+};
+export default connect(mapStateToProps)(Partners);

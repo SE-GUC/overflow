@@ -1,16 +1,41 @@
 import React, { Component } from "react";
 import "../../styling/Menus.css";
-import { Menu, Sidebar, Icon, Header, Divider, Image } from "semantic-ui-react";
-
+import {
+  Menu,
+  Sidebar,
+  Icon,
+  Header,
+  Divider,
+  Image,
+  Label
+} from "semantic-ui-react";
+import Notifications from "../notifications/Notifications.js";
 import MobileField from "./MobileField";
 class MobileMenu extends Component {
+  state = {
+    openNotif: false
+  };
+  openNotif = e => {
+    const { notificationCount, markAsRead } = this.props;
+    if (notificationCount > 0) {
+      this.props.markAsRead();
+    }
+    this.setState({ openNotif: !this.state.openNotif });
+  };
+  closeNotif = () => {
+    this.setState({ openNotif: false });
+  };
   render() {
+    const { openNotif } = this.state;
     const {
       isSidebarVisible,
       showSideBar,
       userInfo,
       login,
-      logOut
+      logOut,
+      notificationCount,
+      notifications,
+      deleteNotifications
     } = this.props;
     return (
       <div>
@@ -19,6 +44,35 @@ class MobileMenu extends Component {
             <Header inverted>Lirten Hub</Header>
           </Menu.Item>
           <Menu.Item position="right">
+            <Icon.Group size="large">
+              <Icon
+                className="mainMenu-link"
+                id="notifTarget"
+                size="large"
+                name="bell outline"
+                inverted
+                style={{ cursor: "pointer" }}
+                onClick={this.openNotif}
+              >
+                {notificationCount > 0 ? (
+                  <Label circular floating color="red">
+                    {notificationCount}
+                  </Label>
+                ) : null}
+              </Icon>
+
+              {userInfo && openNotif ? (
+                <Notifications
+                  deleteNotifications={deleteNotifications}
+                  close={this.closeNotif}
+                  openNotif={openNotif}
+                  addNotificationCount={this.props.addNotificationCount}
+                  userId={userInfo.id}
+                  notifications={notifications}
+                />
+              ) : null}
+            </Icon.Group>
+
             <Icon size="big" inverted name="sidebar" onClick={showSideBar} />
           </Menu.Item>
         </Menu>

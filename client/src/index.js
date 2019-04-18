@@ -7,14 +7,29 @@ import { BrowserRouter } from "react-router-dom";
 import "semantic-ui-css/semantic.min.css";
 import Routes from "./routes";
 import Scrolling from "./ScrollToTop.js";
+import UserReducer from "./reducers/UserReducer.js";
+import { createStore } from "redux";
+import { Provider } from "react-redux";
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker
+    .register("../firebase-messaging-sw.js")
+    .then(function(registration) {
+      console.log("Registration successful, scope is:", registration.scope);
+    })
+    .catch(function(err) {
+      console.log("Service worker registration failed, error:", err);
+    });
+}
+const store = createStore(UserReducer);
 ReactDOM.render(
-  <BrowserRouter>
-    {/* <Scrolling> */}
+  <Provider store={store}>
+    <BrowserRouter>
       <App>
         <Routes />
       </App>
-    {/* </Scrolling> */}
-  </BrowserRouter>,
+    </BrowserRouter>
+  </Provider>,
   document.getElementById("root")
 );
 serviceWorker.unregister();

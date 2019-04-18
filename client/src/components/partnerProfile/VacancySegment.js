@@ -45,7 +45,12 @@ class VacancySegment extends Component {
 
   search = vacancies => {
     const { searchBar } = this.state;
-    if (!vacancies || searchBar.length === 0) return vacancies;
+    const { myProfile, admin } = this.props;
+    if (!vacancies) return vacancies;
+    if (searchBar.length === 0) {
+      if (myProfile || admin) return vacancies;
+      else return vacancies.filter(vac => vac.state !== "unapproved");
+    }
     const keys = searchBar.split(" ");
     const filteredArray = [];
     const searchProps = ["title", "location", "description"];
@@ -75,12 +80,16 @@ class VacancySegment extends Component {
       });
       if (vac.matchCount) filteredArray.push(vac);
     });
-    return filteredArray
+    const result = filteredArray
       .sort((a, b) => b.matchCount - a.matchCount)
       .map(obj => {
         delete obj.matchCount;
         return obj;
       });
+    if (myProfile || admin) return result;
+    else {
+      return result.filter(vac => vac.state !== "unapproved");
+    }
   };
   delete = id => {
     this.setState({ deleteLoading: true, deletedId: id });
@@ -121,7 +130,6 @@ class VacancySegment extends Component {
       loading,
       vacancies,
       error,
-      vacancyCount,
       searchBar,
       deletedId,
       jobApplicationId,
@@ -129,8 +137,12 @@ class VacancySegment extends Component {
       vacancyApprove
     } = this.state;
     const filteredVacancies = this.search(vacancies);
+    let vacancyCount = 0;
+    if (filteredVacancies) vacancyCount = filteredVacancies.length;
+    else {
+      vacancyCount = 0;
+    }
     const { id, myProfile } = this.props;
-    console.log(myProfile);
     return (
       <Segment id="vacancy-segment" loading={loading} padded>
         <JobAppsModal

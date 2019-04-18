@@ -140,6 +140,19 @@ class VacancyForm extends Component {
     method(url, data)
       .then(resp => {
         this.setState({ loader: false });
+        if (!edit) {
+          const notifUrl = `subscribers/sendAllAdmins`;
+          const req = {
+            data: {
+              title: "Vacancy Pending Approval!",
+              body: `A new vacancy has been posted`,
+              link: `/Vacancies`,
+              actionTitle: "Visit"
+            }
+          };
+          post(notifUrl, req).then(resp => console.log(resp));
+        }
+
         this.redirectProfile();
       })
       .catch(error => {

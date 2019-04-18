@@ -1,13 +1,14 @@
 import React, { Component } from "react";
-import { Menu, Button, Icon, Image, Dropdown } from "semantic-ui-react";
+import { Menu, Button, Icon, Image, Dropdown, Label } from "semantic-ui-react";
 import "../../styling/Menus.css";
 import { Link } from "react-router-dom";
 import DesktopField from "./Desktopfield.js";
 import { withRouter } from "react-router-dom";
-
+import Notifications from "../notifications/Notifications.js";
 class DesktopMenu extends Component {
   state = {
-    openDropDown: false
+    openDropDown: false,
+    openNotif: false
   };
   openDropDown = () => {
     this.setState({ openDropDown: true });
@@ -15,11 +16,27 @@ class DesktopMenu extends Component {
   closeDropDown = () => {
     this.setState({ openDropDown: false });
   };
-
+  openNotif = e => {
+    const { notificationCount, markAsRead } = this.props;
+    if (notificationCount > 0) {
+      this.props.markAsRead();
+    }
+    this.setState({ openNotif: !this.state.openNotif });
+  };
+  closeNotif = () => {
+    this.setState({ openNotif: false });
+  };
   render() {
-    const { openDropDown } = this.state;
-    const { userInfo, logOut, login, redirectSignUp } = this.props;
-    console.log(userInfo);
+    const { openDropDown, openNotif } = this.state;
+    const {
+      userInfo,
+      logOut,
+      login,
+      redirectSignUp,
+      notificationCount,
+      notifications,
+      deleteNotifications
+    } = this.props;
     return (
       <Menu className="main-menu" borderless fixed="top">
         <Menu.Item>
@@ -54,12 +71,34 @@ class DesktopMenu extends Component {
                   <Dropdown.Header>{userInfo.email}</Dropdown.Header>
                 </Dropdown.Menu>
               </Dropdown>
-              <Icon
-                className="mainMenu-link"
-                size="big"
-                name="bell outline"
-                inverted
-              />
+              <Icon.Group size="large">
+                <Icon
+                  className="mainMenu-link"
+                  id="notifTarget"
+                  size="large"
+                  name="bell outline"
+                  inverted
+                  style={{ cursor: "pointer" }}
+                  onClick={this.openNotif}
+                >
+                  {notificationCount > 0 ? (
+                    <Label circular floating color="red">
+                      {notificationCount}
+                    </Label>
+                  ) : null}
+                </Icon>
+
+                {userInfo && openNotif ? (
+                  <Notifications
+                    deleteNotifications={deleteNotifications}
+                    close={this.closeNotif}
+                    openNotif={openNotif}
+                    addNotificationCount={this.props.addNotificationCount}
+                    userId={userInfo.id}
+                    notifications={notifications}
+                  />
+                ) : null}
+              </Icon.Group>
 
               <Button onClick={logOut} inverted>
                 Log out
