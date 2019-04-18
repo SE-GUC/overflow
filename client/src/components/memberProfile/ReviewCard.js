@@ -8,46 +8,59 @@ import {
   Divider,
   Button,
   Comment,
-  TextArea
+  TextArea,
+  Rating
 } from "semantic-ui-react";
 import { withRouter } from "react-router-dom";
-class FeedbackCard extends Component {
+class ReviewCard extends Component {
   state = {
     edit: false,
-    feedbackTextEdit: ""
+    reviewTextEdit: ""
   };
   del = () => {
-    const { _id } = this.props.feedback;
+    const { _id } = this.props.review;
     this.props.del(_id);
   };
   edit = () => {
-    const { feedbackText } = this.props.feedback;
-    this.setState({ edit: true, feedbackTextEdit: feedbackText });
-  };
-  cancel = () => {
-    const { feedbackText } = this.props.feedback;
-    this.setState({ edit: false, feedbackTextEdit: feedbackText });
-  };
-  save = () => {
-    const { feedbackTextEdit } = this.state;
-    const { _id } = this.props.feedback;
-    this.setState({ edit: false });
-    this.props.edit(_id, feedbackTextEdit);
-  };
-  changeText = e => {
-    this.setState({ feedbackTextEdit: e.target.value });
-  };
-  redirect = () => {
-    const { member } = this.props.feedback;
-    this.props.history.push({
-      pathname: `/Member/${member._id}`
+    const { reviewText, rating } = this.props.review;
+    this.setState({
+      edit: true,
+      reviewTextEdit: reviewText,
+      editRating: rating
     });
   };
+  cancel = () => {
+    const { reviewText } = this.props.review;
+    this.setState({
+      editRating: undefined,
+      edit: false,
+      reviewTextEdit: reviewText
+    });
+  };
+  save = () => {
+    const { reviewTextEdit, editRating } = this.state;
+    const { _id } = this.props.review;
+    this.setState({ edit: false });
+    this.props.edit(_id, reviewTextEdit, editRating);
+  };
+  changeText = e => {
+    this.setState({ reviewTextEdit: e.target.value });
+  };
+  handleRate = (e, { rating }) => this.setState({ editRating: rating });
+
+  redirect = () => {
+    const { partner } = this.props.review;
+    this.props.history.push({
+      pathname: `/Partner/${partner._id}`,
+      state: { partner }
+    });
+  };
+
   render() {
-    const { datePosted, feedbackText, member } = this.props.feedback;
-    const { email, name } = member;
-    const { edit, feedbackTextEdit } = this.state;
-    const { memberId } = this.props;
+    const { datePosted, reviewText, partner, rating } = this.props.review;
+    const { email, name } = partner;
+    const { edit, reviewTextEdit, editRating } = this.state;
+    const { partnerId } = this.props;
     return (
       <div id="comment">
         <Comment size="large">
@@ -55,18 +68,26 @@ class FeedbackCard extends Component {
           <Comment.Content>
             <Comment.Author as="a" onClick={this.redirect}>
               {name}
+              <Rating
+                maxRating={5}
+                onRate={this.handleRate}
+                disabled={!edit}
+                icon="star"
+                rating={editRating || rating}
+              />
             </Comment.Author>
+            <Divider hidden fitted />
             <Comment.Metadata>
               <div>{datePosted.toString().slice(0, 10)}</div>
             </Comment.Metadata>
             <Comment.Text>
               {edit ? (
-                <TextArea value={feedbackTextEdit} onChange={this.changeText} />
+                <TextArea value={reviewTextEdit} onChange={this.changeText} />
               ) : (
-                feedbackText
+                reviewText
               )}
             </Comment.Text>
-            {memberId === member._id ? (
+            {partnerId === partner._id ? (
               <Comment.Actions>
                 {edit ? (
                   [
@@ -90,4 +111,4 @@ class FeedbackCard extends Component {
     );
   }
 }
-export default withRouter(FeedbackCard);
+export default withRouter(ReviewCard);

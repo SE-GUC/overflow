@@ -38,66 +38,51 @@ class SubmitModal extends Component {
     //     return decoded.id;
     //   }
     // }
-    return '5ca9f44f4af55e8cbcdd9a52'
+    return "5ca9f44f4af55e8cbcdd9a52";
   };
   handleRate = (e, { rating, maxRating }) => {
     this.setState({ rating });
   };
   handleClick = () => {
     let url = "reviews/create";
-    this.setState({loading:true})
-    const { member } = this.state;
-    const partnerID = this.getCurrentPartner();
+    this.setState({ loading: true });
+    const { member, partner } = this.props;
+    const partnerID = this.props.partnerId;
     const { reviewText, rating } = this.state;
     let body = {
       reviewText: reviewText,
-      rating: rating +"",
+      rating: rating + "",
       partnerID: partnerID,
       memberID: member._id
     };
     axios.post(url, body).then(data => {
-      console.log(data, "Success");
-
-      // this.props.handleHidden();
-      // this.props.applied();
-      this.setState({ hidden: true,loading:false });
+      this.props.add(data.data.data);
+      this.setState({ loading: false });
+      const notifUrl = `subscribers/send`;
+      const req = {
+        userIds: [member.id],
+        data: {
+          title: "Review!",
+          body: `New Review posted on your profile`,
+          link: `/Member/${member._id}`,
+          actionTitle: "Visit"
+        }
+      };
+      axios.post(notifUrl, req);
+      this.props.close();
     });
   };
-  componentWillReceiveProps(newProps) {
-    this.setState({ hidden: newProps.hidden });
-  }
 
-  componentDidMount() {
-    const id = "5ca7ad908a73485200cf4f0a";
-    const url = "users/" + id;
-    axios
-      .get(url)
-      .then( member => {
-        this.setState({ member: member });
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    this.setState({ hidden: this.props.hidden });
-  }
-  handleClose=()=>{
-    this.setState({ hidden: true });
-  }
   render() {
-    let { memberId } = this.props;
-    let { member,loading } = this.state;
-    const name = member ? member.name : null;
-    const { hidden } = this.state;
-    const placeholder = "What do you think about " + { name };
-    return !member || loading? (
-      <div>
-        <Dimmer active>
-          <Loader size="huge" inverted />
-        </Dimmer>
-      </div>
-    ) : (
-      <Modal open={!hidden} onClose = {this.handleClose}>
-        <Modal.Header>Submit a Review</Modal.Header>
+    const { memberId, open, member } = this.props;
+    const { loading } = this.state;
+    const name = member ? member.name : "N/A";
+    const placeholder = "What do you think about " + name;
+    return (
+      <Modal closeIcon open={open} onClose={this.props.close}>
+        <Modal.Header className="modal-header" inverted>
+          Submit a Review
+        </Modal.Header>
         <Modal.Content>
           <Grid padded columns={2} divided>
             <Grid.Row>
@@ -119,6 +104,15 @@ class SubmitModal extends Component {
                 </Header>
               </Grid.Column>
               <Grid.Column stretched>
+                <Form.Field>
+                  <Header as="h3">Rating</Header>
+                  <Rating
+                    icon="star"
+                    size="large"
+                    maxRating={5}
+                    onRate={this.handleRate}
+                  />
+                </Form.Field>
                 <Header as="h3">Review Text</Header>
                 <Form>
                   <Form.Field required>
@@ -128,17 +122,15 @@ class SubmitModal extends Component {
                       placeholder={placeholder}
                     />
                   </Form.Field>
-                  <Form.Field>
-                    <Header as="h3">Rating</Header>
-                    <Rating size="large" maxRating={5} onRate={this.handleRate} />
-                  </Form.Field>
                 </Form>
 
                 <div id="sendAppButton">
                   <Button
+                    loading={loading}
                     disabled={this.state.disabled}
                     onClick={this.handleClick}
                     color="yellow"
+                    style={{ marginTop: "1em" }}
                   >
                     Send Review
                   </Button>

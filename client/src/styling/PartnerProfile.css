@@ -31,6 +31,12 @@
   width:90%;
   position:absolute;
 }
+#member-actions{
+  margin:1em !important;
+  top:20.5em !important;
+  width:90%;
+  position:absolute;
+}
 }
 .ui.header.click {
   cursor:pointer

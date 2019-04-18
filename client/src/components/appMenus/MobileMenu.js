@@ -44,34 +44,35 @@ class MobileMenu extends Component {
             <Header inverted>Lirten Hub</Header>
           </Menu.Item>
           <Menu.Item position="right">
-            <Icon.Group size="large">
-              <Icon
-                className="mainMenu-link"
-                id="notifTarget"
-                size="large"
-                name="bell outline"
-                inverted
-                style={{ cursor: "pointer" }}
-                onClick={this.openNotif}
-              >
-                {notificationCount > 0 ? (
-                  <Label circular floating color="red">
-                    {notificationCount}
-                  </Label>
+            {userInfo ? (
+              <Icon.Group size="large">
+                <Icon
+                  className="mainMenu-link"
+                  id="notifTarget"
+                  size="large"
+                  name="bell outline"
+                  inverted
+                  style={{ cursor: "pointer" }}
+                  onClick={this.openNotif}
+                >
+                  {notificationCount > 0 ? (
+                    <Label circular floating color="red">
+                      {notificationCount}
+                    </Label>
+                  ) : null}
+                </Icon>
+                {userInfo && openNotif ? (
+                  <Notifications
+                    deleteNotifications={deleteNotifications}
+                    close={this.closeNotif}
+                    openNotif={openNotif}
+                    addNotificationCount={this.props.addNotificationCount}
+                    userId={userInfo.id}
+                    notifications={notifications}
+                  />
                 ) : null}
-              </Icon>
-
-              {userInfo && openNotif ? (
-                <Notifications
-                  deleteNotifications={deleteNotifications}
-                  close={this.closeNotif}
-                  openNotif={openNotif}
-                  addNotificationCount={this.props.addNotificationCount}
-                  userId={userInfo.id}
-                  notifications={notifications}
-                />
-              ) : null}
-            </Icon.Group>
+              </Icon.Group>
+            ) : null}
 
             <Icon size="big" inverted name="sidebar" onClick={showSideBar} />
           </Menu.Item>
