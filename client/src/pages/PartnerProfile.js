@@ -37,6 +37,10 @@ class PartnerProfile extends Component {
     if (state) {
       const { partner } = state;
       this.setState({ partner });
+      this.props.history.replace({
+        pathname: "/Partner/" + id,
+        state: undefined
+      });
     } else {
       this.getPartner(id);
     }
@@ -54,7 +58,6 @@ class PartnerProfile extends Component {
       });
   };
   editProfile = () => {
-    console.log(this.state.partner, "PARTNER");
     this.props.history.push({
       pathname: "/EditProfile",
       user: this.state.partner

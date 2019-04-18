@@ -19,6 +19,10 @@ class LifeCoachProfile extends Component {
     if (state) {
       const { lifeCoach } = state;
       this.setState({ lifeCoach });
+      this.props.history.replace({
+        pathname: "/LifeCoach/" + lifeCoach._id,
+        state: undefined
+      });
     } else {
       this.getLifeCoach();
     }
@@ -72,7 +76,6 @@ class LifeCoachProfile extends Component {
     });
   };
   setSlotLocation = slot => {
-    console.log(slot, "SLOT");
     const { lifeCoach } = this.state;
     const index = lifeCoach.userData.monthlySlots.findIndex(
       oldslot => oldslot._id === slot._id

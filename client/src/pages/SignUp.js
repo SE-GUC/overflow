@@ -10,11 +10,11 @@ class SignUpPage extends Component {
       <div>
         <Responsive {...Responsive.onlyComputer}>
           <Grid columns={3}>
-            <Grid.Column width={5} />
-            <Grid.Column width={6}>
+            <Grid.Column width={4} />
+            <Grid.Column width={8}>
               <SignUp redirect={this.redirect} />
             </Grid.Column>
-            <Grid.Column width={5} />
+            <Grid.Column width={4} />
           </Grid>
         </Responsive>
         <Responsive {...Responsive.onlyTablet}>

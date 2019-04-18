@@ -15,6 +15,7 @@ import LifeCoachProfile from "./pages/LifeCoachProfile";
 import PartnerProfile from "./pages/PartnerProfile";
 import HomePage from "./pages/HomePage";
 import CreateAdmin from "./pages/CreateAdmin";
+import MemberProfile from "./pages/MemberProfile";
 
 export default () => {
   return [
@@ -73,6 +74,7 @@ export default () => {
       exact
       path="/CreateAdmin"
       component={CreateAdmin}
-    />
+    />,
+    <Route key={"/Member"} exact path="/Member/:id" component={MemberProfile} />
   ];
 };

@@ -53,6 +53,17 @@ class SubmitFeedbackModal extends Component {
       partnerId: partner._id
     };
     axios.post(url, body).then(data => {
+      const notifUrl = `subscribers/send`;
+      const req = {
+        userIds: [partner._id],
+        data: {
+          title: "Feedback!",
+          body: `New feedback posted on your profile`,
+          link: `/Partner/${partner._id}`,
+          actionTitle: "Visit"
+        }
+      };
+      axios.post(notifUrl, req).then(resp => console.log(resp));
       this.props.addFeedBack(data.data);
       this.setState({ loading: false });
       this.props.close();

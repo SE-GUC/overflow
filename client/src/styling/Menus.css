@@ -66,6 +66,21 @@ background-image: linear-gradient(to right top, #06191d, #091f23, #0b2529,
 .ui.header.profile-header{
   display:inline;
 }
+@media (min-width: 320px) and (max-width:599px) {
+  #notif-options{
+    position:absolute;
+    top:0.6em;
+    right:-3em;
+  }
+  #notif-menu{
+    max-height: 10em;
+    min-width: 5px !important;
+    overflow-y:scroll;
+    
+  }
+  }
+
+@media(min-width:769px){
 #notif-options{
   position:absolute;
   top:0.6em;
@@ -75,6 +90,7 @@ background-image: linear-gradient(to right top, #06191d, #091f23, #0b2529,
   max-height: 10em;
   min-width: 20em;
   overflow-y:scroll
+}
 }
 
 #mark {
@@ -89,19 +105,18 @@ background-image: linear-gradient(to right top, #06191d, #091f23, #0b2529,
   font-style:normal;
 
 }
-@media (max-width: 768px) {
+@media (max-width: 768px) and (min-width: 600px) {
   #notif-menu{
     max-height: 10em;
     min-width: 15em;
     overflow-y:scroll
   }
-}
-@media (max-width: 320px) {
-  #notif-menu{
-    max-height: 10em;
-    min-width: 13em;
-    overflow-y:scroll
+  #notif-options{
+    position:absolute;
+    top:0.6em;
+    right:-0.5em;
   }
+
 }
 
 #no-back {

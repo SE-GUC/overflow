@@ -84,6 +84,9 @@ class App extends Component {
       case "lifeCoach":
         this.props.history.push("/LifeCoach/" + userInfo.id);
         break;
+      case "member":
+        this.props.history.push("/Member/" + userInfo.id);
+        break;
       //MEMBER GOES HERE
     }
   };
