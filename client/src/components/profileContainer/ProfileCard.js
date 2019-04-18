@@ -192,18 +192,13 @@ export default class ProfileCard extends Component {
               </Card.Header>
             </div>
           ) : null}
-          {/*type === "partner" && adminType ? (
+          {type === "partner" && adminType ? (
             <Card.Header textAlign="center">
               <Button onClick={this.delete} color="red">
                 Delete
               </Button>
             </Card.Header>
-          ) : null*/}
-          <Card.Header textAlign="center">
-            <Button onClick={this.delete} color="red">
-              Delete
-            </Button>
-          </Card.Header>
+          ) : null}
         </Card.Content>
         <Card.Content extra>
           <div>
