@@ -4,16 +4,14 @@ import { Loader, Dimmer, Header } from "semantic-ui-react";
 import BasicInfo from "../components/lifeCoachProfile/BasicInfo";
 import Slots from "../components/lifeCoachProfile/Slots";
 import "../styling/lifeCoachProfile.css";
-import storageChanged from "storage-changed";
+//import storageChanged from "storage-changed";
 import decode from "jwt-decode";
+import { connect } from "react-redux";
 
 class LifeCoachProfile extends Component {
   state = {
     error: false,
-    loading: false,
-    myProfile: false,
-    memberType: false,
-    memberId: ""
+    loading: false
   };
 
   componentDidMount() {
@@ -24,26 +22,7 @@ class LifeCoachProfile extends Component {
     } else {
       this.getLifeCoach();
     }
-    storageChanged("local", {
-      eventName: "tokenChange"
-    });
-    window.addEventListener("tokenChange", this.handleTokenChange);
-    this.handleTokenChange();
   }
-
-  handleTokenChange = () => {
-    const tokenCheck = localStorage.getItem("jwtToken");
-    if (!tokenCheck) {
-      this.setState({ myProfile: false, memberId: "", memberType: false });
-      return;
-    }
-    const decoded = decode(tokenCheck);
-    const { id } = this.props.match.params;
-    if (decoded.id === id)
-      this.setState({ myProfile: true, memberType: false, memberId: "" });
-    if (decoded.type === "member")
-      this.setState({ memberId: decoded.id, memberType: true });
-  };
 
   toggleLoading = () => {
     this.setState({ loading: !this.state.loading });
@@ -111,24 +90,38 @@ class LifeCoachProfile extends Component {
     this.setState({ lifeCoach });
     this.setLocationState(lifeCoach);
   };
-  redirect = ()=>{
-    console.log(this.state.lifeCoach,"LIFECOACH")
+  redirect = () => {
+    console.log(this.state.lifeCoach, "LIFECOACH");
     this.props.history.push({
       pathname: "/EditProfile",
       user: this.state.lifeCoach
     });
-  }
+  };
   render() {
-    const {
-      loading,
-      error,
-      lifeCoach,
-      memberId,
-      memberType,
-      myProfile,
-      deleteLoading,
-      deletedId
-    } = this.state;
+    const { loading, error, lifeCoach, deleteLoading, deletedId } = this.state;
+    const { userInfo } = this.props;
+    const { id } = this.props.match.params;
+    let myProfile = false;
+    let memberId = "";
+    let memberType = false;
+    if (!userInfo) {
+      myProfile = false;
+      memberId = "";
+      memberType = false;
+    } else {
+      if (userInfo.id === id) {
+        myProfile = true;
+        memberType = false;
+      } else {
+        if (userInfo.type === "member") {
+          myProfile = false;
+          memberId = userInfo.id;
+          memberType = true;
+        }
+      }
+    }
+
+    console.log(userInfo, "USERINFO");
     if (!lifeCoach && !loading) return null;
     console.log(lifeCoach);
     return (
@@ -180,5 +173,9 @@ class LifeCoachProfile extends Component {
     );
   }
 }
+const mapStateToProps = state => {
+  const { userInfo } = state;
+  return { userInfo };
+};
 
-export default LifeCoachProfile;
+export default connect(mapStateToProps)(LifeCoachProfile);

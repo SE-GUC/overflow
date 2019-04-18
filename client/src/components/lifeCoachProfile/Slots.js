@@ -3,7 +3,7 @@ import { Card, Icon, Header, Button } from "semantic-ui-react";
 import decode from "jwt-decode";
 import CreateSlotModal from "./CreateSlotModal";
 import LocationModal from "./LocationModal";
-import { put, del } from "../../services/axios";
+import { put, del, post } from "../../services/axios";
 
 class Slots extends Component {
   state = {
@@ -57,6 +57,17 @@ class Slots extends Component {
           ...body
         });
         this.setState({ bookedLoading: false, bookedId: "" });
+        const notifUrl = `subscribers/send`;
+        const req = {
+          userIds: [lifeCoachId],
+          data: {
+            title: "Slot Booking!",
+            body: `${member.name} has booked a slot on ${date.slice(0, 10)}`,
+            link: `/LifeCoach/${lifeCoachId}`,
+            actionTitle: "Visit"
+          }
+        };
+        post(notifUrl, req).then(resp => console.log(resp));
       })
       .catch(error => {
         console.log(error);
@@ -81,6 +92,17 @@ class Slots extends Component {
         //this.props.getLifeCoach();
         this.props.confirm(_id);
         this.setState({ confirmLoading: false, confirmId: "" });
+        const notifUrl = `subscribers/send`;
+        const req = {
+          userIds: [member._id],
+          data: {
+            title: "Slot Confirmation!",
+            body: `The slot on ${date.slice(0, 10)} has been confirmed`,
+            link: `/LifeCoach/${lifeCoachId}`,
+            actionTitle: "Visit"
+          }
+        };
+        post(notifUrl, req).then(resp => console.log(resp));
       })
       .catch(error => {
         this.props.toggleError();

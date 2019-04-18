@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import * as axios from "../services/axios.js";
 import ApplyModal from "../components/vacancies/ApplyModal";
 import decode from "jwt-decode";
-import storageChanged from "storage-changed";
 import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 import {
   Button,
   Grid,
@@ -25,15 +25,12 @@ class Vacancy extends Component {
     this.state = {
       vacancy: null,
       modalHidden: true,
-      memberType: false,
-      memberId: "",
       applied: false,
       loading: false
     };
   }
 
   getVacancy = async () => {
-    console.log("OK??");
     this.setState({ loading: true });
     const id = this.props.match.params.id;
     const url = "vacancies/" + id;
@@ -42,30 +39,6 @@ class Vacancy extends Component {
     });
   };
   componentDidMount() {
-    const tokenCheck = localStorage.getItem("jwtToken");
-    //handling token change
-    storageChanged("local", {
-      eventName: "tokenChange"
-    });
-    window.addEventListener("tokenChange", this.handleTokenChange);
-    if (!tokenCheck) {
-      this.setState({ memberType: false });
-      if (this.props.location.state) {
-        const { vacancy } = this.props.location.state;
-        this.setState({ vacancy });
-      } else {
-        this.getVacancy();
-      }
-      return;
-    }
-    let decoded = decode(localStorage.getItem("jwtToken"));
-    if (decoded.type) {
-      if (decoded.type === "member") {
-        this.setState({ memberType: true, memberId: decoded.id });
-      }
-    } else {
-      this.setState({ memberType: false });
-    }
     if (this.props.location.state) {
       const { vacancy } = this.props.location.state;
       this.setState({ vacancy });
@@ -73,23 +46,7 @@ class Vacancy extends Component {
       this.getVacancy();
     }
   }
-  handleTokenChange = e => {
-    if (!e.detail.value) {
-      this.setState({ memberType: false });
-      return;
-    }
-    let decoded = decode(e.detail.value);
-    if (decoded.type) {
-      if (decoded.type === "member") {
-        this.setState({ memberType: true, memberId: decoded.id });
-      }
-    } else {
-      this.setState({ memberType: false });
-    }
-  };
-  componentWillUnmount() {
-    window.removeEventListener("storage", this.handleTokenChange);
-  }
+
   handleApply = () => {
     this.setState({ modalHidden: false });
   };
@@ -111,8 +68,19 @@ class Vacancy extends Component {
     });
   };
   render() {
-    const { vacancy, applied, memberType, loading } = this.state;
+    const { vacancy, applied, loading } = this.state;
+    const { userInfo } = this.props;
     let toBeReturned = "";
+    let memberType = false;
+    let memberId = "";
+    let memberName = "";
+    if (userInfo) {
+      if (userInfo.type === "member") {
+        memberType = true;
+        memberId = userInfo.id;
+        memberName = userInfo.name;
+      }
+    }
 
     if (!vacancy) {
       toBeReturned = (
@@ -256,8 +224,9 @@ class Vacancy extends Component {
         </Grid>,
 
         <ApplyModal
+          memberName={memberName}
           vacancy={this.state.vacancy}
-          memberId={this.state.memberId}
+          memberId={memberId}
           hidden={this.state.modalHidden}
           handleClose={this.handleClose}
           applied={() => this.setApplied()}
@@ -267,4 +236,8 @@ class Vacancy extends Component {
     return toBeReturned;
   }
 }
-export default withRouter(Vacancy);
+const mapStateToProps = state => {
+  const { userInfo } = state;
+  return { userInfo };
+};
+export default withRouter(connect(mapStateToProps)(Vacancy));

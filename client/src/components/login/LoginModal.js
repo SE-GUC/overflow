@@ -11,6 +11,8 @@ import {
 } from "semantic-ui-react";
 import "../../styling/Login.css";
 import * as Axios from "../../services/axios.js";
+import decode from "jwt-decode";
+
 export default class LoginModal extends Component {
   state = {
     email: "",
@@ -41,11 +43,13 @@ export default class LoginModal extends Component {
     const body = { email, password };
     Axios.post("users/login", body)
       .then(data => {
+        this.props.askPerm(decode(data.data.data).id);
         localStorage.setItem("jwtToken", data.data.data);
+        const userInfo = decode(data.data.data);
+        this.props.setToken();
         this.resetModal();
       })
       .catch(error => {
-        console.log(error, error);
         this.setState({
           error: error.response.data.error,
           hidden: false,

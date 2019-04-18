@@ -66,3 +66,51 @@ background-image: linear-gradient(to right top, #06191d, #091f23, #0b2529,
 .ui.header.profile-header{
   display:inline;
 }
+#notif-options{
+  position:absolute;
+  top:0.6em;
+  right:-0.5em;
+}
+#notif-menu{
+  max-height: 10em;
+  min-width: 20em;
+  overflow-y:scroll
+}
+
+#mark {
+  float:right;
+  text-transform: none;
+  font-style: normal;
+  font-size:0.8em;
+  color:#1877F2;
+  cursor:pointer
+}
+#item {
+  font-style:normal;
+
+}
+@media (max-width: 768px) {
+  #notif-menu{
+    max-height: 10em;
+    min-width: 15em;
+    overflow-y:scroll
+  }
+}
+@media (max-width: 320px) {
+  #notif-menu{
+    max-height: 10em;
+    min-width: 13em;
+    overflow-y:scroll
+  }
+}
+
+#no-back {
+  background-color: white !important;
+  transform:none;
+  margin:0!important;
+}
+#blue-back {
+  background-color:#ECF3FF !important;
+  transform:none;
+  margin:0 !important;
+}

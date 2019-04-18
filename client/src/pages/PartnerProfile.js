@@ -11,7 +11,7 @@ import {
   Divider
 } from "semantic-ui-react";
 import "../styling/PartnerProfile.css";
-import storageChanged from "storage-changed";
+//import storageChanged from "storage-changed";
 import { withRouter } from "react-router-dom";
 import PartnerBasicInfo from "../components/partnerProfile/PartnerBasicInfo";
 import ActionSegment from "../components/partnerProfile/ActionSegment";
@@ -19,6 +19,7 @@ import VacancySegment from "../components/partnerProfile/VacancySegment";
 import FeedbackSegment from "../components/partnerProfile/FeedBackSegment";
 import SubmitFeedbackModal from "../components/feedbacks/SubmitFeedbackModal";
 import decode from "jwt-decode";
+import { connect } from "react-redux";
 
 class PartnerProfile extends Component {
   state = {
@@ -26,22 +27,13 @@ class PartnerProfile extends Component {
     loading: false,
     partner: undefined,
     error: false,
-    myProfile: false,
-    memberType: false,
     open: false,
-    memberId: "",
     feedback: {}
   };
 
   componentDidMount() {
-    this.setToken();
     const { state } = this.props.location;
     const { id } = this.props.match.params;
-    //handling token change
-    storageChanged("local", {
-      eventName: "tokenChange"
-    });
-    window.addEventListener("tokenChange", this.setToken);
     if (state) {
       const { partner } = state;
       this.setState({ partner });
@@ -49,21 +41,6 @@ class PartnerProfile extends Component {
       this.getPartner(id);
     }
   }
-  componentWillUnmount() {
-    window.removeEventListener("tokenChange", this.setToken);
-  }
-  setToken = () => {
-    const tokenCheck = localStorage.getItem("jwtToken");
-    if (!tokenCheck) {
-      this.setState({ myProfile: false, memberType: false, memberId: "" });
-      return;
-    }
-    const decoded = decode(tokenCheck);
-    const { id } = this.props.match.params;
-    if (decoded.id === id) this.setState({ myProfile: true });
-    if (decoded.type === "member")
-      this.setState({ memberType: true, memberId: decoded.id });
-  };
 
   getPartner = id => {
     this.setState({ loading: true });
@@ -77,7 +54,7 @@ class PartnerProfile extends Component {
       });
   };
   editProfile = () => {
-    console.log(this.state.partner,"PARTNER")
+    console.log(this.state.partner, "PARTNER");
     this.props.history.push({
       pathname: "/EditProfile",
       user: this.state.partner
@@ -106,14 +83,34 @@ class PartnerProfile extends Component {
       partner,
       error,
       loading,
-      myProfile,
-      memberType,
       vacancyCount,
       open,
-      memberId,
       feedback
     } = this.state;
     const { id } = this.props.match.params;
+    const { userInfo } = this.props;
+    let myProfile = false;
+    let memberId = "";
+    let memberType = false;
+    let adminType = false;
+    if (!userInfo) {
+      myProfile = false;
+      memberId = "";
+      memberType = false;
+    } else {
+      if (userInfo.id === id) {
+        myProfile = true;
+        memberType = false;
+      } else {
+        if (userInfo.type === "member") {
+          myProfile = false;
+          memberId = userInfo.id;
+          memberType = true;
+        } else {
+          if (userInfo.type === "admin") adminType = true;
+        }
+      }
+    }
     if (loading) {
       return (
         <Dimmer active={loading}>
@@ -148,7 +145,12 @@ class PartnerProfile extends Component {
           </Grid.Column>
           <Grid.Column only="computer" width={10}>
             <PartnerBasicInfo partner={partner} />
-            <VacancySegment partner={partner} myProfile={myProfile} id={id} />
+            <VacancySegment
+              admin={adminType}
+              partner={partner}
+              myProfile={myProfile}
+              id={id}
+            />
             <FeedbackSegment
               memberId={memberId}
               feedback={feedback}
@@ -174,6 +176,7 @@ class PartnerProfile extends Component {
               id={id}
               partner={partner}
               myProfile={myProfile}
+              admin={adminType}
             />
           </Grid.Column>
           <Grid.Column only="tablet" width={14}>
@@ -185,7 +188,12 @@ class PartnerProfile extends Component {
               editProfile={this.editProfile}
               createVacancy={this.createVacancy}
             />
-            <VacancySegment partner={partner} myProfile={myProfile} id={id} />
+            <VacancySegment
+              admin={adminType}
+              partner={partner}
+              myProfile={myProfile}
+              id={id}
+            />
             <FeedbackSegment
               memberId={memberId}
               feedback={feedback}
@@ -201,4 +209,9 @@ class PartnerProfile extends Component {
     );
   }
 }
-export default withRouter(PartnerProfile);
+const mapStateToProps = state => {
+  const { userInfo } = state;
+  return { userInfo };
+};
+
+export default withRouter(connect(mapStateToProps)(PartnerProfile));

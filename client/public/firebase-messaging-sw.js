@@ -1,7 +1,9 @@
 importScripts("https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js");
 importScripts("https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js");
+
 // Initialize the Firebase app in the service worker by passing in the
 // messagingSenderId.
+
 firebase.initializeApp({
   messagingSenderId: "901639143723"
 });
@@ -10,30 +12,28 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 messaging.setBackgroundMessageHandler(payload => {
   console.log(
-    "[firebase-messaging-sw.js NOIS] Received background message ",
+    "[firebase-messaging-sw.js NOIS3] Received background message ",
     payload
   );
-  const { title, body, link, actionTitle, emoji} = payload.data;
-  const notificationTitle = emoji ? title + String.fromCodePoint(emoji) : title
+  const { title, body, link, actionTitle, emoji } = payload.data;
+  const notificationTitle = emoji ? title + String.fromCodePoint(emoji) : title;
   const notificationOptions = {
     body,
     icon: "https://www.w3schools.com/images/w3schools_green.jpg",
     actions: [
-              {
-                action: link,
-                title: actionTitle
-              }
-             ]
-  }
+      {
+        action: link,
+        title: actionTitle
+      }
+    ]
+  };
 
   return self.registration.showNotification(
     notificationTitle,
     notificationOptions
   );
 });
-self.addEventListener('notificationclick', function(event) {
+self.addEventListener("notificationclick", function(event) {
   event.notification.close();
-  event.waitUntil(
-    clients.openWindow(event.action)
-  );
-})
+  event.waitUntil(clients.openWindow(event.action));
+});

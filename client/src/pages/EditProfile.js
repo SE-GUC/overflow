@@ -4,22 +4,21 @@ import SignUp from "../components/Signup/SignUpForm";
 import EditProfileForm from "../components/profiles/EditProfileForm";
 class EditProfile extends Component {
   redirectProfile = (id, user) => {
-    console.log("In Redirect Profile",user);
     if (user.type === "partner") {
-      console.log("IN PErnater AHO")
+      console.log("IN PErnater AHO");
       this.props.history.push({
         pathname: "/Partner/" + id,
-        state: { partner:user }
+        state: { partner: user }
       });
     } else if (user.type === "lifeCoach") {
       this.props.history.push({
         pathname: "/LifeCoach/" + id,
-        state: { lifeCoach:user }
+        state: { lifeCoach: user }
       });
     } else if (user.type === "member") {
       this.props.history.push({
         pathname: "/Member/" + id,
-        state: { member:user }
+        state: { member: user }
       });
     }
   };

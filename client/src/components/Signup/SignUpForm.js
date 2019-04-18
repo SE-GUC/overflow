@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import decode from "jwt-decode";
 import * as axios from "../../services/axios.js";
+import { AC_logIn, AC_set_firebaseToken } from "../../actions/UserActions";
+import { connect } from "react-redux";
 import {
   Form,
   Grid,
@@ -17,6 +19,8 @@ import {
   Icon
 } from "semantic-ui-react";
 import "../../styling/signup.css";
+const firebase = require("firebase");
+
 class SignUp extends React.Component {
   state = {
     userInfo: {
@@ -118,6 +122,26 @@ class SignUp extends React.Component {
   componentDidMount() {
     this.setState({ reserveAttrs: this.state.userInfo });
   }
+  askPerm = userId => {
+    firebase
+      .messaging()
+      .requestPermission()
+      .then(function(e = null) {
+        console.log("Granted!" + e);
+
+        return firebase.messaging().getToken();
+      })
+      .then(token => {
+        const url = "subscribers/add";
+        axios.post(url, { userId, token }).then(resp => console.log(resp));
+        console.log("Token:" + token + " " + userId);
+        this.props.dispatch(AC_set_firebaseToken(token));
+      })
+      .catch(function(err) {
+        console.log(err, "ERROR");
+        console.log("Error! :: " + err);
+      });
+  };
   checkInputArray = arr => {
     let result = true;
     arr.map(inp => {
@@ -286,11 +310,22 @@ class SignUp extends React.Component {
           newData[key] = data[key];
       }
     });
-    console.log(data, "Data");
-    console.log(newData, "New Data");
+
     axios
       .post(url, newData)
       .then(data => {
+        if (type === "Partner") {
+          const notifUrl = `subscribers/sendAllAdmins`;
+          const req = {
+            data: {
+              title: "Partner Pending Approval!",
+              body: `A new partner requested approval`,
+              link: `/Partners`,
+              actionTitle: "Visit"
+            }
+          };
+          axios.post(notifUrl, req).then(resp => console.log(resp));
+        }
         this.setState({ hidden: true });
         console.log(data);
         let body = {
@@ -300,8 +335,9 @@ class SignUp extends React.Component {
         axios
           .post("users/login", body)
           .then(data => {
-            console.log(data.data.data, "After Login");
             localStorage.setItem("jwtToken", data.data.data);
+            this.props.dispatch(AC_logIn(decode(data.data.data)));
+            this.askPerm(decode(data.data.data).id);
             this.setState({ loading: false });
             this.redirect();
           })
@@ -667,5 +703,7 @@ class SignUp extends React.Component {
     );
   }
 }
-
-export default SignUp;
+const mapStateToProps = state => {
+  return {};
+};
+export default connect(mapStateToProps)(SignUp);
