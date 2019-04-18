@@ -19,6 +19,10 @@ export default class JobApplicationCard extends Component {
     const { jobApplication, handleAction } = this.props;
     handleAction(jobApplication, "rejected");
   };
+  handleDelete = () => {
+    const { jobApplication } = this.props;
+    this.props.handleDelete(jobApplication._id);
+  };
 
   render() {
     const {
@@ -28,7 +32,7 @@ export default class JobApplicationCard extends Component {
       state,
       _id
     } = this.props.jobApplication;
-    const { fromPartner, actionId, action } = this.props;
+    const { fromPartner, actionId, action, fromMember } = this.props;
     const { name, email } = member;
     const { skills, age } = member.userData;
     const currentLabel =
@@ -100,6 +104,22 @@ export default class JobApplicationCard extends Component {
                 </Card.Header>
               </div>
             ) : null}
+            {fromMember && (
+              <Card.Header
+                style={{ margin: "auto", marginBottom: "0.5em" }}
+                size="mini"
+                textAlign="center"
+              >
+                <Button
+                  loading={actionId === _id}
+                  onClick={this.handleDelete}
+                  size="mini"
+                  color="red"
+                >
+                  Delete
+                </Button>
+              </Card.Header>
+            )}
           </Grid>
           <div>
             <Popup

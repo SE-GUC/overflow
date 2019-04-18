@@ -53,6 +53,12 @@ export default class Members extends Component {
 
     this.setState({ locationFilters, skillFilters });
   };
+  redirectProfile = (id, member) => {
+    this.props.history.push({
+      pathname: "/Member/" + id,
+      state: { member }
+    });
+  };
 
   render() {
     const { members, loading, locationFilters, skillFilters } = this.state;
@@ -62,6 +68,7 @@ export default class Members extends Component {
           <Loader size="massive" />
         </Dimmer>
         <Container
+          redirect={this.redirectProfile}
           loading={loading}
           pageTitle="Members"
           pageSubHeader="A large database of professional talents"

@@ -11,7 +11,7 @@ import {
 } from "semantic-ui-react";
 import "../../styling/PartnerProfile.css";
 import JobApplicationCard from "./JobApplicationCard";
-import { get, put } from "../../services/axios";
+import { get, put, post } from "../../services/axios";
 
 export default class JobAppsModal extends Component {
   state = {
@@ -54,6 +54,22 @@ export default class JobAppsModal extends Component {
       })
       .then(() => {
         if (state === "accepted") {
+          const notifUrl = `subscribers/send`;
+          const notif = jobApplication;
+          const req = {
+            userIds: [notif.member._id],
+            data: {
+              title: "Job Application Accepted!",
+              body: `${
+                notif.vacancy.partner.name
+              } has accepted your application on ${
+                notif.vacancy.title ? notif.vacancy.title : " their vacancy"
+              }`,
+              link: `/`,
+              actionTitle: "Visit"
+            }
+          };
+          post(notifUrl, req).then(resp => console.log(resp));
           const vacancyUrl = `vacancies/update/${vacancyId}`;
           const { _id, __v, partner, acceptedMember, ...data } = vacancy;
           data.partnerId = partner._id;
@@ -64,10 +80,27 @@ export default class JobAppsModal extends Component {
             this.setState({ jobApplications, actionId: "", action: "" });
           });
         } else {
+          const notifUrl = `subscribers/send`;
+          const notif = jobApplication;
+          const req = {
+            userIds: [notif.member._id],
+            data: {
+              title: "Job Application Rejected!",
+              body: `${
+                notif.vacancy.partner.name
+              } has rejected your application on ${
+                notif.vacancy.title ? notif.vacancy.title : " their vacancy"
+              }`,
+              link: `/`,
+              actionTitle: "Visit"
+            }
+          };
+          post(notifUrl, req).then(resp => console.log(resp));
           this.setState({ jobApplications, actionId: "", action: "" });
         }
       })
       .catch(error => {
+        console.log(error, "ERORR");
         console.log(error.response);
         this.setState({ error: true });
       });
@@ -95,6 +128,7 @@ export default class JobAppsModal extends Component {
               Something went wrong !
             </Message>
             <Message
+              style={{ marginBottom: "1em" }}
               info
               compact
               hidden={jobApplications.length > 0 || loading}

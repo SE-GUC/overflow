@@ -2,37 +2,38 @@ import React, { Component } from "react";
 import { Segment, Header, Icon } from "semantic-ui-react";
 import "../../styling/PartnerProfile.css";
 
-export default class ActionSegment extends Component {
+export default class MemberActions extends Component {
   render() {
     const {
       editProfile,
-      createVacancy,
-      submitFeedback,
+      submitReview,
       myProfile,
-      memberType
+      partnerType,
+      changePassword,
+      openJobApps
     } = this.props;
-    if (!myProfile && !memberType) return null;
+    if (!myProfile && !partnerType) return null;
     return (
-      <Segment padded id="action-segment">
+      <Segment padded id="member-actions">
         {myProfile ? (
           <div>
             <Header size="small" onClick={editProfile} className="click">
               Edit Profile
               <Icon id="action-icon" color="yellow" name="edit" />
             </Header>
-            <Header size="small" className="click">
+            <Header size="small" onClick={changePassword} className="click">
               Change Password
               <Icon id="action-icon" color="black" name="lock" />
             </Header>
-            <Header size="small" onClick={createVacancy} className="click">
-              Add Vacancy
-              <Icon id="action-icon" color="green" name="plus" />
+            <Header size="small" onClick={openJobApps} className="click">
+              My Applications
+              <Icon id="action-icon" color="teal" name="wpforms" />
             </Header>
           </div>
         ) : null}
-        {memberType ? (
-          <Header size="small" onClick={submitFeedback} className="click">
-            Feedback
+        {partnerType ? (
+          <Header size="small" onClick={submitReview} className="click">
+            Review
             <Icon id="action-icon" color="teal" name="reply" />
           </Header>
         ) : null}

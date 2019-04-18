@@ -27,14 +27,14 @@ class EditProfile extends Component {
       <div>
         <Responsive {...Responsive.onlyComputer}>
           <Grid columns={3}>
-            <Grid.Column width={5} />
-            <Grid.Column width={6}>
+            <Grid.Column width={4} />
+            <Grid.Column width={8}>
               <EditProfileForm
                 redirect={this.redirectProfile}
                 user={this.props.location.user}
               />
             </Grid.Column>
-            <Grid.Column width={5} />
+            <Grid.Column width={4} />
           </Grid>
         </Responsive>
         <Responsive {...Responsive.onlyTablet}>
