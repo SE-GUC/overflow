@@ -40,7 +40,7 @@ class MobileMenu extends Component {
     return (
       <div>
         <Menu className="main-menu mobile-menu" borderless fixed="top">
-          <Menu.Item>
+          <Menu.Item onClick={this.props.redirectHome}>
             <Header inverted>Lirten Hub</Header>
           </Menu.Item>
           <Menu.Item position="right">

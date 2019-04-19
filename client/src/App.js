@@ -162,7 +162,9 @@ class App extends Component {
       this.setState({ notifications: [] });
     });
   };
-
+  redirectHome = () => {
+    this.props.history.push("/");
+  };
   render() {
     const {
       isSidebarVisible,
@@ -199,6 +201,7 @@ class App extends Component {
             logOut={this.logOut}
             notifications={notifications}
             deleteNotifications={this.deleteNotifications}
+            redirectHome={this.redirectHome}
           />
           <div
             onClick={this.hideSidebar}
