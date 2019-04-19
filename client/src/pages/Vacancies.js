@@ -26,6 +26,7 @@ class Vacancies extends Component {
     adminType: false,
     openConfirm: false,
     deletedId: "",
+    memberType:false,
     filteredVacancies: [],
     pendingCount: 0,
     partnerId: "",
@@ -40,12 +41,22 @@ class Vacancies extends Component {
       .then(response => {
         const { userInfo } = this.props;
         let adminType = false;
-        if (userInfo) if (userInfo.type === "admin") adminType = true;
+        let memberType = false;
+        let memberId='';
+        if (userInfo){
+         if (userInfo.type === "admin") adminType = true;
+         if(userInfo.type==="member") {
+           memberType=true;
+           memberId = userInfo.id;
+         }
+        }
         this.setState({
           vacancies: response,
           loading: false,
           userInfo,
-          adminType
+          adminType,
+          memberType,
+          memberId
         });
         this.setData(response, adminType);
       })
@@ -202,8 +213,10 @@ class Vacancies extends Component {
       loading,
       searchBar,
       adminType,
+      memberId,
       openConfirm,
       approveLoading,
+      memberType,
       pendingCount
     } = this.state;
     const searchedVacancies = this.search(filteredVacancies);
@@ -246,6 +259,8 @@ class Vacancies extends Component {
                 error={error}
                 searchKey={searchBar}
                 vacancy={vacancy}
+                memberType={memberType}
+                memberId = {memberId}
                 approve={this.setApproved}
                 adminType={adminType}
                 del={this.delete}

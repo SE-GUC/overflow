@@ -52,7 +52,7 @@ app.use("/api/notifications", notifications);
 
 recommender.setVacanciesProperties();
 recommender.setMemberProperties();
-
+// recommender.resetDatabase();
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
   app.get("*", (req, res) => {

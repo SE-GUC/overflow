@@ -17,6 +17,7 @@ import MemberActions from "../components/memberProfile/MemberActions";
 import ReviewSegment from "../components/memberProfile/ReviewSegment";
 import SubmitModal from "../components/reviews/SubmitModal";
 import MemberJobApps from "../components/memberProfile/MemberJobApps";
+import RecommendedVacancies from '../components/memberProfile/RecommendedVacancies'
 import { connect } from "react-redux";
 
 class MemberProfile extends Component {
@@ -192,6 +193,12 @@ class MemberProfile extends Component {
               del={this.del}
               edit={this.edit}
             />
+            {myProfile?
+            <RecommendedVacancies
+              myProfile={myProfile}
+              member={member}
+              id={id}
+            />:null}
           </Grid.Column>
           <Grid.Column only="mobile" width={14}>
             <MemberBasicInfo

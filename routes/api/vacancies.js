@@ -17,10 +17,34 @@ router.post("/updateRecommendation/:memberID/:vacancyID", async (req, res) => {
     const member = await User.findById(memberID);
     const vacancy = await Vacancy.findById(vacancyID);
     if (vacancy) {
-      await recommender.addItemDetails(vacancy);
+      console.log("Vacancy beofre update"+vacancy)
+     
       if (member) {
         await recommender.addMemberDetails(member);
         await recommender.addDetailView(vacancyID, memberID);
+        await recommender.addItemDetails(vacancy);
+        return res.sendStatus(200);
+      } else {
+        return res.sendStatus(400);
+      }
+    } else {
+      return res.sendStatus(400);
+    }
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
+});
+router.post("/updateAppliedRecommendation/:memberID/:vacancyID", async (req, res) => {
+  const { vacancyID, memberID } = req.params;
+  try {
+    const member = await User.findById(memberID);
+    const vacancy = await Vacancy.findById(vacancyID);
+    if (vacancy) {
+      await recommender.addItemDetails(vacancy);
+      if (member) {
+        await recommender.addMemberDetails(member);
+        await recommender.addPurchase(vacancyID, memberID);
         return res.sendStatus(200);
       } else {
         return res.sendStatus(400);
