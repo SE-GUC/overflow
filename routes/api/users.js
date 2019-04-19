@@ -4,9 +4,12 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const tokenKey = require("../../config/keys").secretOrKey;
+const Recovered = require("../../models/Recovered");
 const router = express.Router();
 const deleteMember = require("../../services/deleteMember");
 const deletePartner = require("../../services/deletePartner");
+const nodemailer = require("nodemailer");
+const Email = require("../../mail/forgetPassword");
 // Sub routes imports
 const lifeCoaches = require("./lifeCoaches");
 const members = require("./members");
@@ -103,6 +106,89 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(400);
+  }
+});
+
+const transporter = nodemailer.createTransport({
+  service: "SendGrid",
+  auth: {
+    user: "Streakfull",
+    pass: "7aramy@2013"
+  }
+});
+const replace = async (email, userId) => {
+  let randomCode = "";
+  for (let i = 0; i < 9; i++) {
+    let charCode = Math.floor(Math.random() * (126 - 48) + 48);
+    randomCode += String.fromCharCode(charCode);
+  }
+  const req = {
+    from: "notification@lirtenHub.com",
+    to: email,
+    subject: "Password Reset",
+    html: Email.replace("Code:", "Code: " + randomCode)
+  };
+  const salt = bcrypt.genSaltSync(10);
+  const hashedPassword = bcrypt.hashSync(randomCode, salt);
+  const recoveredUser = await Recovered.findOne({ userId });
+  if (recoveredUser) {
+    await Recovered.updateOne({ userId }, { recovery: hashedPassword });
+  } else {
+    await Recovered.create({
+      userId,
+      recovery: hashedPassword
+    });
+  }
+
+  return req;
+};
+router.post("/sendEmail", async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.sendStatus(400);
+    const request = await replace(email, user._id);
+    transporter.sendMail(request, (error, info) => {
+      if (error) {
+        console.log(error);
+        return res.sendStatus(400).send({ error });
+      } else {
+        console.log("Email sent: " + info.response);
+        return res.json({ data: info.respose });
+      }
+    });
+  } catch (error) {
+    return res.sendStatus(400);
+  }
+});
+router.post("/Recovery", async (req, res) => {
+  try {
+    const { recovery, email } = req.body;
+    const userR = await User.findOne({ email });
+    if (!userR) return res.sendStatus(400);
+    const user = await Recovered.find({ userId: userR._id });
+    if (!user) return res.sendStatus(400);
+    const match = bcrypt.compareSync(recovery, user[0].recovery);
+    if (match) {
+      return res.json({ data: 1 });
+    } else {
+      return res.json({ data: -1 });
+    }
+  } catch (error) {
+    console.log(error, "error");
+    return res.sendStatus(400);
+  }
+});
+router.post("/forgotPassword", async (req, res) => {
+  try {
+    const { password, email } = req.body;
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(password, salt);
+    await User.updateOne({ email }, { password: hashedPassword });
+    return res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(400);
   }
 });
 

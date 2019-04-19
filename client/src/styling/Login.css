@@ -12,3 +12,8 @@
    background-color: #f2f2f2;
    padding:2em;
  }
+ #forgot {
+   cursor: pointer;
+   color:blue;
+  
+ }
