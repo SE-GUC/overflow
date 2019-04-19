@@ -126,4 +126,13 @@
     width: 100vw;
     max-height: 50vh;
   }
+  #notif-menu #no-back:nth-child(3) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    width: 100vw;
+  }
+  #no-back #item {
+    width: 100vw;
+    margin-left: 5px;
+  }
 }
