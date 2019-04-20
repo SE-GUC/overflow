@@ -3,7 +3,9 @@ const path = "https://lirten-hub-overflow.herokuapp.com/api/";
 //const path = "http://localhost:3000/api/";
 export const get = urlInput => {
   let url = path + urlInput;
-  return Axios.get(url).then(response => {
+  return Axios.get(url, {
+    headers: { Authorization: localStorage.getItem("jwtToken") }
+  }).then(response => {
     console.log(response);
     return response.data.data;
   });
@@ -14,7 +16,10 @@ const postData = (url = ``, data = {}) => {
     method: "post",
     url: url,
     data: data,
-    headers: { "Content-Type": "application/json" }
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("jwtToken")
+    }
   });
 };
 
@@ -32,7 +37,10 @@ const putData = (url = ``, data = {}) => {
     method: "put",
     url: url,
     data: data,
-    headers: { "Content-Type": "application/json" }
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("jwtToken")
+    }
   });
 };
 export const del = (urlInput, req) => {
@@ -44,6 +52,9 @@ const deleteData = (url = ``, data = {}) => {
     method: "delete",
     url: url,
     data: data,
-    headers: { "Content-Type": "application/json" }
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("jwtToken")
+    }
   });
 };
