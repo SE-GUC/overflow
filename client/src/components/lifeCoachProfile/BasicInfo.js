@@ -84,7 +84,7 @@ class BasicInfo extends Component {
       image,
       userData: { gender, hourlyRate, age }
     } = this.props.lifeCoach;
-    const{deleteProfile} = this.props;
+    const{deleteProfile,changePassword} = this.props;
     return (
       <div className="lifeCoach-info-container">
         {image ? (
@@ -137,12 +137,16 @@ class BasicInfo extends Component {
           </Grid>
         </Segment>
         {this.showEditButton() && [
-          <Button onClick={this.handleEdit} color="green">
+          <Button onClick={this.handleEdit} color="yellow">
             Edit my Profile
           </Button>,
+           <Button id="deleteButton" onClick={changePassword} color="yellow">
+           Update Password
+         </Button>,
           <Button id="deleteButton" onClick={deleteProfile} color="red">
             Delete Profile
           </Button>
+          
         ]}
         {this.showRating() && (
           <div className="lifeCoach-review-container">
