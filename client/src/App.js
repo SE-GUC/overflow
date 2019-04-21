@@ -139,7 +139,7 @@ class App extends Component {
   closeLoginModal = () => {
     this.setState({ openLoginModal: false });
   };
-  logOut = () => {
+   logOut = () => {
     localStorage.removeItem("jwtToken");
     let { firebaseToken } = this.state;
     if (this.props.firebaseToken) firebaseToken = this.props.firebaseToken;
@@ -234,3 +234,4 @@ const mapStateToProps = state => {
 };
 
 export default withRouter(connect(mapStateToProps)(App));
+  

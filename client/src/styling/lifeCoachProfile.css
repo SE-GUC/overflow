@@ -11,6 +11,9 @@
 .lifeCoach-info-container .column {
   font-size: 18px !important;
 }
+#deleteButton {
+  margin-top: 0.5rem;
+}
 .lifeCoach-review-container {
   margin-top: 20px;
   display: flex;
