@@ -14,7 +14,9 @@ import {
 import "../styling/PartnerProfile.css";
 //import storageChanged from "storage-changed";
 import { withRouter } from "react-router-dom";
-import * as UserActions from '../actions/UserActions'
+import * as UserActions from "../actions/UserActions";
+import UpdatePassModal from "../components/profiles/UpdatePassModal";
+
 import PartnerBasicInfo from "../components/partnerProfile/PartnerBasicInfo";
 import ActionSegment from "../components/partnerProfile/ActionSegment";
 import VacancySegment from "../components/partnerProfile/VacancySegment";
@@ -27,10 +29,11 @@ class PartnerProfile extends Component {
   state = {
     loggedIn: false,
     loading: false,
+    passModal: false,
     partner: undefined,
     error: false,
     open: false,
-    deleteConfirm:false,
+    deleteConfirm: false,
     feedback: {}
   };
 
@@ -111,8 +114,17 @@ class PartnerProfile extends Component {
   open = () => {
     this.setState({ open: true });
   };
+  closeUpdate = () => {
+    this.setState({ passModal: false });
+  };
   close = () => {
     this.setState({ open: false });
+  };
+  openPassModal = () => {
+    this.setState({ passModal: true });
+  };
+  closePassModal = () => {
+    this.setState({ passModal: false });
   };
   addFeedBack = feedback => {
     this.setState({ feedback });
@@ -123,6 +135,7 @@ class PartnerProfile extends Component {
       partner,
       error,
       loading,
+      passModal,
       vacancyCount,
       deleteConfirm,
       open,
@@ -183,6 +196,7 @@ class PartnerProfile extends Component {
               editProfile={this.editProfile}
               createVacancy={this.createVacancy}
               deleteProfile={this.openConfirm}
+              changePassword={this.openPassModal}
             />
           </Grid.Column>
           <Grid.Column only="computer" width={10}>
@@ -230,6 +244,7 @@ class PartnerProfile extends Component {
               editProfile={this.editProfile}
               createVacancy={this.createVacancy}
               deleteProfile={this.openConfirm}
+              changePassword={this.openPassModal}
             />
             <VacancySegment
               admin={adminType}
@@ -254,13 +269,20 @@ class PartnerProfile extends Component {
           content="Are you sure you want to delete your profile?"
           onConfirm={this.deleteProfile}
         />
+        {partner ? (
+          <UpdatePassModal
+            id={partner._id}
+            open={passModal}
+            closeUpdateModal={this.closeUpdate}
+          />
+        ) : null}
       </div>
     );
   }
 }
 const mapStateToProps = state => {
-  const { userInfo,firebaseToken } = state;
-  return { userInfo,firebaseToken };
+  const { userInfo, firebaseToken } = state;
+  return { userInfo, firebaseToken };
 };
 
 export default withRouter(connect(mapStateToProps)(PartnerProfile));

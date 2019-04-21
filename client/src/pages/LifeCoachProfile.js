@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { get, del } from "../services/axios";
-import { Loader, Dimmer, Header,Confirm } from "semantic-ui-react";
+import { Loader, Dimmer, Header, Confirm } from "semantic-ui-react";
 import BasicInfo from "../components/lifeCoachProfile/BasicInfo";
 import Slots from "../components/lifeCoachProfile/Slots";
-import * as UserActions from '../actions/UserActions'
+import UpdatePassModal from "../components/profiles/UpdatePassModal";
+import * as UserActions from "../actions/UserActions";
 import "../styling/lifeCoachProfile.css";
 //import storageChanged from "storage-changed";
 import decode from "jwt-decode";
@@ -13,6 +14,7 @@ class LifeCoachProfile extends Component {
   state = {
     error: false,
     loading: false,
+    passModal: false,
     deleteConfirm: false
   };
 
@@ -33,7 +35,9 @@ class LifeCoachProfile extends Component {
   toggleLoading = () => {
     this.setState({ loading: !this.state.loading });
   };
-
+  closeUpdate = ()=>{
+    this.setState({passModal:false})
+  }
   toggleError = () => {
     this.setState({ error: !this.state.error });
   };
@@ -136,8 +140,22 @@ class LifeCoachProfile extends Component {
       user: this.state.lifeCoach
     });
   };
+  openPassModal = () => {
+    this.setState({ passModal: true });
+  };
+  closePassModal = () => {
+    this.setState({ passModal: false });
+  };
   render() {
-    const { loading, error, lifeCoach, deleteLoading,deleteConfirm, deletedId } = this.state;
+    const {
+      loading,
+      error,
+      passModal,
+      lifeCoach,
+      deleteLoading,
+      deleteConfirm,
+      deletedId
+    } = this.state;
     const { userInfo } = this.props;
     const { id } = this.props.match.params;
     let myProfile = false;
@@ -190,6 +208,7 @@ class LifeCoachProfile extends Component {
               toggleError={this.toggleError}
               getLifeCoach={this.getLifeCoach}
               deleteProfile={this.openConfirm}
+              changePassword={this.openPassModal}
             />
             <Slots
               setBooked={this.setBooked}
@@ -207,12 +226,19 @@ class LifeCoachProfile extends Component {
               toggleError={this.toggleError}
               getLifeCoach={this.getLifeCoach}
             />
-             <Confirm
-                open={deleteConfirm}
-                onCancel={this.closeConfirm}
-                content="Are you sure you want to delete your profile?"
-                onConfirm={this.deleteProfile}
+            <Confirm
+              open={deleteConfirm}
+              onCancel={this.closeConfirm}
+              content="Are you sure you want to delete your profile?"
+              onConfirm={this.deleteProfile}
+            />
+            {lifeCoach ? (
+              <UpdatePassModal
+                id={lifeCoach._id}
+                open={passModal}
+                closeUpdateModal={this.closeUpdate}
               />
+            ) : null}
           </div>
         )}
       </div>

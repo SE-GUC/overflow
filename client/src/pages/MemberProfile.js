@@ -13,7 +13,8 @@ import {
 } from "semantic-ui-react";
 import "../styling/PartnerProfile.css";
 import { withRouter } from "react-router-dom";
-import * as UserActions from '../actions/UserActions'
+import * as UserActions from "../actions/UserActions";
+import UpdatePassModal from "../components/profiles/UpdatePassModal";
 import MemberBasicInfo from "../components/memberProfile/MemberBasicInfo";
 import MemberActions from "../components/memberProfile/MemberActions";
 import ReviewSegment from "../components/memberProfile/ReviewSegment";
@@ -28,8 +29,9 @@ class MemberProfile extends Component {
     member: undefined,
     error: false,
     open: false,
+    passModal: false,
     reviews: {},
-    deleteConfirm:false,
+    deleteConfirm: false,
     openJobApps: false
   };
   componentDidMount() {
@@ -76,11 +78,17 @@ class MemberProfile extends Component {
       user: this.state.member
     });
   };
+  openPassModal = () => {
+    this.setState({ passModal: true });
+  };
+  closePassModal = () => {
+    this.setState({ passModal: false });
+  };
   openConfirm = () => {
-    this.setState({deleteConfirm:true});
+    this.setState({ deleteConfirm: true });
   };
   closeConfirm = () => {
-    this.setState({deleteConfirm:false});
+    this.setState({ deleteConfirm: false });
   };
   logOut = () => {
     localStorage.removeItem("jwtToken");
@@ -98,17 +106,20 @@ class MemberProfile extends Component {
     // this.setState({ firebaseToken: "" });
     this.props.dispatch(UserActions.AC_logOut());
   };
-  deleteProfile = ()=>{
+  deleteProfile = () => {
     const { member } = this.state;
     const url = `users/delete/${member._id}`;
-    del(url,{}).then((res)=>{
+    del(url, {}).then(res => {
       console.log(res);
       this.logOut();
       this.redirectDeleted();
-    })
-  }
-  redirectDeleted = ()=>{
-    this.props.history.push('/');
+    });
+  };
+  redirectDeleted = () => {
+    this.props.history.push("/");
+  };
+  closeUpdate = ()=>{
+    this.setState({passModal:false})
   }
   open = () => {
     this.setState({ open: true });
@@ -154,11 +165,20 @@ class MemberProfile extends Component {
   openJobApps = () => {
     this.setState({ openJobApps: true });
   };
+
   closeJobApps = () => {
     this.setState({ openJobApps: false });
   };
   render() {
-    const { member, error, loading, open, openJobApps,deleteConfirm } = this.state;
+    const {
+      member,
+      error,
+      loading,
+      open,
+      passModal,
+      openJobApps,
+      deleteConfirm
+    } = this.state;
     console.log(member, "MEMBER");
     const { id } = this.props.match.params;
     const { userInfo } = this.props;
@@ -213,6 +233,7 @@ class MemberProfile extends Component {
               myProfile={myProfile}
               partnerType={partnerType}
               deleteProfile={this.openConfirm}
+              changePassword={this.openPassModal}
             />
           </Grid.Column>
           <Grid.Column only="computer" width={10}>
@@ -254,7 +275,6 @@ class MemberProfile extends Component {
               del={this.del}
               edit={this.edit}
             />
-            
           </Grid.Column>
           <Grid.Column only="tablet" width={14}>
             <MemberBasicInfo isTablet={true} member={member} />
@@ -265,6 +285,7 @@ class MemberProfile extends Component {
               partnerType={partnerType}
               openJobApps={this.openJobApps}
               deleteProfile={this.openConfirm}
+              changePassword={this.openPassModal}
             />
             <ReviewSegment
               partnerId={partnerId}
@@ -283,18 +304,19 @@ class MemberProfile extends Component {
           <Grid.Column only="computer" width={3} />
         </Grid>
         <Confirm
-                open={deleteConfirm}
-                onCancel={this.closeConfirm}
-                content="Are you sure you want to delete your profile?"
-                onConfirm={this.deleteProfile}
-              />
+          open={deleteConfirm}
+          onCancel={this.closeConfirm}
+          content="Are you sure you want to delete your profile?"
+          onConfirm={this.deleteProfile}
+        />
+        {member ? <UpdatePassModal id={member._id} open={passModal} closeUpdateModal={this.closeUpdate} /> : null}
       </div>
     );
   }
 }
 const mapStateToProps = state => {
-  const { userInfo,firebaseToken } = state;
-  return { userInfo,firebaseToken };
+  const { userInfo, firebaseToken } = state;
+  return { userInfo, firebaseToken };
 };
 
 export default withRouter(connect(mapStateToProps)(MemberProfile));
