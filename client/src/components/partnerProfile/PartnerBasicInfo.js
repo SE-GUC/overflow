@@ -16,7 +16,7 @@ class PartnerBasicInfo extends Component {
       memberType
     } = this.props;
     if (!partner) return null;
-    const { name, email } = partner;
+    const { name, email, image } = partner;
     const {
       address,
       fax,
@@ -28,7 +28,19 @@ class PartnerBasicInfo extends Component {
     } = partner.userData;
     return (
       <div className="partner-info-container">
-        <Image src={profile} size="small" avatar />
+        <Image
+          avatar
+          size="small"
+          onClick={this.adminRedirect}
+          src={
+            image &&
+            image !== null &&
+            image.includes(".") &&
+            image.includes("/")
+              ? image
+              : profile
+          }
+        />
         <Header as="h1" textAlign="center">
           {name}
         </Header>
