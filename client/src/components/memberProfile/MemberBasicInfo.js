@@ -25,7 +25,7 @@ export default class MemberBasicInfo extends Component {
       editProfile
     } = this.props;
     if (!member) return null;
-    const { name, email, rating, ratingCount } = member;
+    const { name, email, rating, ratingCount, image } = member;
     const {
       age,
       availability,
@@ -37,12 +37,26 @@ export default class MemberBasicInfo extends Component {
     } = member.userData;
     return (
       <div className="partner-info-container">
-        <Image src={profile} size="small" avatar />
+        <Image
+          avatar
+          size="small"
+          onClick={this.adminRedirect}
+          src={
+            image &&
+            image !== null &&
+            image.includes(".") &&
+            image.includes("/")
+              ? image
+              : profile
+          }
+        />
         <Header as="h1" textAlign="center">
           {name}
-          <Header.Subheader>{`Joined since ${joinDate
-            .toString()
-            .slice(0, 10)}`}</Header.Subheader>
+          <Header.Subheader>
+            {joinDate
+              ? `Joined since ${joinDate.toString().slice(0, 10)}`
+              : null}
+          </Header.Subheader>
         </Header>
         <Grid id="mobile-padding" columns={4} divided stackable as={Segment}>
           <Grid.Row>

@@ -10,6 +10,7 @@ export default class MemberActions extends Component {
       myProfile,
       partnerType,
       changePassword,
+      deleteProfile,
       openJobApps
     } = this.props;
     if (!myProfile && !partnerType) return null;
@@ -28,6 +29,11 @@ export default class MemberActions extends Component {
             <Header size="small" onClick={openJobApps} className="click">
               My Applications
               <Icon id="action-icon" color="teal" name="wpforms" />
+            </Header>
+            
+            <Header size="small" color="red" onClick={deleteProfile} className="click">
+              Delete Profile
+              <Icon id="action-icon"  color="red" name="close" />
             </Header>
           </div>
         ) : null}

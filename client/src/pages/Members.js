@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { get } from "../services/axios";
 import Container from "../components/profileContainer/Container.js";
 import { Dimmer, Loader } from "semantic-ui-react";
-
 export default class Members extends Component {
   state = {
     loading: true,
@@ -62,6 +61,7 @@ export default class Members extends Component {
 
   render() {
     const { members, loading, locationFilters, skillFilters } = this.state;
+    const { userInfo } = this.props;
     return (
       <div>
         <Dimmer active={loading}>

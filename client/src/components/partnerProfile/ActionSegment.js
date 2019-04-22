@@ -8,7 +8,9 @@ export default class ActionSegment extends Component {
       editProfile,
       createVacancy,
       submitFeedback,
+      changePassword,
       myProfile,
+      deleteProfile,
       memberType
     } = this.props;
     if (!myProfile && !memberType) return null;
@@ -20,13 +22,17 @@ export default class ActionSegment extends Component {
               Edit Profile
               <Icon id="action-icon" color="yellow" name="edit" />
             </Header>
-            <Header size="small" className="click">
+            <Header size="small" onClick={changePassword} className="click">
               Change Password
               <Icon id="action-icon" color="black" name="lock" />
             </Header>
             <Header size="small" onClick={createVacancy} className="click">
               Add Vacancy
               <Icon id="action-icon" color="green" name="plus" />
+            </Header>
+            <Header size="small" color="red" onClick={deleteProfile} className="click">
+              Delete Profile
+              <Icon id="action-icon" color="red" name="close" />
             </Header>
           </div>
         ) : null}

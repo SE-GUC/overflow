@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { get } from "../services/axios";
+import { get, del, put } from "../services/axios";
 import {
   Loader,
   Dimmer,
@@ -7,12 +7,16 @@ import {
   Message,
   Icon,
   Grid,
+  Confirm,
   Segment,
   Divider
 } from "semantic-ui-react";
 import "../styling/PartnerProfile.css";
 //import storageChanged from "storage-changed";
 import { withRouter } from "react-router-dom";
+import * as UserActions from "../actions/UserActions";
+import UpdatePassModal from "../components/profiles/UpdatePassModal";
+
 import PartnerBasicInfo from "../components/partnerProfile/PartnerBasicInfo";
 import ActionSegment from "../components/partnerProfile/ActionSegment";
 import VacancySegment from "../components/partnerProfile/VacancySegment";
@@ -25,9 +29,11 @@ class PartnerProfile extends Component {
   state = {
     loggedIn: false,
     loading: false,
+    passModal: false,
     partner: undefined,
     error: false,
     open: false,
+    deleteConfirm: false,
     feedback: {}
   };
 
@@ -63,6 +69,40 @@ class PartnerProfile extends Component {
       user: this.state.partner
     });
   };
+  openConfirm = () => {
+    this.setState({ deleteConfirm: true });
+  };
+  closeConfirm = () => {
+    this.setState({ deleteConfirm: false });
+  };
+  logOut = () => {
+    localStorage.removeItem("jwtToken");
+    // let { firebaseToken } = this.state;
+    let firebaseToken = null;
+    if (this.props.firebaseToken) firebaseToken = this.props.firebaseToken;
+    const { userInfo } = this.props;
+    // this.setState({ notifications: [], notificationCount: 0 });
+    if (firebaseToken !== null && firebaseToken) {
+      const url = `subscribers/delete/${userInfo.id}/${firebaseToken}`;
+      del(url, {});
+    }
+    // //delete newState.userInfo;
+    // //this.setState(newState);
+    // this.setState({ firebaseToken: "" });
+    this.props.dispatch(UserActions.AC_logOut());
+  };
+  deleteProfile = () => {
+    const { partner } = this.state;
+    const url = `users/delete/${partner._id}`;
+    del(url, {}).then(res => {
+      console.log(res);
+      this.logOut();
+      this.redirectDeleted();
+    });
+  };
+  redirectDeleted = () => {
+    this.props.history.push("/");
+  };
   createVacancy = () => {
     const { id } = this.props.match.params;
     const { partner } = this.state;
@@ -74,8 +114,17 @@ class PartnerProfile extends Component {
   open = () => {
     this.setState({ open: true });
   };
+  closeUpdate = () => {
+    this.setState({ passModal: false });
+  };
   close = () => {
     this.setState({ open: false });
+  };
+  openPassModal = () => {
+    this.setState({ passModal: true });
+  };
+  closePassModal = () => {
+    this.setState({ passModal: false });
   };
   addFeedBack = feedback => {
     this.setState({ feedback });
@@ -86,7 +135,9 @@ class PartnerProfile extends Component {
       partner,
       error,
       loading,
+      passModal,
       vacancyCount,
+      deleteConfirm,
       open,
       feedback
     } = this.state;
@@ -144,6 +195,8 @@ class PartnerProfile extends Component {
               submitFeedback={this.open}
               editProfile={this.editProfile}
               createVacancy={this.createVacancy}
+              deleteProfile={this.openConfirm}
+              changePassword={this.openPassModal}
             />
           </Grid.Column>
           <Grid.Column only="computer" width={10}>
@@ -190,6 +243,8 @@ class PartnerProfile extends Component {
               submitFeedback={this.open}
               editProfile={this.editProfile}
               createVacancy={this.createVacancy}
+              deleteProfile={this.openConfirm}
+              changePassword={this.openPassModal}
             />
             <VacancySegment
               admin={adminType}
@@ -208,13 +263,26 @@ class PartnerProfile extends Component {
 
           <Grid.Column only="computer" width={3} />
         </Grid>
+        <Confirm
+          open={deleteConfirm}
+          onCancel={this.closeConfirm}
+          content="Are you sure you want to delete your profile?"
+          onConfirm={this.deleteProfile}
+        />
+        {partner ? (
+          <UpdatePassModal
+            id={partner._id}
+            open={passModal}
+            closeUpdateModal={this.closeUpdate}
+          />
+        ) : null}
       </div>
     );
   }
 }
 const mapStateToProps = state => {
-  const { userInfo } = state;
-  return { userInfo };
+  const { userInfo, firebaseToken } = state;
+  return { userInfo, firebaseToken };
 };
 
 export default withRouter(connect(mapStateToProps)(PartnerProfile));

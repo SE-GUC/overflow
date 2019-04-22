@@ -1,8 +1,10 @@
 import React, { Component } from "react";
-import { get } from "../services/axios";
-import { Loader, Dimmer, Header } from "semantic-ui-react";
+import { get, del } from "../services/axios";
+import { Loader, Dimmer, Header, Confirm } from "semantic-ui-react";
 import BasicInfo from "../components/lifeCoachProfile/BasicInfo";
 import Slots from "../components/lifeCoachProfile/Slots";
+import UpdatePassModal from "../components/profiles/UpdatePassModal";
+import * as UserActions from "../actions/UserActions";
 import "../styling/lifeCoachProfile.css";
 //import storageChanged from "storage-changed";
 import decode from "jwt-decode";
@@ -11,7 +13,9 @@ import { connect } from "react-redux";
 class LifeCoachProfile extends Component {
   state = {
     error: false,
-    loading: false
+    loading: false,
+    passModal: false,
+    deleteConfirm: false
   };
 
   componentDidMount() {
@@ -31,7 +35,9 @@ class LifeCoachProfile extends Component {
   toggleLoading = () => {
     this.setState({ loading: !this.state.loading });
   };
-
+  closeUpdate = ()=>{
+    this.setState({passModal:false})
+  }
   toggleError = () => {
     this.setState({ error: !this.state.error });
   };
@@ -84,6 +90,40 @@ class LifeCoachProfile extends Component {
     this.setState({ lifeCoach });
     this.setLocationState(lifeCoach);
   };
+  openConfirm = () => {
+    this.setState({ deleteConfirm: true });
+  };
+  closeConfirm = () => {
+    this.setState({ deleteConfirm: false });
+  };
+  logOut = () => {
+    localStorage.removeItem("jwtToken");
+    // let { firebaseToken } = this.state;
+    let firebaseToken = null;
+    if (this.props.firebaseToken) firebaseToken = this.props.firebaseToken;
+    const { userInfo } = this.props;
+    // this.setState({ notifications: [], notificationCount: 0 });
+    if (firebaseToken !== null && firebaseToken) {
+      const url = `subscribers/delete/${userInfo.id}/${firebaseToken}`;
+      del(url, {});
+    }
+    // //delete newState.userInfo;
+    // //this.setState(newState);
+    // this.setState({ firebaseToken: "" });
+    this.props.dispatch(UserActions.AC_logOut());
+  };
+  deleteProfile = () => {
+    const { lifeCoach } = this.state;
+    const url = `users/delete/${lifeCoach._id}`;
+    del(url, {}).then(res => {
+      console.log(res);
+      this.logOut();
+      this.redirectDeleted();
+    });
+  };
+  redirectDeleted = () => {
+    this.props.history.push("/");
+  };
   setBooked = slot => {
     const { lifeCoach } = this.state;
     const index = lifeCoach.userData.monthlySlots.findIndex(
@@ -100,8 +140,22 @@ class LifeCoachProfile extends Component {
       user: this.state.lifeCoach
     });
   };
+  openPassModal = () => {
+    this.setState({ passModal: true });
+  };
+  closePassModal = () => {
+    this.setState({ passModal: false });
+  };
   render() {
-    const { loading, error, lifeCoach, deleteLoading, deletedId } = this.state;
+    const {
+      loading,
+      error,
+      passModal,
+      lifeCoach,
+      deleteLoading,
+      deleteConfirm,
+      deletedId
+    } = this.state;
     const { userInfo } = this.props;
     const { id } = this.props.match.params;
     let myProfile = false;
@@ -153,6 +207,8 @@ class LifeCoachProfile extends Component {
               toggleLoading={this.toggleLoading}
               toggleError={this.toggleError}
               getLifeCoach={this.getLifeCoach}
+              deleteProfile={this.openConfirm}
+              changePassword={this.openPassModal}
             />
             <Slots
               setBooked={this.setBooked}
@@ -170,6 +226,19 @@ class LifeCoachProfile extends Component {
               toggleError={this.toggleError}
               getLifeCoach={this.getLifeCoach}
             />
+            <Confirm
+              open={deleteConfirm}
+              onCancel={this.closeConfirm}
+              content="Are you sure you want to delete your profile?"
+              onConfirm={this.deleteProfile}
+            />
+            {lifeCoach ? (
+              <UpdatePassModal
+                id={lifeCoach._id}
+                open={passModal}
+                closeUpdateModal={this.closeUpdate}
+              />
+            ) : null}
           </div>
         )}
       </div>
@@ -177,8 +246,8 @@ class LifeCoachProfile extends Component {
   }
 }
 const mapStateToProps = state => {
-  const { userInfo } = state;
-  return { userInfo };
+  const { userInfo, firebaseToken } = state;
+  return { userInfo, firebaseToken };
 };
 
 export default connect(mapStateToProps)(LifeCoachProfile);

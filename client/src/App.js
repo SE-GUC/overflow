@@ -165,6 +165,13 @@ class App extends Component {
   redirectHome = () => {
     this.props.history.push("/");
   };
+  redirectCreateAdmin = () => {
+    const { userInfo } = this.props;
+    this.props.history.push({
+      pathname: "/CreateAdmin",
+      state: { userInfo }
+    });
+  };
   render() {
     const {
       isSidebarVisible,
@@ -177,6 +184,7 @@ class App extends Component {
       <div className="app-wrapper">
         <Responsive minWidth={Responsive.onlyTablet.minWidth}>
           <DesktopMenu
+            redirectCreateAdmin={this.redirectCreateAdmin}
             markAsRead={this.markAsRead}
             notificationCount={notificationCount}
             redirectProfile={this.redirectProfile}

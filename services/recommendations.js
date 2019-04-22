@@ -7,12 +7,15 @@ const client = new recombee.ApiClient(
   "lirtenhub",
   "OQ6Obb9equZ7V1WWQDQBxpKGzAOyD7BtNzeo3i7rHZnxzWF6htw0A8GTjytfRZFB"
 );
-
+const resetDatabase = ()=>{
+  client.send(new rqs.ResetDatabase())
+}
 const setVacanciesProperties = () => {
   client.send(
     new rqs.Batch([
       new rqs.AddItemProperty("description", "string"),
       new rqs.AddItemProperty("partnerID", "string"),
+      new rqs.AddItemProperty("title", "string"),
       new rqs.AddItemProperty("duration", "string"),
       new rqs.AddItemProperty("monthlyWage", "string"),
       new rqs.AddItemProperty("location", "string"),
@@ -25,12 +28,7 @@ const setVacanciesProperties = () => {
   );
 };
 const setMemberProperties = () => {
-  client.send(
-    new rqs.Batch([
-      new rqs.DeleteItemProperty("age", "int"),
-      new rqs.DeleteItemProperty("interests", "set")
-    ])
-  );
+
   client.send(
     new rqs.Batch([
       new rqs.AddUserProperty("skills", "set"),
@@ -45,6 +43,7 @@ const addMemberDetails = member => {
   const { skills, location, age, interests, availability } = member.userData;
   const memberID = member._id;
   const currentDate = new Date();
+  console.log("In add memberDetails");
   client.send(
     new rqs.SetUserValues(
       memberID,
@@ -61,8 +60,10 @@ const addMemberDetails = member => {
 };
 
 const addItemDetails = vacancy => {
+  console.log("In add itemDetails")
   const {
     description,
+    title,
     duration,
     monthlyWage,
     location,
@@ -78,7 +79,7 @@ const addItemDetails = vacancy => {
     new rqs.SetItemValues(
       vacancy._id,
       {
-        description: description,
+        description: "hi",
         partnerID: partnerID,
         duration: duration,
         monthlyWage: monthlyWage,
@@ -127,5 +128,6 @@ module.exports = {
   setVacanciesProperties,
   getRecommendations,
   addMemberDetails,
-  setMemberProperties
+  setMemberProperties,
+  resetDatabase
 };

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { get, put, del, post } from "../../services/axios";
 import {
   Header,
   Card,
@@ -42,11 +43,24 @@ class List extends Component {
   componentDidMount() {
     this.setState({ approveLoading: this.props.approveLoading });
   }
+  updateRecommendation = () => {
+    let {memberId,memberType,vacancy} = this.props
+    if(memberType){
+      if(memberId){
+        let url = "vacancies/updateRecommendation/"+ memberId+"/"+vacancy._id;
+        let body={};
+        console.log("In updateRcomm");
+        post(url,body).then((resp)=>{console.log(resp)})
+      }
+    }
+  };
   handleClick = (e, id) => {
     if (e.target.name === "deleteButton" || e.target.name == "approveButton") {
       e.preventDefault();
       e.stopPropagation();
     } else {
+      if(this.props.memberType)
+      this.updateRecommendation();
       this.redirect();
     }
   };

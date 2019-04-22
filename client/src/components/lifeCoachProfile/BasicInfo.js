@@ -1,17 +1,10 @@
 import React, { Component } from "react";
-import {
-  Image,
-  Header,
-  Grid,
-  Segment,
-  Rating,
-  Button
-} from "semantic-ui-react";
+import  {Divider, Image, Header, Grid, Segment, Rating, Button } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import decode from "jwt-decode";
 import { put } from "../../services/axios";
 import profile from "../../images/profile.png";
-
+import '../../styling/lifeCoachProfile.css'
 class BasicInfo extends Component {
   slotsNumber = () => {
     let counter = 0;
@@ -91,6 +84,7 @@ class BasicInfo extends Component {
       image,
       userData: { gender, hourlyRate, age }
     } = this.props.lifeCoach;
+    const{deleteProfile,changePassword} = this.props;
     return (
       <div className="lifeCoach-info-container">
         {image ? (
@@ -142,11 +136,18 @@ class BasicInfo extends Component {
             </Grid.Row>
           </Grid>
         </Segment>
-        {this.showEditButton() && (
-          <Button onClick={this.handleEdit} color="green">
+        {this.showEditButton() && [
+          <Button onClick={this.handleEdit} color="yellow">
             Edit my Profile
+          </Button>,
+           <Button id="deleteButton" onClick={changePassword} color="yellow">
+           Update Password
+         </Button>,
+          <Button id="deleteButton" onClick={deleteProfile} color="red">
+            Delete Profile
           </Button>
-        )}
+          
+        ]}
         {this.showRating() && (
           <div className="lifeCoach-review-container">
             <Header as="h3">{`What do you think of ${name}?`}</Header>
