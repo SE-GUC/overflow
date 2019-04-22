@@ -43,7 +43,8 @@ export default class ProfileCard extends Component {
       userData,
       rating,
       ratingCount,
-      type
+      type,
+      image
     } = this.props.data;
     let { searchWords, adminType } = this.props;
     searchWords = searchWords.split(" ");
@@ -134,12 +135,18 @@ export default class ProfileCard extends Component {
         />
       </Card.Header>
     ];
-
     return (
       <Card onClick={this.redirect} className="hvr-grow centered">
         <Image
           onClick={this.adminRedirect}
-          src="https://react.semantic-ui.com/images/wireframe/image.png"
+          src={
+            image &&
+            image !== null &&
+            image.includes(".") &&
+            image.includes("/")
+              ? image
+              : "https://react.semantic-ui.com/images/wireframe/image.png"
+          }
         />
         <Card.Content>
           <Card.Header className="first-header" textAlign="center">
@@ -192,9 +199,13 @@ export default class ProfileCard extends Component {
               </Card.Header>
             </div>
           ) : null}
-          {type === "partner" && adminType ? (
+          {adminType ? (
             <Card.Header textAlign="center">
-              <Button onClick={this.delete} color="red">
+              <Button
+                style={{ marginTop: "4px" }}
+                onClick={this.delete}
+                color="red"
+              >
                 Delete
               </Button>
             </Card.Header>
