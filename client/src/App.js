@@ -139,7 +139,7 @@ class App extends Component {
   closeLoginModal = () => {
     this.setState({ openLoginModal: false });
   };
-   logOut = () => {
+  logOut = () => {
     localStorage.removeItem("jwtToken");
     let { firebaseToken } = this.state;
     if (this.props.firebaseToken) firebaseToken = this.props.firebaseToken;
@@ -165,6 +165,13 @@ class App extends Component {
   redirectHome = () => {
     this.props.history.push("/");
   };
+  redirectCreateAdmin = () => {
+    const { userInfo } = this.props;
+    this.props.history.push({
+      pathname: "/CreateAdmin",
+      state: { userInfo }
+    });
+  };
   render() {
     const {
       isSidebarVisible,
@@ -177,6 +184,7 @@ class App extends Component {
       <div className="app-wrapper">
         <Responsive minWidth={Responsive.onlyTablet.minWidth}>
           <DesktopMenu
+            redirectCreateAdmin={this.redirectCreateAdmin}
             markAsRead={this.markAsRead}
             notificationCount={notificationCount}
             redirectProfile={this.redirectProfile}
@@ -234,4 +242,3 @@ const mapStateToProps = state => {
 };
 
 export default withRouter(connect(mapStateToProps)(App));
-  

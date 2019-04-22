@@ -51,6 +51,15 @@ class DesktopMenu extends Component {
         <Menu.Item position="right">
           {userInfo ? (
             <div>
+              {userInfo.type == "admin" && (
+                <Icon
+                  style={{ cursor: "pointer" }}
+                  onClick={this.props.redirectCreateAdmin}
+                  size="big"
+                  name="plus"
+                  inverted
+                />
+              )}
               <Image
                 className="user-menu"
                 src="https://react.semantic-ui.com/images/avatar/large/matthew.png"

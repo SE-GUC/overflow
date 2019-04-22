@@ -184,7 +184,6 @@ class RecommendedVacancies extends Component {
                     edit={this.editVacancy}
                     deletedId={deletedId}
                     del={this.delete}
-                    fromPartner={myProfile}
                     error={error}
                     searchKey={searchBar}
                     vacancy={vacancy}
