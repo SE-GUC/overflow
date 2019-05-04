@@ -62,7 +62,11 @@ class DesktopMenu extends Component {
               )}
               <Image
                 className="user-menu"
-                src="https://react.semantic-ui.com/images/avatar/large/matthew.png"
+                src={
+                  userInfo && userInfo.image
+                    ? userInfo.image
+                    : "https://react.semantic-ui.com/images/avatar/large/matthew.png"
+                }
                 avatar
                 style={{ cursor: "pointer" }}
                 onClick={this.props.redirectProfile}
@@ -92,13 +96,14 @@ class DesktopMenu extends Component {
                 >
                   {notificationCount > 0 ? (
                     <Label circular floating color="red">
-                      {notificationCount}
+                      <span id="notification-font"> {notificationCount} </span>
                     </Label>
                   ) : null}
                 </Icon>
 
                 {userInfo && openNotif ? (
                   <Notifications
+                    isDesktop={true}
                     deleteNotifications={deleteNotifications}
                     close={this.closeNotif}
                     openNotif={openNotif}

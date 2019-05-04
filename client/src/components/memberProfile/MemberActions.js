@@ -30,7 +30,7 @@ export default class MemberActions extends Component {
               My Applications
               <Icon id="action-icon" color="teal" name="wpforms" />
             </Header>
-            
+
             <Header size="small" color="red" onClick={deleteProfile} className="click">
               Delete Profile
               <Icon id="action-icon"  color="red" name="close" />

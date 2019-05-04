@@ -109,7 +109,8 @@ router.post("/login", async (req, res) => {
         id: user._id,
         type: user.type,
         name: user.name,
-        email: user.email
+        email: user.email,
+        image: user.image
       };
       const token = jwt.sign(payload, tokenKey, { expiresIn: "1h" });
       return res.json({ data: `Bearer ${token}` });

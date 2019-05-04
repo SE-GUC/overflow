@@ -26,7 +26,7 @@ class Vacancies extends Component {
     adminType: false,
     openConfirm: false,
     deletedId: "",
-    memberType:false,
+    memberType: false,
     filteredVacancies: [],
     pendingCount: 0,
     partnerId: "",
@@ -42,13 +42,13 @@ class Vacancies extends Component {
         const { userInfo } = this.props;
         let adminType = false;
         let memberType = false;
-        let memberId='';
-        if (userInfo){
-         if (userInfo.type === "admin") adminType = true;
-         if(userInfo.type==="member") {
-           memberType=true;
-           memberId = userInfo.id;
-         }
+        let memberId = "";
+        if (userInfo) {
+          if (userInfo.type === "admin") adminType = true;
+          if (userInfo.type === "member") {
+            memberType = true;
+            memberId = userInfo.id;
+          }
         }
         this.setState({
           vacancies: response,
@@ -115,7 +115,9 @@ class Vacancies extends Component {
             approvedVacancy.title ? approvedVacancy.title : "your vacancy"
           }`,
           link: "/Vacancies",
-          actionTitle: "Visit"
+          actionTitle: "Visit",
+          img:
+            "https://cdn.pixabay.com/photo/2016/03/31/14/37/check-mark-1292787__340.png"
         }
       };
       post(notifUrl, req).then(resp => console.log(resp));
@@ -143,7 +145,9 @@ class Vacancies extends Component {
             deleted.title ? deleted.title : "your vacancy"
           }`,
           link: "/Vacancies",
-          actionTitle: "Visit"
+          actionTitle: "Visit",
+          img:
+            "https://cdn2.iconfinder.com/data/icons/e-business-helper/240/627249-delete3-512.png"
         }
       };
       post(notifUrl, req).then(resp => console.log(resp));
@@ -260,7 +264,7 @@ class Vacancies extends Component {
                 searchKey={searchBar}
                 vacancy={vacancy}
                 memberType={memberType}
-                memberId = {memberId}
+                memberId={memberId}
                 approve={this.setApproved}
                 adminType={adminType}
                 del={this.delete}

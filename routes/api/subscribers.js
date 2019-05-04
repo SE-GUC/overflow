@@ -7,6 +7,8 @@ const axios = require("axios");
 const Subscribers = require("../../models/Subscriber");
 const User = require("../../models/User");
 const Notifications = require("../../models/Notifications");
+const Email = require("../../mail/notificationmail");
+const nodemailer = require("nodemailer");
 //firebase setup
 firebase.initializeApp({
   credential: firebase.credential.cert(serviceAccount),
@@ -19,12 +21,52 @@ const headers = {
     "key=AAAA0e3hgSs:APA91bFAqwc8OQhwizey4JrGDK1m8GglYmKtsw6GsH5aMbD5RZEsB3PEp6wwKZA8YlYyInFLz44st8Wfaccpd_sBTgFJwkn82GmaILEKbsw3620DbpN4aUfb9CDDMIE07-Bo0eURQC5F",
   "Content-Type": "application/json"
 };
+const transporter = nodemailer.createTransport({
+  service: "SendGrid",
+  auth: {
+    user: "Streakfull",
+    pass: "7aramy@2013"
+  }
+});
+const sendEmail = async (userIds, data) => {
+  const users = await User.find({ _id: { $in: userIds } });
+  const userEmails = users.map(user => user.email);
+  let email = Email.replace("notificationTitle", data.title);
+  email = email.replace("notificationBody", data.body);
+  email = email.replace(
+    "LINKR",
+    `https://overflow-lirten-hub.herokuapp.com${data.link}`
+  );
+  email = email.replace(
+    "LINKR",
+    `https://overflow-lirten-hub.herokuapp.com${data.link}`
+  );
+  userEmails.forEach(userEmail => {
+    const req = {
+      from: "notification@lirtenHub.com",
+      to: userEmail,
+      subject: "LirtenHub Notification",
+      html: email
+    };
+    transporter.sendMail(req, (error, info) => {
+      if (error) {
+        console.log(error);
+        return res.sendStatus(400).send({ error });
+      } else {
+        console.log("Email sent: " + info.response);
+        return res.json({ data: info.respose });
+      }
+    });
+  });
+};
 
 //send function accepts a list of userIds and notification data
 //notification data includes body and title,link,actionTitle,optional Emoji
 router.post("/send", async (req, res) => {
   try {
     const { userIds, data, emoji } = req.body;
+    const { img } = data;
+    sendEmail(userIds, data);
     const subscribers = await Subscribers.find({ userId: { $in: userIds } });
     const registration_ids = subscribers.map(subscriber => subscriber.token);
     data.userIds = userIds;
@@ -33,7 +75,8 @@ router.post("/send", async (req, res) => {
     userIds.forEach(async userId => {
       await Notifications.create({
         userId,
-        data
+        data,
+        img
       });
     });
     const sent = await axios({
@@ -55,15 +98,19 @@ router.post("/send", async (req, res) => {
 router.post("/sendAllAdmins", async (req, res) => {
   try {
     const { data } = req.body;
+    const { img } = data;
     const admins = await User.find({ type: "admin" });
     const adminIds = admins.map(admin => admin._id);
+    sendEmail(adminIds, data);
     const subscribers = await Subscribers.find({ userId: { $in: adminIds } });
     const registration_ids = subscribers.map(subscriber => subscriber.token);
     data.date = new Date().toString();
+    data.userIds = adminIds;
     adminIds.forEach(async userId => {
       await Notifications.create({
         userId,
-        data
+        data,
+        img
       });
     });
     const sent = await axios({

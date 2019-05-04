@@ -2,23 +2,23 @@ import React, { Component } from "react";
 import { Responsive, Image, Grid } from "semantic-ui-react";
 import SignUp from "../components/Signup/SignUpForm";
 import EditProfileForm from "../components/profiles/EditProfileForm";
+import { withRouter } from "react-router-dom";
 class EditProfile extends Component {
   redirectProfile = (id, user) => {
     if (user.type === "partner") {
-      console.log("IN PErnater AHO");
+      user._id = id;
       this.props.history.push({
-        pathname: "/Partner/" + id,
-        state: { partner: user }
+        pathname: `/Partner/${id}`
       });
     } else if (user.type === "lifeCoach") {
+      user._id = id;
       this.props.history.push({
-        pathname: "/LifeCoach/" + id,
-        state: { lifeCoach: user }
+        pathname: `/LifeCoach/${id}`
       });
     } else if (user.type === "member") {
+      user._id = id;
       this.props.history.push({
-        pathname: "/Member/" + id,
-        state: { member: user }
+        pathname: `/Member/${id}`
       });
     }
   };
@@ -39,13 +39,13 @@ class EditProfile extends Component {
         </Responsive>
         <Responsive {...Responsive.onlyTablet}>
           <EditProfileForm
-            redirect={this.redirect}
+            redirect={this.redirectProfile}
             user={this.props.location.user}
           />
         </Responsive>
         <Responsive {...Responsive.onlyMobile}>
           <EditProfileForm
-            redirect={this.redirect}
+            redirect={this.redirectProfile}
             user={this.props.location.user}
           />
         </Responsive>
@@ -53,4 +53,4 @@ class EditProfile extends Component {
     );
   }
 }
-export default EditProfile;
+export default withRouter(EditProfile);

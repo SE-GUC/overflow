@@ -147,7 +147,8 @@ class VacancyForm extends Component {
               title: "Vacancy Pending Approval!",
               body: `A new vacancy has been posted`,
               link: `/Vacancies`,
-              actionTitle: "Visit"
+              actionTitle: "Visit",
+              img: resp.data.data.partner.image
             }
           };
           post(notifUrl, req).then(resp => console.log(resp));

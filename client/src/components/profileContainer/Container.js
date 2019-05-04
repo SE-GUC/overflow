@@ -46,7 +46,9 @@ export default class Container extends Component {
       "approved",
       "feedback",
       "password",
-      "image"
+      "image",
+      "members",
+      "partners"
     ],
     lifeCoachExcluded: [
       "_id",

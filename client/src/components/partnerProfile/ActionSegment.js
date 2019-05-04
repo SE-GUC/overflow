@@ -14,6 +14,7 @@ export default class ActionSegment extends Component {
       memberType
     } = this.props;
     if (!myProfile && !memberType) return null;
+    console.log(changePassword, "HII");
     return (
       <Segment padded id="action-segment">
         {myProfile ? (
@@ -30,7 +31,12 @@ export default class ActionSegment extends Component {
               Add Vacancy
               <Icon id="action-icon" color="green" name="plus" />
             </Header>
-            <Header size="small" color="red" onClick={deleteProfile} className="click">
+            <Header
+              size="small"
+              color="red"
+              onClick={deleteProfile}
+              className="click"
+            >
               Delete Profile
               <Icon id="action-icon" color="red" name="close" />
             </Header>

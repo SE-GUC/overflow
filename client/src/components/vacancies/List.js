@@ -44,13 +44,16 @@ class List extends Component {
     this.setState({ approveLoading: this.props.approveLoading });
   }
   updateRecommendation = () => {
-    let {memberId,memberType,vacancy} = this.props
-    if(memberType){
-      if(memberId){
-        let url = "vacancies/updateRecommendation/"+ memberId+"/"+vacancy._id;
-        let body={};
+    let { memberId, memberType, vacancy } = this.props;
+    if (memberType) {
+      if (memberId) {
+        let url =
+          "vacancies/updateRecommendation/" + memberId + "/" + vacancy._id;
+        let body = {};
         console.log("In updateRcomm");
-        post(url,body).then((resp)=>{console.log(resp)})
+        post(url, body).then(resp => {
+          console.log(resp);
+        });
       }
     }
   };
@@ -59,8 +62,7 @@ class List extends Component {
       e.preventDefault();
       e.stopPropagation();
     } else {
-      if(this.props.memberType)
-      this.updateRecommendation();
+      if (this.props.memberType) this.updateRecommendation();
       this.redirect();
     }
   };
@@ -197,46 +199,51 @@ class List extends Component {
               />
             ) : null}
           </Card.Content>
-          <Card.Content extra>
-            {vacancy.state === "unapproved" || vacancy.state === "Not taken" ? (
-              <div>
-                <Popup
-                  on="hover"
-                  position="top right"
-                  content="Pending approval"
-                  trigger={<Label corner icon="clock outline" color="yellow" />}
-                />
+          {adminType && (
+            <Card.Content extra>
+              {vacancy.state === "unapproved" ||
+              vacancy.state === "Not taken" ? (
+                <div>
+                  <Popup
+                    on="hover"
+                    position="top right"
+                    content="Pending approval"
+                    trigger={
+                      <Label corner icon="clock outline" color="yellow" />
+                    }
+                  />
+                  <Card.Header>
+                    {!fromPartner && adminType ? (
+                      <Button
+                        name="approveButton"
+                        style={{ marginBottom: "0.6em" }}
+                        size="small"
+                        loading={approveLoading}
+                        onClick={e =>
+                          this.approve(e, vacancy._id, vacancy.partner._id)
+                        }
+                        basic
+                        color="green"
+                      >
+                        Approve
+                      </Button>
+                    ) : null}
+                  </Card.Header>
+                </div>
+              ) : null}
+              {adminType ? (
                 <Card.Header>
-                  {!fromPartner && adminType ? (
-                    <Button
-                      name="approveButton"
-                      style={{ marginBottom: "0.6em" }}
-                      size="small"
-                      loading={approveLoading}
-                      onClick={e =>
-                        this.approve(e, vacancy._id, vacancy.partner._id)
-                      }
-                      basic
-                      color="green"
-                    >
-                      Approve
-                    </Button>
-                  ) : null}
+                  <Button
+                    name="deleteButton"
+                    onClick={e => this.openConfirm(e, vacancy._id)}
+                    color="red"
+                  >
+                    Delete
+                  </Button>
                 </Card.Header>
-              </div>
-            ) : null}
-            {adminType ? (
-              <Card.Header>
-                <Button
-                  name="deleteButton"
-                  onClick={e => this.openConfirm(e, vacancy._id)}
-                  color="red"
-                >
-                  Delete
-                </Button>
-              </Card.Header>
-            ) : null}
-          </Card.Content>
+              ) : null}
+            </Card.Content>
+          )}
 
           {vacancy.partner.image ? (
             <Image

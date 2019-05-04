@@ -35,9 +35,9 @@ class LifeCoachProfile extends Component {
   toggleLoading = () => {
     this.setState({ loading: !this.state.loading });
   };
-  closeUpdate = ()=>{
-    this.setState({passModal:false})
-  }
+  closeUpdate = () => {
+    this.setState({ passModal: false });
+  };
   toggleError = () => {
     this.setState({ error: !this.state.error });
   };
@@ -177,10 +177,7 @@ class LifeCoachProfile extends Component {
         }
       }
     }
-
-    console.log(userInfo, "USERINFO");
     if (!lifeCoach && !loading) return null;
-    console.log(lifeCoach);
     return (
       <div>
         <Dimmer active={loading}>

@@ -8,7 +8,8 @@ import {
   Icon,
   Input,
   Button,
-  Divider
+  Divider,
+  Loader
 } from "semantic-ui-react";
 import "../../styling/Login.css";
 import * as Axios from "../../services/axios.js";
@@ -21,7 +22,8 @@ export default class LoginModal extends Component {
     hidden: true,
     loading: false,
     recovery: "",
-    confirmPassword: ""
+    confirmPassword: "",
+    loadingForgot: false
   };
   changePassword = e => {
     this.setState({ password: e.target.value, hidden: true });
@@ -42,7 +44,8 @@ export default class LoginModal extends Component {
       password: "",
       hidden: true,
       error: "",
-      loading: false
+      loading: false,
+      loadingForgot: false
     });
     this.props.close();
   };
@@ -89,7 +92,8 @@ export default class LoginModal extends Component {
       });
   };
   recover = () => {
-    const { email, sent } = this.state;
+    const { email, sent, loadingForgot } = this.state;
+    if (loadingForgot) return;
     if (email.length === 0) {
       this.setState({
         hidden: false,
@@ -98,13 +102,28 @@ export default class LoginModal extends Component {
       });
       return;
     }
+    this.setState({ loadingForgot: true });
     const message = sent
       ? "A new email has been sent"
       : "An email has been sent";
-    this.setState({ sent: true, error: message, recoverError: false });
     const url = `users/sendEmail`;
     const data = { email };
-    Axios.post(url, data);
+    Axios.post(url, data)
+      .then(() => {
+        this.setState({
+          sent: true,
+          error: message,
+          recoverError: false,
+          loadingForgot: false
+        });
+      })
+      .catch(err => {
+        this.setState({
+          error: "Email not found",
+          hidden: false,
+          loadingForgot: false
+        });
+      });
   };
   sendRecovery = () => {
     const { recovery, email } = this.state;
@@ -149,7 +168,8 @@ export default class LoginModal extends Component {
       recovery,
       recoverError,
       recoverCorrect,
-      confirmPassword
+      confirmPassword,
+      loadingForgot
     } = this.state;
     return (
       <Modal basic onClose={this.resetModal} open={open}>
@@ -260,6 +280,7 @@ export default class LoginModal extends Component {
               <Form.Field>
                 <span onClick={this.recover} id="forgot">
                   {sent ? "Resend Email" : "Forgot password?"}
+                  {loadingForgot && <Loader id="workaround" />}
                 </span>
               </Form.Field>
               <Button fluid loading={loading} type="submit" color="yellow">

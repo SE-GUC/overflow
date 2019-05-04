@@ -73,3 +73,25 @@
 #comment:hover{
   background-color: #f2f2f2;
 }
+.profile-image {
+  /*Image should be a div*/
+  height:13em;
+  background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    border-radius: 10em;
+}
+.joinDate {
+  /*Image should be a div*/
+  height:11.5em;
+  background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    border-radius: 10em;
+}
+#avatar {
+  height:3em;
+  width:3em;
+}

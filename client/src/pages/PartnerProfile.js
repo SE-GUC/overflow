@@ -224,6 +224,7 @@ class PartnerProfile extends Component {
               myProfile={myProfile}
               memberType={memberType}
               partner={partner}
+              changePassword={this.openPassModal}
             />
             <VacancySegment partner={partner} myProfile={myProfile} id={id} />
             <FeedbackSegment

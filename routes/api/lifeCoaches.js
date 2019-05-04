@@ -45,7 +45,8 @@ router.put(
   async (req, res) => {
     try {
       const { id } = req.params;
-      if (req.user.id !== id) return res.sendStatus(401);
+      if (req.user.id !== id && req.user.type !== "member")
+        return res.sendStatus(401);
       const query = { _id: id, type: "lifeCoach" };
       const user = await User.findOne(query);
       const isValidated = validator.updateValidation(req.body);
@@ -67,6 +68,7 @@ router.put(
       userData.age = newAge;
       //saving monthlySlots (can only be updated from slot routes)
       userData.monthlySlots = user.userData.monthlySlots;
+      userData.joinDate = user.userData.joinDate;
       if (!userData.ratings)
         if (user.userData.ratings) userData.ratings = user.userData.ratings;
       await User.updateOne(query, { name, email, image, userData });
@@ -77,4 +79,5 @@ router.put(
     }
   }
 );
+
 module.exports = router;

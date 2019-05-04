@@ -35,7 +35,8 @@ class MobileMenu extends Component {
       logOut,
       notificationCount,
       notifications,
-      deleteNotifications
+      deleteNotifications,
+      hideSidebar
     } = this.props;
     return (
       <div>
@@ -57,7 +58,7 @@ class MobileMenu extends Component {
                 >
                   {notificationCount > 0 ? (
                     <Label circular floating color="red">
-                      {notificationCount}
+                      <span id="notification-font">{notificationCount}</span>
                     </Label>
                   ) : null}
                 </Icon>
@@ -89,7 +90,12 @@ class MobileMenu extends Component {
           size="tiny"
         >
           {userInfo ? (
-            <Menu.Item onClick={this.props.redirectProfile}>
+            <Menu.Item
+              onClick={() => {
+                this.props.hideSidebar();
+                this.props.redirectProfile();
+              }}
+            >
               <Image
                 className="user-menu"
                 src="https://react.semantic-ui.com/images/avatar/large/matthew.png"
@@ -104,28 +110,60 @@ class MobileMenu extends Component {
             </Menu.Item>
           ) : null}
           <Divider fitted />
-          <MobileField to="/Members" icon="users" name="Members" />
-          <MobileField to="/Partners" icon="building outline" name="Partners" />
           <MobileField
+            hideSidebar={hideSidebar}
+            to="/Members"
+            icon="users"
+            name="Members"
+          />
+          <MobileField
+            hideSidebar={hideSidebar}
+            to="/Partners"
+            icon="building outline"
+            name="Partners"
+          />
+          <MobileField
+            hideSidebar={hideSidebar}
             to="/LifeCoaches"
             icon="flag outline"
             name="Life Coaches"
           />
-          <MobileField to="/Vacancies" icon="wpforms" name="Vacancies" />
+          <MobileField
+            hideSidebar={hideSidebar}
+            to="/Vacancies"
+            icon="wpforms"
+            name="Vacancies"
+          />
           {userInfo ? (
-            <Menu.Item onClick={logOut}>
+            <Menu.Item
+              onClick={() => {
+                hideSidebar();
+                logOut();
+              }}
+            >
               <Header textAlign="center" icon inverted>
                 Log out
               </Header>
             </Menu.Item>
           ) : (
             [
-              <Menu.Item key="login" onClick={login}>
+              <Menu.Item
+                key="login"
+                onClick={() => {
+                  hideSidebar();
+                  login();
+                }}
+              >
                 <Header textAlign="center" icon inverted>
                   Log In
                 </Header>
               </Menu.Item>,
-              <MobileField key="signUp" to="/SignUp" name="Sign up" />
+              <MobileField
+                hideSidebar={hideSidebar}
+                key="signUp"
+                to="/SignUp"
+                name="Sign up"
+              />
             ]
           )}
         </Sidebar>

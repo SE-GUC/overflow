@@ -61,10 +61,13 @@ class ReviewCard extends Component {
     const { email, name } = partner;
     const { edit, reviewTextEdit, editRating } = this.state;
     const { partnerId } = this.props;
+    const imageSrc = partner.image
+      ? partner.image
+      : "https://react.semantic-ui.com/images/avatar/large/matthew.png";
     return (
       <div id="comment">
         <Comment size="large">
-          <Comment.Avatar src="https://react.semantic-ui.com/images/avatar/large/matthew.png" />
+          <Comment.Avatar id="avatar" src={imageSrc} />
           <Comment.Content>
             <Comment.Author as="a" onClick={this.redirect}>
               {name}

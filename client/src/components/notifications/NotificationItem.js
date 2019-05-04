@@ -1,14 +1,20 @@
 import React, { Component } from "react";
-import { Item, Header } from "semantic-ui-react";
-import { Link } from "react-router-dom";
+import { Item, Header, Responsive } from "semantic-ui-react";
 import "../../styling/Menus.css";
+import { withRouter } from "react-router";
 
-export default class NotificationItem extends Component {
+class NotificationItem extends Component {
+  redirect = () => {
+    this.props.history.push(this.props.notification.link);
+  };
   render() {
-    const { notification, read } = this.props;
+    const { notification, read, img, isDesktop } = this.props;
     const { link, date, title, body } = notification;
     return (
-      <Item id={"no-back"}>
+      <Item onClick={this.redirect} id={"no-back"}>
+        {isDesktop && (
+          <Item.Image avatar src={img || notification.img} size="tiny" />
+        )}
         <Item.Content id="item">
           <Header size="tiny">
             {title}
@@ -22,3 +28,4 @@ export default class NotificationItem extends Component {
     );
   }
 }
+export default withRouter(NotificationItem);
