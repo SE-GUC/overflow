@@ -15,11 +15,11 @@ messaging.setBackgroundMessageHandler(payload => {
     "[firebase-messaging-sw.js NOIS3] Received background message ",
     payload
   );
-  const { title, body, link, actionTitle, emoji } = payload.data;
+  const { title, body, link, actionTitle, emoji, img } = payload.data;
   const notificationTitle = emoji ? title + String.fromCodePoint(emoji) : title;
   const notificationOptions = {
     body,
-    icon: "https://www.w3schools.com/images/w3schools_green.jpg",
+    icon: img,
     actions: [
       {
         action: link,

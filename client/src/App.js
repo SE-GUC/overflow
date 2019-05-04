@@ -31,26 +31,31 @@ class App extends Component {
   };
   componentDidMount() {
     this.setToken();
-
-    firebase.initializeApp(config);
-    firebase
-      .messaging()
-      .usePublicVapidKey(
-        "BPgRlyFu7oPQNI34lY9AVdRysmu2JTKA-uDq5y62_nx1CcY0RcpuWz5uB189K9yfvTLtG06QvCnYD9QRVaxYgWQ"
-      );
-    firebase
-      .messaging()
-      .getToken()
-      .then(token => this.setState({ firebaseToken: token }));
-    firebase.messaging().onMessage(payload => {
-      let { notifications, notificationCount } = this.state;
-      //notifications.push(payload);
-      notifications = [payload].concat(notifications);
-      this.setState({
-        notifications,
-        notificationCount: notificationCount + 1
+    try {
+      firebase.initializeApp(config);
+      firebase
+        .messaging()
+        .usePublicVapidKey(
+          "BPgRlyFu7oPQNI34lY9AVdRysmu2JTKA-uDq5y62_nx1CcY0RcpuWz5uB189K9yfvTLtG06QvCnYD9QRVaxYgWQ"
+        );
+      firebase
+        .messaging()
+        .getToken()
+        .then(token => this.setState({ firebaseToken: token }));
+      firebase.messaging().onMessage(payload => {
+        let { notifications, notificationCount } = this.state;
+        //notifications.push(payload);
+        const { userInfo } = this.props;
+        if (!payload.data.userIds.includes(userInfo.id)) return;
+        notifications = [payload].concat(notifications);
+        this.setState({
+          notifications,
+          notificationCount: notificationCount + 1
+        });
       });
-    });
+    } catch (error) {
+      console.log("Unsupported browser for notifications");
+    }
   }
   askPerm = userId => {
     firebase
@@ -106,7 +111,7 @@ class App extends Component {
     this.props.dispatch(UserActions.AC_logIn(userInfoToken));
     const url = `notifications/${userInfoToken.id}`;
     get(url).then(notifications => {
-      notifications = notifications.sort((a, b) => {
+      notifications = notifications.reverse().sort((a, b) => {
         if (!a.read) {
           if (b.read) return -1;
         }
@@ -210,6 +215,7 @@ class App extends Component {
             notifications={notifications}
             deleteNotifications={this.deleteNotifications}
             redirectHome={this.redirectHome}
+            hideSidebar={this.hideSidebar}
           />
           <div
             onClick={this.hideSidebar}

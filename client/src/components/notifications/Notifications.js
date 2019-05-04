@@ -26,7 +26,7 @@ export default class Notifications extends Component {
     this.props.close();
   };
   render() {
-    const { notifications, userId } = this.props;
+    const { notifications, userId, isDesktop } = this.props;
     return (
       <div ref={node => (this.node = node)}>
         <Dropdown
@@ -67,6 +67,8 @@ export default class Notifications extends Component {
                     <NotificationItem
                       key={index}
                       notification={notification.data}
+                      img={notification.img}
+                      isDesktop={isDesktop}
                     />
                   );
                 })}

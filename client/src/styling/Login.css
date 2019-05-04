@@ -15,5 +15,11 @@
  #forgot {
    cursor: pointer;
    color:blue;
-  
+ }
+ #workaround:before {
+   border-color: rgba(0,0,0,.1);
+ }
+
+  #workaround:after {
+   border-color: #0000 transparent transparent;
  }

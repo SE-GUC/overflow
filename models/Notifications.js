@@ -8,6 +8,10 @@ const notificationSchema = new Schema({
   read: {
     type: Boolean,
     default: false
+  },
+  img: {
+    type: String,
+    default: "https://react.semantic-ui.com/images/wireframe/image.png"
   }
 });
 module.exports = Notifications = mongoose.model(

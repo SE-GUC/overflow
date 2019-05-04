@@ -64,7 +64,8 @@ class Slots extends Component {
             title: "Slot Booking!",
             body: `${member.name} has booked a slot on ${date.slice(0, 10)}`,
             link: `/LifeCoach/${lifeCoachId}`,
-            actionTitle: "Visit"
+            actionTitle: "Visit",
+            img: member.image
           }
         };
         post(notifUrl, req).then(resp => console.log(resp));
@@ -99,7 +100,9 @@ class Slots extends Component {
             title: "Slot Confirmation!",
             body: `The slot on ${date.slice(0, 10)} has been confirmed`,
             link: `/LifeCoach/${lifeCoachId}`,
-            actionTitle: "Visit"
+            actionTitle: "Visit",
+            img:
+              "https://cdn.pixabay.com/photo/2016/03/31/14/37/check-mark-1292787__340.png"
           }
         };
         post(notifUrl, req).then(resp => console.log(resp));

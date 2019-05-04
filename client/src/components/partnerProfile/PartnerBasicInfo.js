@@ -13,7 +13,8 @@ class PartnerBasicInfo extends Component {
       editProfile,
       createVacancy,
       myProfile,
-      memberType
+      memberType,
+      changePassword
     } = this.props;
     if (!partner) return null;
     const { name, email, image } = partner;
@@ -106,6 +107,7 @@ class PartnerBasicInfo extends Component {
                   submitFeedback={submitFeedback}
                   editProfile={editProfile}
                   createVacancy={createVacancy}
+                  changePassword={changePassword}
                 />
               </Grid.Column>
             ) : null}

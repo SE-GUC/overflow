@@ -48,10 +48,13 @@ class FeedbackCard extends Component {
     const { email, name } = member;
     const { edit, feedbackTextEdit } = this.state;
     const { memberId } = this.props;
+    const imageSrc = member.image
+      ? member.image
+      : "https://react.semantic-ui.com/images/avatar/large/matthew.png";
     return (
       <div id="comment">
         <Comment size="large">
-          <Comment.Avatar src="https://react.semantic-ui.com/images/avatar/large/matthew.png" />
+          <Comment.Avatar id="avatar" src={imageSrc} />
           <Comment.Content>
             <Comment.Author as="a" onClick={this.redirect}>
               {name}

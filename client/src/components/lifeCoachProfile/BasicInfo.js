@@ -1,10 +1,18 @@
 import React, { Component } from "react";
-import  {Divider, Image, Header, Grid, Segment, Rating, Button } from "semantic-ui-react";
+import {
+  Divider,
+  Image,
+  Header,
+  Grid,
+  Segment,
+  Rating,
+  Button
+} from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import decode from "jwt-decode";
 import { put } from "../../services/axios";
 import profile from "../../images/profile.png";
-import '../../styling/lifeCoachProfile.css'
+import "../../styling/lifeCoachProfile.css";
 class BasicInfo extends Component {
   slotsNumber = () => {
     let counter = 0;
@@ -36,6 +44,7 @@ class BasicInfo extends Component {
 
   handleRate = (e, { rating, maxRating }) => {
     let lifeCoach = this.props.lifeCoach;
+    console.log(lifeCoach, "LIFECOACH");
     const {
       name,
       email,
@@ -84,7 +93,7 @@ class BasicInfo extends Component {
       image,
       userData: { gender, hourlyRate, age }
     } = this.props.lifeCoach;
-    const{deleteProfile,changePassword} = this.props;
+    const { deleteProfile, changePassword } = this.props;
     return (
       <div className="lifeCoach-info-container">
         {image ? (
@@ -137,16 +146,18 @@ class BasicInfo extends Component {
           </Grid>
         </Segment>
         {this.showEditButton() && [
-          <Button onClick={this.handleEdit} color="yellow">
-            Edit my Profile
-          </Button>,
-           <Button id="deleteButton" onClick={changePassword} color="yellow">
-           Update Password
-         </Button>,
+          <Button.Group key="buttonGroup">
+            <Button onClick={this.handleEdit} color="green">
+              Edit my Profile
+            </Button>
+            <Button.Or />
+            <Button onClick={changePassword} primary>
+              Update Password
+            </Button>
+          </Button.Group>,
           <Button id="deleteButton" onClick={deleteProfile} color="red">
             Delete Profile
           </Button>
-          
         ]}
         {this.showRating() && (
           <div className="lifeCoach-review-container">

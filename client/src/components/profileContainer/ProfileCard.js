@@ -61,6 +61,10 @@ export default class ProfileCard extends Component {
       gender,
       approved
     } = userData;
+    const imageSrc =
+      image && image !== null && image.includes(".") && image.includes("/")
+        ? image
+        : "https://react.semantic-ui.com/images/wireframe/image.png";
     const memberAttributes = [
       <Card.Header key={age} className="card-header" textAlign="center">
         <Highlightable
@@ -137,17 +141,13 @@ export default class ProfileCard extends Component {
     ];
     return (
       <Card onClick={this.redirect} className="hvr-grow centered">
-        <Image
-          onClick={this.adminRedirect}
-          src={
-            image &&
-            image !== null &&
-            image.includes(".") &&
-            image.includes("/")
-              ? image
-              : "https://react.semantic-ui.com/images/wireframe/image.png"
-          }
-        />
+        <Image onClick={this.adminRedirect}>
+          <div
+            className="images"
+            style={{ backgroundImage: "url(" + imageSrc + ")" }}
+          />
+        </Image>
+
         <Card.Content>
           <Card.Header className="first-header" textAlign="center">
             <Highlightable

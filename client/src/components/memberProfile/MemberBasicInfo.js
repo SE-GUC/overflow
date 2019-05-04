@@ -22,7 +22,8 @@ export default class MemberBasicInfo extends Component {
       myProfile,
       partnerType,
       submitReview,
-      editProfile
+      editProfile,
+      changePassword
     } = this.props;
     if (!member) return null;
     const { name, email, rating, ratingCount, image } = member;
@@ -35,21 +36,18 @@ export default class MemberBasicInfo extends Component {
       location,
       skills
     } = member.userData;
+    const imgSrc =
+      image && image !== null && image.includes(".") && image.includes("/")
+        ? image
+        : profile;
     return (
       <div className="partner-info-container">
-        <Image
-          avatar
-          size="small"
-          onClick={this.adminRedirect}
-          src={
-            image &&
-            image !== null &&
-            image.includes(".") &&
-            image.includes("/")
-              ? image
-              : profile
-          }
-        />
+        <Image avatar size="small">
+          <div
+            className={joinDate? "joinDate":"profile-image"}
+            style={{ backgroundImage: "url(" + imgSrc + ")" }}
+          />
+        </Image>
         <Header as="h1" textAlign="center">
           {name}
           <Header.Subheader>
@@ -74,7 +72,7 @@ export default class MemberBasicInfo extends Component {
             </Grid.Column>
             <Grid.Column>
               <Header sub> Gender </Header>
-              {gender === "male" ? (
+              {gender === "Male" ? (
                 <Icon size="big" name="mars" color="blue" />
               ) : (
                 <Icon size="big" name="woman" color="pink" />
@@ -140,6 +138,7 @@ export default class MemberBasicInfo extends Component {
                   partnerType={partnerType}
                   submitReview={submitReview}
                   editProfile={editProfile}
+                  changePassword={changePassword}
                 />
               </Grid.Column>
             ) : null}

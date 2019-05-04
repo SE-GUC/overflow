@@ -46,26 +46,21 @@ router.get(
   }
 );
 
-router.get(
-  "/MemberApplications/:memberId",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    try {
-      const { memberId } = req.params;
-      if (req.user.id !== memberId) return res.sendStatus(401);
-      const member = await User.findOne({ _id: memberId, type: "member" });
-      if (!member)
-        // Bad request if not found
-        return res.status(400).send({ error: "member not found" });
-      const query = { "member._id": memberId };
-      const memberApplications = await JobApplication.find(query);
-      return res.json({ data: memberApplications });
-    } catch (error) {
-      console.log(error);
-      res.sendStatus(400);
-    }
+router.get("/MemberApplications/:memberId", async (req, res) => {
+  try {
+    const { memberId } = req.params;
+    const member = await User.findOne({ _id: memberId, type: "member" });
+    if (!member)
+      // Bad request if not found
+      return res.status(400).send({ error: "member not found" });
+    const query = { "member._id": memberId };
+    const memberApplications = await JobApplication.find(query);
+    return res.json({ data: memberApplications });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
   }
-);
+});
 
 router.post(
   "/create",

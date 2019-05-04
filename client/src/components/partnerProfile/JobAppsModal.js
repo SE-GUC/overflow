@@ -66,7 +66,8 @@ export default class JobAppsModal extends Component {
                 notif.vacancy.title ? notif.vacancy.title : " their vacancy"
               }`,
               link: `/`,
-              actionTitle: "Visit"
+              actionTitle: "Visit",
+              img: notif.vacancy.partner.image
             }
           };
           post(notifUrl, req).then(resp => console.log(resp));
@@ -92,7 +93,8 @@ export default class JobAppsModal extends Component {
                 notif.vacancy.title ? notif.vacancy.title : " their vacancy"
               }`,
               link: `/`,
-              actionTitle: "Visit"
+              actionTitle: "Visit",
+              img: notif.vacancy.partner.image
             }
           };
           post(notifUrl, req).then(resp => console.log(resp));

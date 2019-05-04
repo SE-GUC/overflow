@@ -107,6 +107,9 @@ class Vacancy extends Component {
         partner
       } = vacancy;
       let skillCards = [];
+      const imageSrc = partner.image
+        ? partner.image
+        : "https://react.semantic-ui.com/images/avatar/small/matthew.png";
       if (skills) {
         if (skills.length > 0) {
           skills.map(skill => {
@@ -141,10 +144,12 @@ class Vacancy extends Component {
                 onClick={this.redirectProfile}
                 style={{ margin: "auto", cursor: "pointer" }}
               >
-                <Image
-                  fluid
-                  src="https://react.semantic-ui.com/images/avatar/small/matthew.png"
-                />
+                <Image onClick={this.adminRedirect}>
+                  <div
+                    className="images"
+                    style={{ backgroundImage: "url(" + imageSrc + ")" }}
+                  />
+                </Image>
                 <Card.Content>
                   <Card.Header textAlign="center">{partner.name}</Card.Header>
                   <Card.Description>{partner.fieldOfWork}</Card.Description>

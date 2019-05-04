@@ -20,7 +20,8 @@ const UserSchema = new Schema(
       //select: false
     },
     image: {
-      type: String
+      type: String,
+      default: "https://react.semantic-ui.com/images/wireframe/image.png"
     },
     userData: {}
   },

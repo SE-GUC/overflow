@@ -39,13 +39,21 @@ router.post("/create", async (req, res) => {
   });
   return res.json({ data: user });
 });
+router.put("/fixApple", async (req, res) => {
+  await User.findOneAndUpdate(
+    { _id: "5cc20a2ea581a9244c20253a" },
+    { "userData.feedback": [] }
+  );
+  return res.sendStatus(200);
+});
 router.put(
   "/update/:id",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
       const { id } = req.params;
-      if (req.user.id !== id) return res.sendStatus(401);
+      if (!(req.user.type === "admin" || req.user.id == id))
+        return res.sendStatus(401);
       const query = { _id: id, type: "partner" };
       const user = await User.findOne(query);
       const isValidated = validator.updateValidation(req.body);
