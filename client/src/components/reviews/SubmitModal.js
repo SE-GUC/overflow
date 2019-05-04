@@ -99,9 +99,10 @@ class SubmitModal extends Component {
                     {member ? (
                       <List bulleted>
                         {" "}
-                        {member.userData.skills.map(skill => (
-                          <List.Item>{skill}</List.Item>
-                        ))}
+                        {member.userData.skills &&
+                          member.userData.skills.map(skill => (
+                            <List.Item>{skill}</List.Item>
+                          ))}
                       </List>
                     ) : (
                       "N/a"
