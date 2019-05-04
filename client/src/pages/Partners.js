@@ -50,7 +50,6 @@ class Partners extends Component {
   }
 
   setData = (partners, adminType) => {
-    console.log(adminType, "ADMIN TYPE");
     if (partners.length === 0) return;
     let pendingCount = 0;
     const filteredPartners = [];
@@ -83,7 +82,8 @@ class Partners extends Component {
       projects
     } = approvedPartner.userData;
     approvedPartner.userData.approved = true;
-    let { fieldOfWork, image } = approvedPartner.userData;
+    let { fieldOfWork } = approvedPartner.userData;
+    let { image } = approvedPartner;
     if (!image) image = "N/A";
     if (!fieldOfWork) fieldOfWork = "N/A";
     const url = "users/partners/update/" + id;
@@ -97,7 +97,8 @@ class Partners extends Component {
       members,
       projects,
       fieldOfWork,
-      approved: true
+      approved: true,
+      image
     };
     put(url, data).then(() => {
       this.setData(filteredPartners, true);
@@ -108,7 +109,9 @@ class Partners extends Component {
           title: "Welcome to LirtenHub",
           body: "You have been approved to join us as a partner",
           link: "/Partners",
-          actionTitle: "Visit"
+          actionTitle: "Visit",
+          img:
+            "https://cdn.pixabay.com/photo/2016/03/31/14/37/check-mark-1292787__340.png"
         }
       };
       post(notifUrl, req).then(resp => console.log(resp));

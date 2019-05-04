@@ -10,7 +10,8 @@ import {
   Dimmer,
   Loader,
   Form,
-  TextArea
+  TextArea,
+  List
 } from "semantic-ui-react";
 import "../../styling/applyModal.css";
 class SubmitModal extends Component {
@@ -60,12 +61,13 @@ class SubmitModal extends Component {
       this.setState({ loading: false });
       const notifUrl = `subscribers/send`;
       const req = {
-        userIds: [member.id],
+        userIds: [member._id],
         data: {
           title: "Review!",
           body: `New Review posted on your profile`,
           link: `/Member/${member._id}`,
-          actionTitle: "Visit"
+          actionTitle: "Visit",
+          img: data.data.data.partner.image
         }
       };
       axios.post(notifUrl, req);
@@ -92,7 +94,19 @@ class SubmitModal extends Component {
                   Name: <span>{member ? member.name : "N/a"}</span>
                 </Header>
                 <Header as="h5">
-                  Skills: <span>{member ? member.userData.skills : "N/a"}</span>
+                  Skills:{" "}
+                  <span>
+                    {member ? (
+                      <List bulleted>
+                        {" "}
+                        {member.userData.skills.map(skill => (
+                          <List.Item>{skill}</List.Item>
+                        ))}
+                      </List>
+                    ) : (
+                      "N/a"
+                    )}
+                  </span>
                 </Header>
                 <Header as="h5">
                   Availability:{" "}

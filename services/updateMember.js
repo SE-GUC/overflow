@@ -41,6 +41,7 @@ const update_feedback_partner = async (_id, member) => {
   const query = { type: "partner", "userData.feedback.member._id": _id };
   delete member.userData.reviews;
   const partnersUpdated = await User.find(query);
+  console.log("HI", member, partnersUpdated);
   partnerUpdateOptions.update_user = false;
   partnerUpdateOptions.update_review_member = false;
   const promises = [];

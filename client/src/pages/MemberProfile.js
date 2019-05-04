@@ -20,7 +20,7 @@ import MemberActions from "../components/memberProfile/MemberActions";
 import ReviewSegment from "../components/memberProfile/ReviewSegment";
 import SubmitModal from "../components/reviews/SubmitModal";
 import MemberJobApps from "../components/memberProfile/MemberJobApps";
-import RecommendedVacancies from '../components/memberProfile/RecommendedVacancies'
+import RecommendedVacancies from "../components/memberProfile/RecommendedVacancies";
 import { connect } from "react-redux";
 
 class MemberProfile extends Component {
@@ -119,9 +119,9 @@ class MemberProfile extends Component {
   redirectDeleted = () => {
     this.props.history.push("/");
   };
-  closeUpdate = ()=>{
-    this.setState({passModal:false})
-  }
+  closeUpdate = () => {
+    this.setState({ passModal: false });
+  };
   open = () => {
     this.setState({ open: true });
   };
@@ -252,12 +252,13 @@ class MemberProfile extends Component {
               del={this.del}
               edit={this.edit}
             />
-            {myProfile?
-            <RecommendedVacancies
-              myProfile={myProfile}
-              member={member}
-              id={id}
-            />:null}
+            {myProfile ? (
+              <RecommendedVacancies
+                myProfile={myProfile}
+                member={member}
+                id={id}
+              />
+            ) : null}
           </Grid.Column>
           <Grid.Column only="mobile" width={14}>
             <MemberBasicInfo
@@ -268,6 +269,7 @@ class MemberProfile extends Component {
               editProfile={this.editProfile}
               submitReview={this.open}
               openJobApps={this.openJobApps}
+              changePassword={this.openPassModal}
             />
             <ReviewSegment
               partnerId={partnerId}
@@ -282,6 +284,13 @@ class MemberProfile extends Component {
               del={this.del}
               edit={this.edit}
             />
+            {myProfile ? (
+              <RecommendedVacancies
+                myProfile={myProfile}
+                member={member}
+                id={id}
+              />
+            ) : null}
           </Grid.Column>
           <Grid.Column only="tablet" width={14}>
             <MemberBasicInfo isTablet={true} member={member} />
@@ -307,6 +316,13 @@ class MemberProfile extends Component {
               del={this.del}
               edit={this.edit}
             />
+            {myProfile ? (
+              <RecommendedVacancies
+                myProfile={myProfile}
+                member={member}
+                id={id}
+              />
+            ) : null}
           </Grid.Column>
           <Grid.Column only="computer" width={3} />
         </Grid>
@@ -316,7 +332,13 @@ class MemberProfile extends Component {
           content="Are you sure you want to delete your profile?"
           onConfirm={this.deleteProfile}
         />
-        {member ? <UpdatePassModal id={member._id} open={passModal} closeUpdateModal={this.closeUpdate} /> : null}
+        {member ? (
+          <UpdatePassModal
+            id={member._id}
+            open={passModal}
+            closeUpdateModal={this.closeUpdate}
+          />
+        ) : null}
       </div>
     );
   }

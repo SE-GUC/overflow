@@ -30,7 +30,7 @@ class RecommendedVacancies extends Component {
       .then(vacancies => {
         this.setState({
           vacancyCount: vacancies.length,
-          vacancies,
+          vacancies: vacancies.filter(vac => vac.state !== "unapproved"),
           loading: false,
           error: false
         });

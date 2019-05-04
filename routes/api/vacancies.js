@@ -18,8 +18,8 @@ router.post("/updateRecommendation/:memberID/:vacancyID", async (req, res) => {
     const member = await User.findById(memberID);
     const vacancy = await Vacancy.findById(vacancyID);
     if (vacancy) {
-      console.log("Vacancy beofre update"+vacancy)
-     
+      console.log("Vacancy beofre update" + vacancy);
+
       if (member) {
         await recommender.addMemberDetails(member);
         await recommender.addDetailView(vacancyID, memberID);
@@ -36,28 +36,31 @@ router.post("/updateRecommendation/:memberID/:vacancyID", async (req, res) => {
     res.sendStatus(400);
   }
 });
-router.post("/updateAppliedRecommendation/:memberID/:vacancyID", async (req, res) => {
-  const { vacancyID, memberID } = req.params;
-  try {
-    const member = await User.findById(memberID);
-    const vacancy = await Vacancy.findById(vacancyID);
-    if (vacancy) {
-      await recommender.addItemDetails(vacancy);
-      if (member) {
-        await recommender.addMemberDetails(member);
-        await recommender.addPurchase(vacancyID, memberID);
-        return res.sendStatus(200);
+router.post(
+  "/updateAppliedRecommendation/:memberID/:vacancyID",
+  async (req, res) => {
+    const { vacancyID, memberID } = req.params;
+    try {
+      const member = await User.findById(memberID);
+      const vacancy = await Vacancy.findById(vacancyID);
+      if (vacancy) {
+        await recommender.addItemDetails(vacancy);
+        if (member) {
+          await recommender.addMemberDetails(member);
+          await recommender.addPurchase(vacancyID, memberID);
+          return res.sendStatus(200);
+        } else {
+          return res.sendStatus(400);
+        }
       } else {
         return res.sendStatus(400);
       }
-    } else {
-      return res.sendStatus(400);
+    } catch (error) {
+      console.log(error);
+      res.sendStatus(400);
     }
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(400);
   }
-});
+);
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -227,7 +230,8 @@ router.put(
       if (!vacancy)
         // Bad request if not found
         return res.status(400).send({ error: "vacancy not found" });
-      if (req.user.id != vacancy.partner._id) return res.sendStatus(401);
+      if (!(req.user.type === "admin" || req.user.id == vacancy.partner._id))
+        return res.sendStatus(401);
       if (isValidated.error) {
         return res
           .status(400)

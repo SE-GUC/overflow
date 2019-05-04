@@ -16,7 +16,8 @@ import {
   Container,
   Dimmer,
   Loader,
-  Icon
+  Icon,
+  Popup
 } from "semantic-ui-react";
 import "../../styling/signup.css";
 const firebase = require("firebase");
@@ -107,7 +108,47 @@ class SignUp extends React.Component {
     addedPartners: [],
     loading: false,
     user_id: "",
-    hidden: true
+    hidden: true,
+    errorFieldName: "",
+    errorFieldMessage: ""
+  };
+  validateData = () => {
+    const {
+      password,
+      name,
+      phone,
+      salary,
+      isSuper,
+      fax,
+      address,
+      approved,
+      hourlyRate,
+      fieldOfWork,
+      type,
+      dateOfBirth
+    } = this.state.userInfo;
+    //checking name only includes letters
+    for (let i = 0; i < name.length; i++) {
+      if (
+        (name.charCodeAt(i) < 65 || name.charCodeAt(i) > 122) &&
+        name.charCodeAt(i) !== 32
+      ) {
+        this.setErrorField(
+          "name",
+          "Name cannot contain special characters or numbers"
+        );
+        return false;
+      }
+    }
+    //password > 6
+    if (password.length < 6) {
+      this.setErrorField("password", "Password must be atleast 6 characters");
+      return false;
+    }
+    return true;
+  };
+  setErrorField = (errorFieldName, errorFieldMessage) => {
+    this.setState({ errorFieldName, errorFieldMessage });
   };
   handleAllChanges = (prop, e) => {
     let { userInfo } = this.state;
@@ -117,7 +158,11 @@ class SignUp extends React.Component {
         userInfo[key] = e.target.value;
       }
     });
-    this.setState({ userInfo: userInfo });
+    this.setState({
+      userInfo: userInfo,
+      errorFieldName: "",
+      errorFieldMessage: ""
+    });
   };
   componentDidMount() {
     this.setState({ reserveAttrs: this.state.userInfo });
@@ -275,6 +320,10 @@ class SignUp extends React.Component {
   signUp = () => {
     let { type } = this.state.userInfo;
     let { memberAttrs, partnerAttrs, lifeCoachAttrs } = this.state;
+    if (!this.validateData()) {
+      window.scroll(0, 0);
+      return;
+    }
     let url =
       type === "Member"
         ? "users/members/create"
@@ -310,7 +359,6 @@ class SignUp extends React.Component {
           newData[key] = data[key];
       }
     });
-
     axios
       .post(url, newData)
       .then(data => {
@@ -321,7 +369,8 @@ class SignUp extends React.Component {
               title: "Partner Pending Approval!",
               body: `A new partner requested approval`,
               link: `/Partners`,
-              actionTitle: "Visit"
+              actionTitle: "Visit",
+              img: data.data.data.image
             }
           };
           axios.post(notifUrl, req).then(resp => console.log(resp));
@@ -332,23 +381,19 @@ class SignUp extends React.Component {
           email: newData.email,
           password: newData.password
         };
-        axios
-          .post("users/login", body)
-          .then(data => {
-            localStorage.setItem("jwtToken", data.data.data);
-            this.props.dispatch(AC_logIn(decode(data.data.data)));
-            this.askPerm(decode(data.data.data).id);
-            this.setState({ loading: false });
-            this.redirect();
-          })
-          .catch(error => {
-            console.log(error);
-          });
+        axios.post("users/login", body).then(data => {
+          localStorage.setItem("jwtToken", data.data.data);
+          this.props.dispatch(AC_logIn(decode(data.data.data)));
+          this.askPerm(decode(data.data.data).id);
+          this.setState({ loading: false });
+          this.redirect();
+        });
       })
       .catch(error => {
         this.setState({
           errorContent: error.response.data.error,
-          hidden: false
+          hidden: false,
+          loading: false
         });
       });
   };
@@ -397,7 +442,9 @@ class SignUp extends React.Component {
       addedPartners,
       loading,
       addedMembers,
-      addedProjects
+      addedProjects,
+      errorFieldName,
+      errorFieldMessage
     } = this.state;
 
     return (
@@ -419,22 +466,39 @@ class SignUp extends React.Component {
                 error
                 onSubmit={this.signUp}
               >
-                <Header inverted as="h1">
+                <Header textAlign="left" inverted as="h1">
                   {" "}
-                  Join LirtenHub{" "}
+                  Join Lirten Hub{" "}
+                  <Header.Subheader>A world of opportunities</Header.Subheader>
                 </Header>
+                {!hidden && (
+                  <Message icon hidden={hidden} error size="small">
+                    <Icon name="times circle" />
+                    <Message.Content>
+                      <Message.Header>{errorContent}</Message.Header>
+                    </Message.Content>
+                  </Message>
+                )}
                 <Form.Field required>
                   <label>Name</label>
-                  <Input
-                    inverted
-                    fluid
-                    type="name"
-                    iconPosition="left"
-                    icon="male"
-                    name="name"
-                    value={name}
-                    onChange={e => this.handleAllChanges("name", e)}
-                    placeholder="Peter Johnson"
+                  <Popup
+                    style={{ color: "red" }}
+                    trigger={
+                      <Input
+                        inverted
+                        fluid
+                        type="name"
+                        iconPosition="left"
+                        icon="male"
+                        name="name"
+                        value={name}
+                        error={errorFieldName === "name"}
+                        onChange={e => this.handleAllChanges("name", e)}
+                        placeholder="Peter Johnson"
+                      />
+                    }
+                    content={errorFieldMessage}
+                    open={errorFieldName === "name"}
                   />
                 </Form.Field>
                 <Form.Field required>
@@ -446,24 +510,34 @@ class SignUp extends React.Component {
                     icon="mail"
                     name="Email"
                     value={email}
+                    pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
                     onChange={e => this.handleAllChanges("email", e)}
                     placeholder="example@gmail.com"
                   />
                 </Form.Field>
+                <Popup
+                  style={{ color: "red", marginBottom: "-1em" }}
+                  trigger={
+                    <Form.Field required>
+                      <label>Password</label>
+                      <Input
+                        icon="lock"
+                        fluid
+                        iconPosition="left"
+                        type="password"
+                        name="password"
+                        value={password}
+                        error={errorFieldName === "password "}
+                        onChange={e => this.handleAllChanges("password", e)}
+                      />
+                    </Form.Field>
+                  }
+                  content={errorFieldMessage}
+                  open={errorFieldName === "password"}
+                />
+
                 <Form.Field required>
-                  <label>Password</label>
-                  <Input
-                    icon="lock"
-                    fluid
-                    iconPosition="left"
-                    type="password"
-                    name="password"
-                    value={password}
-                    onChange={e => this.handleAllChanges("password", e)}
-                  />
-                </Form.Field>
-                <Form.Field required>
-                  <label>UserType</label>
+                  <label>User Type</label>
                   <Dropdown
                     fluid
                     floating
@@ -486,6 +560,7 @@ class SignUp extends React.Component {
                           required
                           label="Birth Date"
                         />
+
                         {/* <Form.Field required>
                         <label>Gender</label> */}
                         <Form.Dropdown
@@ -571,8 +646,11 @@ class SignUp extends React.Component {
                         />
 
                         <Form.Input
+                          type="tel"
                           value={phone}
+                          pattern={"^[0-9]{5,11}$"}
                           fluid
+                          placeholder={"5-11 digits"}
                           onChange={e => this.handleAllChanges("phone", e)}
                           label="Phone"
                         />
@@ -611,7 +689,7 @@ class SignUp extends React.Component {
                         <Form.Dropdown
                           options={addedMembers}
                           selection
-                          label="Members"
+                          label="Board Members"
                           multiple
                           fluid
                           allowAdditions
@@ -663,7 +741,7 @@ class SignUp extends React.Component {
                           />
                         </Form.Field>
                       </Form.Group>,
-                      <Form.Group>
+                      <Form.Group widths="equal">
                         <Form.Input
                           value={hourlyRate}
                           fluid
@@ -678,8 +756,8 @@ class SignUp extends React.Component {
                       </Form.Group>
                     ]
                   : null}
-
                 <Button
+                  fluid
                   disabled={!this.checkInput()}
                   color="yellow"
                   type="submit"
@@ -687,13 +765,6 @@ class SignUp extends React.Component {
                   Sign Up
                 </Button>
               </Form>
-
-              <Message icon hidden={hidden} error size="small">
-                <Icon name="times circle" />
-                <Message.Content>
-                  <Message.Header>{errorContent}</Message.Header>
-                </Message.Content>
-              </Message>
             </Grid.Column>
           </Grid.Row>
         </Grid>

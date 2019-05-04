@@ -24,7 +24,8 @@ const LifeCoachSchema = new Schema(
       type: [slotSchema]
     },
     ratings: {
-      type: [Object]
+      type: [Object],
+      default: []
     }
   },
   { _id: false }

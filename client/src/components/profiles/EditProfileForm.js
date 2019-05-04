@@ -40,7 +40,8 @@ class EditProfileForm extends React.Component {
       skills: [],
       interests: [],
       availability: "",
-      location: ""
+      location: "",
+      fieldOfWork:""
     },
     memberAttrs: [
       "name",
@@ -64,7 +65,8 @@ class EditProfileForm extends React.Component {
       "members",
       "projects",
       "image",
-      "approved"
+      "approved",
+      "fieldOfWork"
     ],
     lifeCoachAttrs: [
       "name",
@@ -119,7 +121,6 @@ class EditProfileForm extends React.Component {
   };
   componentDidMount() {
     const user = this.props.user;
-    console.log(this.props);
     const { memberAttrs, partnerAttrs, lifeCoachAttrs } = this.state;
     const { userData, ...basicAttrs } = user;
     const allUserData = { ...userData };
@@ -374,13 +375,11 @@ class EditProfileForm extends React.Component {
           newData[key] = data[key];
       }
     });
-    console.log(data, "Data");
     console.log(newData, "New Data");
     axios
       .put(url, newData)
       .then(data => {
         this.setState({ hidden: true, loading: false });
-        console.log(data);
         let userData = {};
         let user = {};
         Object.keys(newData).map(key => {
@@ -403,7 +402,6 @@ class EditProfileForm extends React.Component {
             ) {
               user[key] = newData[key];
             }
-           
           } else if (type === "lifeCoach") {
             if (
               newData[key] != null &&
@@ -423,7 +421,6 @@ class EditProfileForm extends React.Component {
             ) {
               user[key] = newData[key];
             }
-            
           } else if (type === "member") {
             if (
               newData[key] != null &&
@@ -445,20 +442,19 @@ class EditProfileForm extends React.Component {
             }
           }
         });
-        if(type==="lifeCoach"){
-          userData={
+        if (type === "lifeCoach") {
+          userData = {
             ...userData,
-            monthlySlots:this.props.user.userData.monthlySlots,
-            ratings:this.props.user.userData.ratings
-          }
+            monthlySlots: this.props.user.userData.monthlySlots,
+            ratings: this.props.user.userData.ratings
+          };
         }
         user = {
           ...user,
           userData: userData,
           password: this.props.user.password,
-          type:this.props.user.type
+          type: this.props.user.type
         };
-       
         this.redirect(user_id, user);
       })
       .catch(error => {
@@ -490,7 +486,7 @@ class EditProfileForm extends React.Component {
       dateOfBirth,
       image,
       gender,
-
+      fieldOfWork,
       address,
       skills,
       interests,
@@ -728,7 +724,14 @@ class EditProfileForm extends React.Component {
                           onAddItem={this.handleProjectAdd}
                           onChange={this.handleChangeProjets}
                         />
-                      </Form.Field>
+                      </Form.Field>,
+                      <Form.Field required>
+                        <label>Field of Work </label>
+                        <Input
+                          value={fieldOfWork}
+                          onChange={e => this.handleAllChanges("fieldOfWork", e)}
+                        />
+                        </Form.Field>
                     ]
                   : null}
                 {type === "lifeCoach"
@@ -775,6 +778,7 @@ class EditProfileForm extends React.Component {
                   disabled={!this.checkInput()}
                   color="yellow"
                   type="submit"
+                  fluid
                 >
                   Update
                 </Button>

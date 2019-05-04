@@ -43,7 +43,8 @@ class ApplyModal extends Component {
             vacancy.title ? vacancy.title : "your vacancy"
           }`,
           link: `/Partner/${vacancy.partner._id}`,
-          actionTitle: "Visit"
+          actionTitle: "Visit",
+          img: data.data.data.member.image
         }
       };
       axios.post(notifUrl, req).then(resp => console.log(resp));

@@ -46,7 +46,8 @@ export default class FeedbackSegment extends Component {
   addFeedBack = feedback => {
     const { feedbacks, feedbackCount } = this.state;
     feedbacks.push(feedback);
-    this.setState({ feedbacks, feedbackCount: feedbackCount + 1 });
+    const newCount = feedbacks.length;
+    this.setState({ feedbacks, feedbackCount: newCount });
   };
   editFeedBack = (id, feedbackText) => {
     const url = `feedback/update/${this.props.id}/${id}`;
@@ -91,7 +92,6 @@ export default class FeedbackSegment extends Component {
         </Message>
         <Header as="h1" textAlign="center">
           {myProfile ? "My Feedback" : "Feedback"}
-          {feedbackCount >= 0 ? ` (${feedbackCount})` : ""}
         </Header>
         {feedbacks ? (
           <div>
