@@ -10,4 +10,4 @@ Key Features:
 3-Email notifications
 
 
-Sprint Backlog is in TeamData folder
+ Sprint Backlog is in TeamData folder
