@@ -239,7 +239,7 @@ const notificationMail =
   "                  your browser:" +
   "                </p>" +
   '                <p style="margin: 0;">' +
-  '                  <a href="https://overflow-lirten-hub.herokuapp.com" target="_blank">' +
+  '                  <a href="https://lirten-hub-overflow.herokuapp.com" target="_blank">' +
   "                    LINKR" +
   "                  </a>" +
   "" +

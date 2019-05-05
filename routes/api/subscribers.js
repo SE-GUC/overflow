@@ -35,11 +35,11 @@ const sendEmail = async (userIds, data) => {
   email = email.replace("notificationBody", data.body);
   email = email.replace(
     "LINKR",
-    `https://overflow-lirten-hub.herokuapp.com${data.link}`
+    `https://lirten-hub-overflow.herokuapp.com${data.link}`
   );
   email = email.replace(
     "LINKR",
-    `https://overflow-lirten-hub.herokuapp.com${data.link}`
+    `https://lirten-hub-overflow.herokuapp.com${data.link}`
   );
   userEmails.forEach(userEmail => {
     const req = {
